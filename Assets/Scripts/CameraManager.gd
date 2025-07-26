@@ -6,16 +6,41 @@ const CAMERA_RATIO: float = .625
 
 @export var mouse_sensitivity: float = .002
 @export var mouse_y_inversion: float = -1.0
+@export var damping: float = 0.1
 
 @onready var _camera_yaw: Node3D = self
 @onready var _camera_pitch: Node3D = %Arm
-
+@onready var ShipStateMachine = get_node("../ShipStateMachine")
+@onready var MockCam = %MockCamera
+@onready var PhantomBaseCam:PhantomCamera3D = %BaseFollowCam
+@onready var PhantomFreeCam:PhantomCamera3D = %FreeCam
+var freeCam:bool = false
+var cameraDefaultYaw
+var cameraDefaultPitch
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	ShipStateMachine.freeCam.connect(toggleFreeCam)
 
+# func _process(delta: float) -> void:
+# 	if !freeCam: 
+# 		MainCam.transform.position = lerp(MainCam.transform.position, MockCam.transform.position, damping)
+
+func toggleFreeCam():
+	if freeCam:
+		freeCam = false
+		PhantomFreeCam.priority = 0
+		_camera_yaw.rotation.y = cameraDefaultYaw
+		_camera_pitch.rotation.x = cameraDefaultPitch
+	else:
+		cameraDefaultYaw = _camera_yaw.rotation.y
+		cameraDefaultPitch = _camera_pitch.rotation.x
+		freeCam = true
+		PhantomFreeCam.priority = 2
 
 func _input(p_event: InputEvent) -> void:
+	if !freeCam:
+		return
 	if p_event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_camera(p_event.screen_relative)
 		get_viewport().set_input_as_handled()

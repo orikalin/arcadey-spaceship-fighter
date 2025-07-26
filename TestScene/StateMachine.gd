@@ -4,6 +4,8 @@ class_name StateMachine
 var currentState : State
 @export var initialState:State = null
 
+signal freeCam()
+
 func _ready() -> void:
 	var children = find_children("*", "State")
 	for child:State in children:
@@ -41,3 +43,5 @@ func transitionState(nextState:String, flags:Dictionary) -> void:
 	currentState = get_node(nextState)
 	currentState.enter(oldState, flags)
 	print_debug("transitions from: " + oldState + " to: " + currentState.name)
+
+	

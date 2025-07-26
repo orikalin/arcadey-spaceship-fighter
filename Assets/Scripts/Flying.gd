@@ -4,19 +4,19 @@ extends State
 @export var ShipContainer:MeshInstance3D
 
 # Can't fly below this speed
-var min_flight_speed = 5
+@export var min_flight_speed = 5
 # Maximum airspeed
-var max_flight_speed = 50
+@export var max_flight_speed = 50
 # Turn rate
-var turn_speed = 0.9
+@export var turn_speed = 0.9
 # Climb/dive rate
-var pitch_speed = 0.75
+@export var pitch_speed = 0.75
 # Wings "autolevel" speed
-var level_speed = 3.0
+@export var level_speed = 3.0
 # Throttle change speed
-var throttle_delta = 50
+@export var throttle_delta = 50
 # Acceleration/deceleration
-var acceleration = 18.0
+@export var acceleration = 18.0
 
 # Current speed
 var forward_speed:float = 0.0
@@ -47,12 +47,6 @@ func physicsUpdate(delta:float):
 
 
 func get_input(delta):
-	if Input.is_action_just_pressed("ui_cancel"):
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			
 	# Throttle input
 	if Input.is_action_pressed("throttle_up"):
 		target_speed = min(forward_speed + throttle_delta * delta, max_flight_speed)

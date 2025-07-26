@@ -1,0 +1,66 @@
+[gd_scene load_steps=11 format=3 uid="uid://mqxt5av23os8"]
+
+[ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://TestScene/dampingCurve.tres" id="1_q07wf"]
+[ext_resource type="TubeTrailMesh" uid="uid://cwrrdycqgiivo" path="res://TestScene/TrailMesh.tres" id="2_ndx6u"]
+
+[sub_resource type="Curve" id="Curve_vifiu"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_j8ae1"]
+curve = SubResource("Curve_vifiu")
+
+[sub_resource type="CurveTexture" id="CurveTexture_vifiu"]
+curve = ExtResource("1_q07wf")
+
+[sub_resource type="Curve" id="Curve_ve4uo"]
+_data = [Vector2(0, 0.260663), 0.0, 0.0, 0, 0, Vector2(0.141026, 0.537915), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_5qbr1"]
+curve = SubResource("Curve_ve4uo")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yop7f"]
+gravity = Vector3(0, 0, 0)
+damping_curve = SubResource("CurveTexture_vifiu")
+scale_curve = SubResource("CurveTexture_5qbr1")
+alpha_curve = SubResource("CurveTexture_j8ae1")
+
+[sub_resource type="Curve" id="Curve_7arpy"]
+_data = [Vector2(0, 0), 0.0, 2.0, 0, 1, Vector2(0.5, 1), 2.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_2ifmk"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="Particles" type="Node3D"]
+transform = Transform3D(0.2299, 0, 0, 0, 0.2299, 0, 0, 0, 0.2299, 0, 0, 0)
+
+[node name="Trail_L" type="GPUParticles3D" parent="."]
+transform = Transform3D(0.707107, 1.28028e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, -1.28028e-08, -1, -3.09086e-08, -3.81272, 1.86431e-07, 6.89849)
+visible = false
+cast_shadow = 0
+amount = 30
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_yop7f")
+draw_pass_1 = ExtResource("2_ndx6u")
+
+[node name="Trail_R" type="GPUParticles3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0.707107, -4.37114e-08, 0.707107, -3.09086e-08, -1, -3.09086e-08, 3.813, 0, 6.898)
+visible = false
+cast_shadow = 0
+amount = 30
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_yop7f")
+draw_pass_1 = ExtResource("2_ndx6u")
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="."]
+transform = Transform3D(0.707107, 1.49012e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, -1.49012e-08, -1, -4.47035e-08, -3.81274, 0, 6.89844)
+amount = 30
+mesh = ExtResource("2_ndx6u")
+gravity = Vector3(0, 0, 0)
+damping_min = 0.1
+damping_max = 0.3
+damping_curve = ExtResource("1_q07wf")
+scale_amount_curve = SubResource("Curve_7arpy")
+color_ramp = SubResource("Gradient_2ifmk")
