@@ -4,8 +4,6 @@ class_name StateMachine
 var currentState : State
 @export var initialState:State = null
 
-signal freeCam()
-
 func _ready() -> void:
 	var children = find_children("*", "State")
 	for child:State in children:
