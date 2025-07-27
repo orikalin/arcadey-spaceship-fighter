@@ -5,6 +5,7 @@ signal freeCam()
 var correctingRoll:bool = false
 @export var rollCorrectionRate:float = 4.0
 @export var easeOut:Curve
+@export var ShipStats:ShipResource
 
 func _physics_process(delta: float) -> void:	
 	if Input.is_action_just_pressed("freeCam"):

@@ -1,13 +1,13 @@
 extends MeshInstance3D
 
 var Player:CharacterBody3D
-var target_speed:float
+var currentSpeed:float
 var EngineLights
 var Particles
 var EngineCones
-@onready var hoveringState = $"../ShipStateMachine/Hovering"
-@onready var flyingState = $"../ShipStateMachine/Flying"
-@onready var ShipStateMachine = $"../ShipStateMachine"
+@onready var hoveringState = $"../shipStateMachine/Hovering"
+@onready var flyingState = $"../shipStateMachine/Flying"
+@onready var shipStateMachine = $"../ShipStateMachine"
 @export var ParticleSizeCurve:Curve
 @export var EngineLightCurve:Curve
 @export var EngineConeCurve:Curve
@@ -24,9 +24,10 @@ func _ready():
 	
 func _process(_delta:float):
 	
-	if ShipStateMachine != null:
-		target_speed = ShipStateMachine.currentState.target_speed
-		var EnginePower = Helpers.Map(target_speed, 0, flyingState.max_flight_speed, 0, 1)
+	if shipStateMachine != null:
+		currentSpeed = shipStateMachine.currentState.forward_speed
+		var EnginePower:float = Helpers.Map(currentSpeed, 0, shipStateMachine.ShipStats.hovering_max_speed, 0, 1)
+		
 		if EngineLights.size() > 0:
 			var _EngineCurveSample:float = EngineLightCurve.sample(EnginePower)
 			for light:SpotLight3D in EngineLights:

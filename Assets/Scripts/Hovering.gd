@@ -3,25 +3,6 @@ extends State
 @export var Player:CharacterBody3D
 @export var ShipContainer:MeshInstance3D
 
-# Can't fly below this speed
-@export var min_flight_speed = 5
-# Maximum airspeed
-@export var max_flight_speed = 50
-# Turn rate
-@export var turn_speed = 0.9
-# Climb/dive rate
-@export var pitch_speed = 0.75
-# Wings "autolevel" speed
-@export var level_speed = 3.0
-# Throttle change speed
-@export var throttle_delta = 50
-# Acceleration/deceleration
-@export var acceleration = 18.0
-#roll strength
-@export var rollMultiplier:float = 0.2
-@export var fallingPitchMax:float = -0.5
-@export var fallingPitchBuildup:float = 0.2
-@export var fallingPitchBase:float = 0.1
 var fallingPitchSpeed:float
 var fallingPitchSpeedMax:float = 0.75
 # Current speed
@@ -33,9 +14,11 @@ var grounded = false
 
 var turn_input:float = 0.0
 var pitch_input:float = 0.0
+var shipResource:StateMachine
 
 func _ready():
-	fallingPitchSpeed=fallingPitchBase
+	shipResource = get_parent()
+	fallingPitchSpeed=shipResource.ShipStats.fallingPitchBase
 
 func enter(oldState:String, flags:Dictionary):
 	if flags.has("target_speed"):
@@ -48,14 +31,14 @@ func physicsUpdate(delta:float):
 	get_input(delta)
 	# Rotate the transform based on the input values
 	#Player.transform.basis = Player.transform.basis.rotated(Player.transform.basis.x, pitch_input * pitch_speed * delta)
-	Player.transform.basis = Player.transform.basis.rotated(Vector3.UP, turn_input * turn_speed * delta)
+	Player.transform.basis = Player.transform.basis.rotated(Vector3.UP, turn_input * shipResource.ShipStats.hovering_turn_speed * delta)
 
 	# Roll the body based on the turn input
-	ShipContainer.rotation.z = lerp(ShipContainer.rotation.z, turn_input*rollMultiplier, level_speed * delta)
+	ShipContainer.rotation.z = lerp(ShipContainer.rotation.z, turn_input*shipResource.ShipStats.hovering_rollMultiplier, shipResource.ShipStats.hovering_level_speed * delta)
 
 
 	## Accelerate/decelerate
-	forward_speed = lerp(forward_speed, target_speed, acceleration * delta)
+	forward_speed = lerp(forward_speed, target_speed, shipResource.ShipStats.hovering_acceleration * delta)
 
 	# Movement is always forward
 	Player.velocity = -Player.transform.basis.z * forward_speed
@@ -63,7 +46,7 @@ func physicsUpdate(delta:float):
 	if Player.is_on_floor():
 		if not grounded:
 			Player.rotation.x = 0
-			fallingPitchSpeed = fallingPitchBase
+			fallingPitchSpeed = shipResource.ShipStats.fallingPitchBase
 		Player.velocity.y -= 1
 		grounded = true
 		
@@ -74,10 +57,10 @@ func physicsUpdate(delta:float):
 		grounded = false
 		if Player.rotation.x > 0:
 			Player.transform.basis = Player.transform.basis.rotated(Player.transform.basis.x,  -1.0 * fallingPitchSpeed * delta)
-		elif Player.rotation.x > fallingPitchMax:
+		elif Player.rotation.x > shipResource.ShipStats.fallingPitchMax:
 			Player.transform.basis = Player.transform.basis.rotated(Player.transform.basis.x,  -1.0 * fallingPitchSpeed * delta)
 			if fallingPitchSpeed < fallingPitchSpeedMax:
-				fallingPitchSpeed += fallingPitchBuildup*delta
+				fallingPitchSpeed += shipResource.ShipStats.fallingPitchBuildup*delta
 	Player.move_and_slide()
 
 func get_input(delta):
@@ -90,10 +73,10 @@ func get_input(delta):
 		finished.emit("Flying", flags)
 	# Throttle input
 	if Input.is_action_pressed("throttle_up"):
-		target_speed = min(forward_speed + throttle_delta * delta, max_flight_speed)
+		target_speed = min(forward_speed + shipResource.ShipStats.hovering_throttle_delta * delta, shipResource.ShipStats.hovering_max_speed)
 	if Input.is_action_pressed("throttle_down"):
-		var limit = 0 if grounded else min_flight_speed
-		target_speed = max(forward_speed - throttle_delta * delta, limit)
+		var limit = 0 if grounded else shipResource.ShipStats.hovering_min_speed
+		target_speed = max(forward_speed - shipResource.ShipStats.hovering_throttle_delta * delta, limit)
 	# Turn (roll/yaw) input
 	turn_input = 0.0
 	if forward_speed > 0.5:
