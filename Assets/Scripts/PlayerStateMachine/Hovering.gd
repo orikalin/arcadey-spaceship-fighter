@@ -22,7 +22,9 @@ func _ready():
 	fallingPitchSpeed=ship_resource.ship_stats.fallingPitchBase
 
 func enter(oldState:String, flags:Dictionary):
-	if flags.has("target_speed"):
+	if flags.has("firstTime"): 
+		return
+	elif oldState == "Flying" or "Drift":
 		target_speed = flags.get("target_speed")
 		Player.velocity = flags.get("Player.velocity")
 		forward_speed = flags.get("forward_speed")
@@ -67,13 +69,17 @@ func physicsUpdate(delta:float):
 	Player.move_and_slide()
 
 	if grounded:
-		var floor_normal = floor_raycast.get_collision_normal()
-		var target_normal_local = floor_normal * Player.basis
-		var target_pitch = atan2(target_normal_local.z, target_normal_local.y)
+		align_to_floor_normal(delta, false)
+
+
+func align_to_floor_normal(delta, instant:bool):
+	var floor_normal = floor_raycast.get_collision_normal()
+	var target_normal_local = floor_normal * Player.basis
+	var target_pitch = atan2(target_normal_local.z, target_normal_local.y)
+	if not instant:
 		Player.transform.basis = Player.transform.basis.rotated(Player.transform.basis.x, target_pitch * ship_resource.ship_stats.slerp_speed * delta)
-
-
-
+	else:
+		Player.transform.basis = Player.transform.basis.rotated(Player.transform.basis.x, target_pitch)
 
 func align_with_y(xform, new_y):
 	xform.y = new_y
@@ -105,3 +111,15 @@ func get_input(delta):
 	if not grounded:
 		pitch_input -= Input.get_action_strength("pitch_down")
 		pitch_input += Input.get_action_strength("pitch_up")
+	# Drift input
+	if grounded:
+		if Input.is_action_pressed("drift"):
+			if Input.is_action_pressed("roll_left") or Input.is_action_pressed("roll_right"):
+				var flags:Dictionary = {
+					"target_speed":target_speed,
+					"Player.velocity":Player.velocity,
+					"forward_speed":forward_speed,
+					"Player.basis":Player.basis
+				}
+				align_to_floor_normal(delta, true)
+				finished.emit("Drift", flags)
