@@ -1,0 +1,18 @@
+[gd_resource type="TubeTrailMesh" load_steps=3 format=3 uid="uid://cwrrdycqgiivo"]
+
+[ext_resource type="Material" uid="uid://bqbmr8v344l50" path="res://Assets/Materials/trailMat.tres" id="1_my7ij"]
+
+[sub_resource type="Curve" id="Curve_my7ij"]
+_data = [Vector2(0, 0.871901), 0.0, 0.256198, 0, 1, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.772727), -0.454546, 0.0, 1, 0]
+point_count = 3
+
+[resource]
+material = ExtResource("1_my7ij")
+radius = 0.295
+radial_steps = 4
+sections = 3
+section_length = 0.89
+section_rings = 4
+cap_top = false
+cap_bottom = false
+curve = SubResource("Curve_my7ij")

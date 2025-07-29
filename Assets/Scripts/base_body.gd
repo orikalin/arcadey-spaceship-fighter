@@ -5,20 +5,22 @@ var currentSpeed:float
 var EngineLights
 var Particles
 var EngineCones
+var OmniLights
 @onready var hoveringState = $"../shipStateMachine/Hovering"
 @onready var flyingState = $"../shipStateMachine/Flying"
 @onready var shipStateMachine = $"../ShipStateMachine"
 @export var ParticleSizeCurve:Curve
 @export var EngineLightCurve:Curve
 @export var EngineConeCurve:Curve
-@export var EngineLightIntensity:float = 2.5
-@export var EngineLightEnergy:float = 3.5
+@export var EngineLightIntensity:float = 1.5
+@export var EngineLightEnergy:float = 4.5
 @export var EngineConeMin:float = 0.1
 @export var EngineConeMax:float = 0.9
 
 func _ready():
 	Player = get_parent()
 	EngineLights = $EngineLights.get_children()
+	OmniLights = $OmniLights.get_children()
 	Particles = $Particles.get_children()
 	EngineCones = $EngineCones.get_children()
 	
@@ -31,8 +33,10 @@ func _process(_delta:float):
 		if EngineLights.size() > 0:
 			var _EngineCurveSample:float = EngineLightCurve.sample(EnginePower)
 			for light:SpotLight3D in EngineLights:
-				light.spot_attenuation = lerp(0.5, EngineLightIntensity, _EngineCurveSample)
+				light.spot_attenuation = lerp(1.0, EngineLightIntensity, _EngineCurveSample)
 				light.light_energy = lerp(1.0, EngineLightEnergy, _EngineCurveSample) 
+			for omni_light:OmniLight3D in OmniLights:
+				omni_light.light_energy = lerp(0.2, 2.0, _EngineCurveSample) 
 		if Particles.size() > 0:
 			var _ParticleCurveSample:float = ParticleSizeCurve.sample(EnginePower)
 			for particles:CPUParticles3D in Particles:

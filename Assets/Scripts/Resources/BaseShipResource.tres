@@ -1,23 +1,25 @@
 [gd_resource type="Resource" script_class="ShipResource" load_steps=2 format=3 uid="uid://y2vkkuwjl833"]
 
-[ext_resource type="Script" uid="uid://cjgf4ulxx3vnm" path="res://Assets/Scripts/ShipResource.gd" id="1_l5f2q"]
+[ext_resource type="Script" uid="uid://cjgf4ulxx3vnm" path="res://Assets/Scripts/Resources/ShipResource.gd" id="1_l5f2q"]
 
 [resource]
 script = ExtResource("1_l5f2q")
 hovering_min_speed = 5.0
-hovering_max_speed = 75.0
+hovering_max_speed = 90.0
 hovering_turn_speed = 0.9
 hovering_pitch_speed = 0.75
 hovering_level_speed = 3.0
-hovering_throttle_delta = 50.0
-hovering_acceleration = 18.0
+hovering_throttle_delta = 80.0
+hovering_acceleration = 28.0
 hovering_rollMultiplier = 0.2
-fallingPitchMax = -0.5
-fallingPitchBuildup = 0.2
-fallingPitchBase = 0.1
+fallingPitchMax = -0.75
+fallingPitchSpeedMax = 0.6
+fallingPitchBuildup = 0.25
+fallingPitchBase = 0.35
+slerp_speed = 10.0
 flying_min_speed = 5.0
 flying_max_speed = 50.0
-flying_turn_speed = 0.9
+flying_turn_speed = 1.2
 flying_pitch_speed = 0.75
 flying_level_speed = 3.0
 flying_throttle_delta = 50.0

@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://mqxt5av23os8"]
 
-[ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://TestScene/dampingCurve.tres" id="1_q07wf"]
-[ext_resource type="TubeTrailMesh" uid="uid://cwrrdycqgiivo" path="res://TestScene/TrailMesh.tres" id="2_ndx6u"]
+[ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://Assets/Curves/dampingCurve.tres" id="1_q07wf"]
+[ext_resource type="TubeTrailMesh" uid="uid://cwrrdycqgiivo" path="res://Assets/Materials/TrailMesh.tres" id="2_ndx6u"]
 
 [sub_resource type="Curve" id="Curve_vifiu"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
