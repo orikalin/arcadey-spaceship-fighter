@@ -10,11 +10,6 @@ var correctingRoll:bool = false
 func _physics_process(delta: float) -> void:	
 	if Input.is_action_just_pressed("freeCam"):
 		freeCam.emit()
-	if Input.is_action_just_pressed("ui_cancel"):
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	if Input.is_action_just_pressed("headlights"):
 		var headlight = $"../ShipContainer/HeadLight"
 		headlight.visible = not headlight.visible
@@ -47,5 +42,3 @@ func check_rotation():
 
 	if angle_to_down_degrees < upside_down_threshold and not Input.is_action_pressed("pitch_down") and not Input.is_action_pressed("pitch_up"):
 		correctingRoll = true
-
-
