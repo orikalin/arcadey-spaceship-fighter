@@ -21,7 +21,9 @@ class_name ShipResource extends Resource
 @export var fallingPitchSpeedMax:float = 0.75
 @export var fallingPitchBuildup:float = 0.2
 @export var fallingPitchBase:float = 0.1
-@export var slerp_speed:float = 1
+@export var slerp_speed:float = 10.0
+@export var drift_turn_speed:float = 1.0
+@export var drift_proxy_turn_speed:float = 0.25
 
 @export_category("Flying Stats")
 # Can't fly below this speed
