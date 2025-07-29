@@ -28,7 +28,7 @@ func _process(_delta:float):
 	
 	if shipStateMachine != null:
 		currentSpeed = shipStateMachine.currentState.forward_speed
-		var EnginePower:float = Helpers.Map(currentSpeed, 0, shipStateMachine.ShipStats.hovering_max_speed, 0, 1)
+		var EnginePower:float = Helpers.Map(currentSpeed, 0, shipStateMachine.ship_stats.hovering_max_speed, 0, 1)
 		
 		if EngineLights.size() > 0:
 			var _EngineCurveSample:float = EngineLightCurve.sample(EnginePower)

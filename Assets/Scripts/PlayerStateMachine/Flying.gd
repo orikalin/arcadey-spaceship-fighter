@@ -18,7 +18,7 @@ var correctingRoll:bool = false
 
 func enter(oldState:String, flags:Dictionary):
 	if flags.has("target_speed"):
-		target_speed = clamp(flags.get("target_speed"), 0, shipResource.ShipStats.flying_max_speed)
+		target_speed = clamp(flags.get("target_speed"), 0, shipResource.ship_stats.flying_max_speed)
 		Player.velocity = flags.get("Player.velocity")
 		forward_speed = flags.get("forward_speed")
 
@@ -26,15 +26,15 @@ func physicsUpdate(delta:float):
 	get_input(delta)
 
 	# Rotate the transform based on the input values
-	Player.transform.basis = Player.transform.basis.rotated(Player.transform.basis.x, pitch_input * shipResource.ShipStats.flying_pitch_speed * delta)
-	Player.transform.basis = Player.transform.basis.rotated(Vector3.UP, turn_input * shipResource.ShipStats.flying_turn_speed * delta)
+	Player.transform.basis = Player.transform.basis.rotated(Player.transform.basis.x, pitch_input * shipResource.ship_stats.flying_pitch_speed * delta)
+	Player.transform.basis = Player.transform.basis.rotated(Vector3.UP, turn_input * shipResource.ship_stats.flying_turn_speed * delta)
 
 	# Roll the body based on the turn input
-	ShipContainer.rotation.z = lerp(ShipContainer.rotation.z, turn_input*0.8, shipResource.ShipStats.flying_level_speed * delta)
+	ShipContainer.rotation.z = lerp(ShipContainer.rotation.z, turn_input*0.8, shipResource.ship_stats.flying_level_speed * delta)
 
 	# Accelerate/decelerate
-	if forward_speed < shipResource.ShipStats.flying_max_speed:
-		forward_speed = lerp(forward_speed, target_speed, shipResource.ShipStats.flying_acceleration * delta)
+	if forward_speed < shipResource.ship_stats.flying_max_speed:
+		forward_speed = lerp(forward_speed, target_speed, shipResource.ship_stats.flying_acceleration * delta)
 	else:
 		forward_speed = lerp(forward_speed, target_speed, 4 * delta)
 
@@ -54,10 +54,10 @@ func get_input(delta):
 		finished.emit("Hovering", flags)
 	# Throttle input
 	if Input.is_action_pressed("throttle_up"):
-		target_speed = min(forward_speed + shipResource.ShipStats.flying_throttle_delta * delta, shipResource.ShipStats.flying_max_speed)
+		target_speed = min(forward_speed + shipResource.ship_stats.flying_throttle_delta * delta, shipResource.ship_stats.flying_max_speed)
 	if Input.is_action_pressed("throttle_down"):
-		var limit = 0 if grounded else shipResource.ShipStats.flying_min_speed
-		target_speed = max(forward_speed - shipResource.ShipStats.flying_throttle_delta * delta, limit)
+		var limit = 0 if grounded else shipResource.ship_stats.flying_min_speed
+		target_speed = max(forward_speed - shipResource.ship_stats.flying_throttle_delta * delta, limit)
 	# Turn (roll/yaw) input
 	turn_input = 0.0
 	if forward_speed > 0.5:
@@ -65,6 +65,6 @@ func get_input(delta):
 		turn_input += Input.get_action_strength("roll_left")
 	# Pitch (climb/dive) input
 	pitch_input = 0.0
-	if forward_speed >= shipResource.ShipStats.flying_min_speed:
+	if forward_speed >= shipResource.ship_stats.flying_min_speed:
 		pitch_input -= Input.get_action_strength("pitch_down")
 		pitch_input += Input.get_action_strength("pitch_up")
