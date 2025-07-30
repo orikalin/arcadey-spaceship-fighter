@@ -93,6 +93,9 @@ properties/6/replication_mode = 1
 properties/7/path = NodePath(".:light_attenuation")
 properties/7/spawn = true
 properties/7/replication_mode = 1
+properties/8/path = NodePath(".:ship_tilt")
+properties/8/spawn = true
+properties/8/replication_mode = 1
 
 [node name="PlayerContainer" type="Node"]
 script = ExtResource("1_noymn")
@@ -151,6 +154,7 @@ physics_interpolation_mode = 1
 transform = Transform3D(1, -1.38767e-05, 7.97361e-05, 3.42131e-05, 0.965314, -0.261093, -7.33584e-05, 0.261093, 0.965315, 0.000976563, -0.555679, 3.04504)
 
 [node name="ShipContainer" type="MeshInstance3D" parent="Player"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 1.6204e-08, 0, 1, 0, -1.6204e-08, 0, 1, 0, 0, 0)
 mesh = ExtResource("3_wdjqe")
 surface_material_override/0 = ExtResource("4_s3mmj")

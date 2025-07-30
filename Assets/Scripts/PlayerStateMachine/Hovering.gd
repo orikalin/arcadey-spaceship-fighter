@@ -38,7 +38,6 @@ func physicsUpdate(delta:float):
 	# Roll the body based on the turn input
 	ShipContainer.rotation.z = lerp(ShipContainer.rotation.z, turn_input*ship_resource.ship_stats.hovering_rollMultiplier, ship_resource.ship_stats.hovering_level_speed * delta)
 
-
 	## Accelerate/decelerate
 	forward_speed = lerp(forward_speed, target_speed, ship_resource.ship_stats.hovering_acceleration * delta)
 

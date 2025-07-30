@@ -1,6 +1,7 @@
 extends StateMachine
 
 @onready var Player:CharacterBody3D = %Player
+@onready var ship_container:MeshInstance3D = %ShipContainer
 signal freeCam()
 var correctingRoll:bool = false
 @export var rollCorrectionRate:float = 4.0
@@ -12,6 +13,7 @@ func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		# If we're not in control of this pawn, let us follow the owner
 		Player.transform = owner.playerTransform
+		ship_container.rotation.z = owner.ship_tilt
 		return
 	
 	if Input.is_action_just_pressed("freeCam"):
@@ -40,6 +42,7 @@ func _physics_process(delta: float) -> void:
 	super(delta)	
 	
 	owner.playerTransform = Player.transform
+	owner.ship_tilt = ship_container.rotation.z
 
 func check_rotation():
 	var node_up_vector = Player.basis.y
