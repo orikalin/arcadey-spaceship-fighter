@@ -5,16 +5,19 @@ class_name PlayerContainer extends Node
 @onready var mock_camera:Camera3D = %MockCamera
 @onready var lookat_target:Node3D = %LookAtTarget
 
+#store values for synchronization with other players
 @export var playerTransform:Transform3D
 @export var engine_cone_top_rad:float
 @export var engine_cone_height:float
 @export var trails_scale_min:float
 @export var trails_scale_max:float
+
 var spawn_transform:Transform3D
 
 
-func _ready() -> void:
+func _ready() -> void:	
 	if is_multiplayer_authority():
+		# if we own this pawn, we update our transform to match the spawn transform
 		player.transform = spawn_transform
 
 func get_player() -> CharacterBody3D:
