@@ -305,12 +305,12 @@ falling_damping_curve = ExtResource("19_xar0q")
 
 [node name="AscendCharge" type="Node" parent="Player/ShipStateMachine"]
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="PawnSync" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_noymn")
 
 [node name="MultiplayerData" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("22_noymn")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="MultiplayerData"]
+[node name="ServerToClientSync" type="MultiplayerSynchronizer" parent="MultiplayerData"]
 replication_config = SubResource("SceneReplicationConfig_6g8w3")

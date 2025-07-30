@@ -59,24 +59,10 @@ func on_player_list_changed():
 		connected_player.queue_free()
 		
 	request_player_spawn(1)
-		
-	#var LCL_player:PlayerContainer = player_container.instantiate()
-	#LCL_player.get_node("%MultiplayerData").spawn_transform = spawn_point.transform
-	#LCL_player.get_node("%MultiplayerData").network_id = multiplayer.get_unique_id()
-	#LCL_player.name = "Player" + str(multiplayer.get_unique_id())
-	#active_players.add_child(LCL_player, true)
-
-	#attach_camera_to_player(LCL_player)
+	
 	var players:Array = ConnectionSystem.players.keys()
 	for player_id in players:
 		request_player_spawn(player_id)
-		#var player = player_container.instantiate()
-		#player.get_node("%MultiplayerData").spawn_transform = spawn_point.transform
-		#player.get_node("%MultiplayerData").network_id = player_id
-		#player.name = "Player" + str(player_id)
-		#player.set_multiplayer_authority(player_id, true)
-		#player.get_node("%MultiplayerData").set_multiplayer_authority(1)
-		#active_players.add_child(player, true)
 
 
 func attach_camera_to_player(player:PlayerContainer) -> void:
