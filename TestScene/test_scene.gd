@@ -41,11 +41,9 @@ func spawn_networked_player(player_id: int) -> Node:
 	despawn_local_player()
 	
 	var player = player_container.instantiate()
-	player.get_node("%MultiplayerData").spawn_transform = spawn_point.transform
-	player.get_node("%MultiplayerData").network_id = player_id
+	player.spawn_transform = spawn_point.transform
 	player.name = "Player" + str(player_id)
 	player.set_multiplayer_authority(player_id, true)
-	player.get_node("%MultiplayerData").set_multiplayer_authority(1)
 	
 	if player_id == multiplayer.get_unique_id():
 		attach_camera_to_player(player)
@@ -85,7 +83,7 @@ func attach_camera_to_player(player:PlayerContainer) -> void:
 
 func spawn_local_player():
 	var player:PlayerContainer = player_container.instantiate()
-	player.get_node("%MultiplayerData").spawn_transform = spawn_point.transform
+	player.spawn_transform = spawn_point.transform
 	local_player.add_child(player, true)
 	attach_camera_to_player(player)
 	

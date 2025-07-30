@@ -6,10 +6,11 @@ class_name PlayerContainer extends Node
 @onready var lookat_target:Node3D = %LookAtTarget
 
 @export var playerTransform:Transform3D
+var spawn_transform:Transform3D
 
 func _ready() -> void:
 	if is_multiplayer_authority():
-		player.transform = %MultiplayerData.spawn_transform
+		player.transform = spawn_transform
 
 func get_player() -> CharacterBody3D:
 	return player
