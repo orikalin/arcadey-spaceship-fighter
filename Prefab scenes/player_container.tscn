@@ -122,6 +122,7 @@ transform = Transform3D(0.62, 0, 0, 0, -2.71011e-08, -0.62, 0, 0.62, -2.71011e-0
 shape = SubResource("SeparationRayShape3D_cgw0f")
 
 [node name="CameraManager" type="Node3D" parent="Player"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, -1, 0)
 script = ExtResource("1_6g8w3")
 

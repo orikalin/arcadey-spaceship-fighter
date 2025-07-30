@@ -10,6 +10,7 @@ extends Node3D
 @onready var NetworkPopup := %NetworkPopup
 @onready var PlayerSpawner := %MultiplayerSpawner
 
+
 func _physics_process(delta: float) -> void:	
 	if Input.is_action_just_pressed("ui_cancel"):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -19,9 +20,9 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("network"):
 		NetworkPopup.visible = not NetworkPopup.is_visible()
 
+
 func _ready():
 	PlayerSpawner.spawned.connect(on_player_spawned)
-	assert(PlayerSpawner != null)
 	spawn_local_player()
 	ConnectionSystem.connection_succeeded.connect(despawn_local_player)
 	
@@ -31,6 +32,7 @@ func _ready():
 # spawn the player
 # connect the phantom cameras
 # listen for new players
+
 
 func on_player_list_changed():	
 	for connected_player in active_players.get_children():
@@ -50,15 +52,18 @@ func on_player_list_changed():
 		player.network_id = player_id
 		active_players.add_child(player, true)
 
+
 func attach_camera_to_player(player:PlayerContainer) -> void:
 	if not player.is_node_ready():
 		await player.ready	
-	base_camera.set_follow_target(player.get_mock_camera())
-	assert(base_camera.follow_target != null, "base camera follow target is null") 
+	var packed_camera_manager:CameraManager = player.get_node("%CameraManager")
+	packed_camera_manager.phantom_free_cam = %FreeCam
+	packed_camera_manager.phantom_base_cam = %BaseFollowCam
 	var look_targets:Array[Node3D] = [
 		player.get_player(),
 		player.get_lookat_target()
 	]
+	base_camera.set_follow_target(player.get_mock_camera())
 	base_camera.look_at_targets = look_targets
 	base_camera.up_target = player.get_player()
 	free_cam.follow_target = player.get_mock_camera()
