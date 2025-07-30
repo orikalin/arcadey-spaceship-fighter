@@ -6,7 +6,12 @@ class_name PlayerContainer extends Node
 @onready var lookat_target:Node3D = %LookAtTarget
 
 @export var playerTransform:Transform3D
+@export var engine_cone_top_rad:float
+@export var engine_cone_height:float
+@export var trails_scale_min:float
+@export var trails_scale_max:float
 var spawn_transform:Transform3D
+
 
 func _ready() -> void:
 	if is_multiplayer_authority():
