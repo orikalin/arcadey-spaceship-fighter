@@ -18,15 +18,27 @@ func _physics_process(delta: float) -> void:
 
 func _ready():
 	spawn_local_player()
+	ConnectionSystem.player_list_changed.connect(on_player_list_changed)
 
 # spawn the player
 # connect the phantom cameras
 # listen for new players
 
+func on_player_list_changed():
+	if not multiplayer.is_server():
+		return
+	var players:Array = ConnectionSystem.players.keys()
+	for player_id in players:
+		var player = player_container.instantiate()
+		player.spawn_transform = spawn_point.transform
+		active_players.add_child(player)
+
+
+
 func spawn_local_player():
 	var player = player_container.instantiate()
 	player.spawn_transform = spawn_point.transform
-	active_players.add_child(player)
+	local_player.add_child(player)
 	if not player.is_node_ready():
 		await player.ready	
 	base_camera.set_follow_target(player.get_mock_camera())

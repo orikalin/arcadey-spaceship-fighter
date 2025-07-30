@@ -6,7 +6,6 @@ extends Node
 @onready var lookat_target:Node3D = %LookAtTarget
 
 func _ready() -> void:
-	print_debug("are we ready?")
 	player.transform = spawn_transform
 
 
