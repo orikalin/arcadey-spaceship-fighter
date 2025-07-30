@@ -8,17 +8,17 @@ var correctingRoll:bool = false
 @export var ship_stats:ShipResource
 
 func _physics_process(delta: float) -> void:	
-	if Input.is_action_just_pressed("freeCam"):
-		freeCam.emit()
-	if Input.is_action_just_pressed("headlights"):
-		var headlight = $"../ShipContainer/HeadLight"
-		headlight.visible = not headlight.visible
 		
 	if not is_multiplayer_authority():
 		# If we're not in control of this pawn, let us follow the owner
 		Player.transform = owner.playerTransform
 		return
 	
+	if Input.is_action_just_pressed("freeCam"):
+		freeCam.emit()
+	if Input.is_action_just_pressed("headlights"):
+		var headlight = $"../ShipContainer/HeadLight"
+		headlight.visible = not headlight.visible
 	if not correctingRoll:
 		check_rotation()
 	else:
