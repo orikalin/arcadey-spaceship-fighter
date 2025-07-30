@@ -89,7 +89,7 @@ func align_to_floor_normal(delta, instant:bool):
 		proxy.transform.basis = proxy.transform.basis.rotated(proxy.transform.basis.x, target_pitch)
 
 func get_input(delta):
-	if multiplayer.multiplayer_peer != null and not owner.network_id ==  multiplayer.get_unique_id():
+	if multiplayer.multiplayer_peer != null and not is_multiplayer_authority():
 		return
 	# Throttle input
 	# if Input.is_action_pressed("throttle_up"):

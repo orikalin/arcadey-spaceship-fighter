@@ -87,7 +87,7 @@ func align_with_y(xform, new_y):
 	return xform
 
 func get_input(delta):
-	if multiplayer.multiplayer_peer != null and not owner.network_id ==  multiplayer.get_unique_id():
+	if multiplayer.multiplayer_peer != null and not is_multiplayer_authority():
 		return
 	if Input.is_action_just_pressed("swapMode"):
 		var flags:Dictionary = {

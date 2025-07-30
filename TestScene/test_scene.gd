@@ -49,7 +49,9 @@ func on_player_list_changed():
 		var player = player_container.instantiate()
 		player.spawn_transform = spawn_point.transform
 		player.network_id = player_id
+		player.set_multiplayer_authority(player_id, true)
 		active_players.add_child(player)
+	possess_puppet.rpc()
 
 
 func attach_camera_to_player(player:PlayerContainer) -> void:
@@ -68,9 +70,21 @@ func attach_camera_to_player(player:PlayerContainer) -> void:
 	free_cam.up_target = player.get_player()
 
 
-
 func spawn_local_player():
 	var player:PlayerContainer = player_container.instantiate()
 	player.spawn_transform = spawn_point.transform
 	local_player.add_child(player)
 	attach_camera_to_player(player)
+
+
+@rpc("reliable")
+func possess_puppet():
+	# Remove the previous local player
+	if local_player.get_child_count() > 0:
+		var prev_local = local_player.get_child(0)
+		local_player.remove_child(prev_local)
+		prev_local.queue_free()
+	for _player in active_players.get_children():
+		if _player.network_id == multiplayer.get_unique_id():
+			attach_camera_to_player(_player)
+	

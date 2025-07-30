@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=36 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/CameraManager.gd" id="1_6g8w3"]
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Prefab scenes/player.gd" id="1_noymn"]
@@ -69,6 +69,8 @@ _data = [Vector2(0.0819672, 0.115938), 0.0, 0.510407, 0, 0, Vector2(1.87705, 1),
 point_count = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6g8w3"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_noymn"]
 
 [node name="PlayerContainer" type="Node"]
 script = ExtResource("1_noymn")
@@ -294,3 +296,6 @@ falling_damping_curve = ExtResource("19_xar0q")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Player"]
 replication_config = SubResource("SceneReplicationConfig_6g8w3")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_noymn")
