@@ -14,8 +14,6 @@ func get_player() -> CharacterBody3D:
 	return player
 
 
-
-
 func get_mock_camera() -> Camera3D:
 	return mock_camera
 

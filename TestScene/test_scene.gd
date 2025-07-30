@@ -2,6 +2,7 @@ extends Node3D
 @export var player_container:PackedScene
 @onready var spawn_point := %SpawnPoint
 @onready var active_players := %ActivePlayers
+@onready var local_player := %LocalPlayer
 @onready var base_camera := %BaseFollowCam
 @onready var free_cam := %FreeCam
 @onready var main_camera = %MainCamera
@@ -16,13 +17,13 @@ func _physics_process(delta: float) -> void:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _ready():
-	spawn_player()
+	spawn_local_player()
 
 # spawn the player
 # connect the phantom cameras
 # listen for new players
 
-func spawn_player():
+func spawn_local_player():
 	var player = player_container.instantiate()
 	player.spawn_transform = spawn_point.transform
 	active_players.add_child(player)
