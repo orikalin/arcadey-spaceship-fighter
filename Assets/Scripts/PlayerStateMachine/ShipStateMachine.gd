@@ -13,6 +13,11 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("headlights"):
 		var headlight = $"../ShipContainer/HeadLight"
 		headlight.visible = not headlight.visible
+		
+	if not is_multiplayer_authority():
+		# If we're not in control of this pawn, let us follow the owner
+		Player.transform = owner.playerTransform
+		return
 	
 	if not correctingRoll:
 		check_rotation()
@@ -32,7 +37,9 @@ func _physics_process(delta: float) -> void:
 			Player.basis = targetBasis
 			correctingRoll = false
 
-	super(delta)
+	super(delta)	
+	
+	owner.playerTransform = Player.transform
 
 func check_rotation():
 	var node_up_vector = Player.basis.y

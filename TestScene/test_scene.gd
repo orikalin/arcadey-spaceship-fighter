@@ -8,7 +8,7 @@ extends Node3D
 @onready var free_cam := %FreeCam
 @onready var main_camera = %MainCamera
 @onready var NetworkPopup := %NetworkPopup
-@onready var PlayerSpawner := %MultiplayerSpawner
+@onready var PlayerSpawner := %PlayerSpawner
 
 func _physics_process(delta: float) -> void:	
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -20,8 +20,7 @@ func _physics_process(delta: float) -> void:
 		NetworkPopup.visible = not NetworkPopup.is_visible()
 
 func _ready():
-	PlayerSpawner.spawned.connect(on_player_spawned)
-	assert(PlayerSpawner != null)
+	PlayerSpawner.spawn_function = spawn_networked_player
 	spawn_local_player()
 	ConnectionSystem.connection_succeeded.connect(despawn_local_player)
 	
@@ -32,23 +31,50 @@ func _ready():
 # connect the phantom cameras
 # listen for new players
 
+func request_player_spawn(player_id: int) -> void:
+	PlayerSpawner.spawn(player_id)
+
+func spawn_networked_player(player_id: int) -> Node:
+	print_debug("client spawn_networked_player")
+	despawn_local_player()
+	
+	var player = player_container.instantiate()
+	player.get_node("%MultiplayerData").spawn_transform = spawn_point.transform
+	player.get_node("%MultiplayerData").network_id = player_id
+	player.name = "Player" + str(player_id)
+	player.set_multiplayer_authority(player_id, true)
+	player.get_node("%MultiplayerData").set_multiplayer_authority(1)
+	
+	if player_id == multiplayer.get_unique_id():
+		attach_camera_to_player(player)
+		
+	return player
+	
+
 func on_player_list_changed():	
 	for connected_player in active_players.get_children():
 		active_players.remove_child(connected_player)
 		connected_player.queue_free()
+		
+	request_player_spawn(1)
+		
+	#var LCL_player:PlayerContainer = player_container.instantiate()
+	#LCL_player.get_node("%MultiplayerData").spawn_transform = spawn_point.transform
+	#LCL_player.get_node("%MultiplayerData").network_id = multiplayer.get_unique_id()
+	#LCL_player.name = "Player" + str(multiplayer.get_unique_id())
+	#active_players.add_child(LCL_player, true)
 
-	var LCL_player:PlayerContainer = player_container.instantiate()
-	LCL_player.spawn_transform = spawn_point.transform
-	LCL_player.network_id = multiplayer.get_unique_id()
-	active_players.add_child(LCL_player, true)
-
-	attach_camera_to_player(LCL_player)
+	#attach_camera_to_player(LCL_player)
 	var players:Array = ConnectionSystem.players.keys()
 	for player_id in players:
-		var player = player_container.instantiate()
-		player.spawn_transform = spawn_point.transform
-		player.network_id = player_id
-		active_players.add_child(player, true)
+		request_player_spawn(player_id)
+		#var player = player_container.instantiate()
+		#player.get_node("%MultiplayerData").spawn_transform = spawn_point.transform
+		#player.get_node("%MultiplayerData").network_id = player_id
+		#player.name = "Player" + str(player_id)
+		#player.set_multiplayer_authority(player_id, true)
+		#player.get_node("%MultiplayerData").set_multiplayer_authority(1)
+		#active_players.add_child(player, true)
 
 func attach_camera_to_player(player:PlayerContainer) -> void:
 	if not player.is_node_ready():
@@ -68,7 +94,7 @@ func attach_camera_to_player(player:PlayerContainer) -> void:
 
 func spawn_local_player():
 	var player:PlayerContainer = player_container.instantiate()
-	player.spawn_transform = spawn_point.transform
+	player.get_node("%MultiplayerData").spawn_transform = spawn_point.transform
 	local_player.add_child(player, true)
 	attach_camera_to_player(player)
 	
@@ -81,12 +107,4 @@ func despawn_local_player():
 		local_player.remove_child(prev_local)
 		prev_local.queue_free()
 
-
-func on_player_spawned():
-	print_debug("client on_player_spawned")
-	despawn_local_player()
-	for _player in active_players.get_children():
-		if _player.network_id == multiplayer.get_unique_id():
-			attach_camera_to_player(_player)
-			break
 	

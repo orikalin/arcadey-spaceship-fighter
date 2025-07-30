@@ -5,15 +5,11 @@ class_name PlayerContainer extends Node
 @onready var mock_camera:Camera3D = %MockCamera
 @onready var lookat_target:Node3D = %LookAtTarget
 
-@export var spawn_transform:Transform3D
-@export var network_id:int
+@export var playerTransform:Transform3D
 
 func _ready() -> void:
-	player.transform = spawn_transform
-	if multiplayer.multiplayer_peer != null:
-		# We should be connected
-		assert(network_id != null)
-
+	if is_multiplayer_authority():
+		player.transform = %MultiplayerData.spawn_transform
 
 func get_player() -> CharacterBody3D:
 	return player

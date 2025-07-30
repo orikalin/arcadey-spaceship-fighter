@@ -89,8 +89,6 @@ func align_to_floor_normal(delta, instant:bool):
 		proxy.transform.basis = proxy.transform.basis.rotated(proxy.transform.basis.x, target_pitch)
 
 func get_input(delta):
-	if multiplayer.multiplayer_peer != null and not is_multiplayer_authority():
-		return
 	# Throttle input
 	# if Input.is_action_pressed("throttle_up"):
 	# 	target_speed = min(forward_speed + ship_resource.ship_stats.hovering_throttle_delta * delta, ship_resource.ship_stats.hovering_max_speed)

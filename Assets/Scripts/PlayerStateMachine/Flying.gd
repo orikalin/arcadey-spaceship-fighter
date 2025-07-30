@@ -45,8 +45,6 @@ func physicsUpdate(delta:float):
 
 
 func get_input(delta):
-	if multiplayer.multiplayer_peer != null and not is_multiplayer_authority():
-		return
 	if Input.is_action_just_pressed("swapMode"):
 		var flags:Dictionary = {
 		"target_speed":target_speed,
