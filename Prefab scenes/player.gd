@@ -5,7 +5,7 @@ class_name PlayerContainer extends Node
 @onready var mock_camera:Camera3D = %MockCamera
 @onready var lookat_target:Node3D = %LookAtTarget
 
-#store values for synchronization with other players
+# store values for synchronization with other players
 @export var playerTransform:Transform3D
 @export var engine_cone_top_rad:float
 @export var engine_cone_height:float

@@ -11,9 +11,15 @@ var correctingRoll:bool = false
 func _physics_process(delta: float) -> void:	
 		
 	if not is_multiplayer_authority():
-		# If we're not in control of this pawn, let us follow the owner
+		# If we're not in control of this pawn, we should just copy values
+		# that have been replicated from the authority
 		Player.transform = owner.playerTransform
 		ship_container.rotation.z = owner.ship_tilt
+		
+		# We halt execution so that the state machine doesn't run at all
+		# This may not be desireable long term, but it's a useful brute
+		# force attempt to prevent players that do not own this pawn from
+		# modifying values on this pawn
 		return
 	
 	if Input.is_action_just_pressed("freeCam"):
@@ -41,6 +47,8 @@ func _physics_process(delta: float) -> void:
 
 	super(delta)	
 	
+	# After running the state machine, we store some values from it so that
+	# information about this pawn taht we own can be replicated to other players
 	owner.playerTransform = Player.transform
 	owner.ship_tilt = ship_container.rotation.z
 
