@@ -48,3 +48,7 @@ func _on_join_game_pressed() -> void:
 
 func _on_visibility_changed() -> void:
 	pass # Replace with function body.
+
+
+func _on_disconnect_button_pressed() -> void:
+	ConnectionSystem.shutdown_connection()

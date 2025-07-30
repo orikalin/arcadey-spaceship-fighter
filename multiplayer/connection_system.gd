@@ -69,19 +69,19 @@ func join_server(ip_address: String) -> void:
 	connection_succeeded.emit()
 
 	
-func shutdown_server() -> void:
+func shutdown_connection() -> void:
 	connection_state = States.DISCONNECTING
-	connection_message.emit("Shutting down...")
 	# TODO: What else do I need to do to shut down the server?
 	multiplayer.set_multiplayer_peer(null) # Remove peer
 	peer = null
 	connection_state = States.IDLE
+	connection_message.emit("Multiplayer Deactivated")
 	disconnected.emit()
 	
 	
 func _connection_failure() -> void:
 	multiplayer.set_multiplayer_peer(null)
-	shutdown_server()
+	shutdown_connection()
 	
 
 func _player_connected(id: int) -> void:
