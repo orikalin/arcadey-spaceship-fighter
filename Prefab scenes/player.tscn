@@ -1,0 +1,283 @@
+[gd_scene load_steps=33 format=3 uid="uid://caklm3bu7puk1"]
+
+[ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/CameraManager.gd" id="1_wn30j"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="2_fhmuh"]
+[ext_resource type="ArrayMesh" uid="uid://c27o2arf8nixo" path="res://Assets/Meshes/Prototype_Ship.obj" id="3_qg8i4"]
+[ext_resource type="Material" uid="uid://c8dtnmdyqw1as" path="res://Assets/Materials/Ships/Body.tres" id="4_4w6yr"]
+[ext_resource type="Material" uid="uid://dtu5xtqw54qjc" path="res://Assets/Materials/Ships/Wings.tres" id="5_oqeib"]
+[ext_resource type="Material" uid="uid://xufxqc2vhosk" path="res://Assets/Materials/Ships/Engines.tres" id="6_vlifn"]
+[ext_resource type="Material" uid="uid://cvy2wx33hf6xg" path="res://Assets/Materials/Ships/Energy.tres" id="7_y01b5"]
+[ext_resource type="Script" uid="uid://dufmvqfvv8eiu" path="res://Assets/Scripts/base_body.gd" id="8_3nvmb"]
+[ext_resource type="Curve" uid="uid://cnnxrc2knraje" path="res://Assets/Curves/ParticleSizeCurve.tres" id="9_3g8l3"]
+[ext_resource type="Curve" uid="uid://bqxjimb8xlki1" path="res://Assets/Curves/EngineLightCurve.tres" id="10_264mw"]
+[ext_resource type="CylinderMesh" uid="uid://cx3jhed4ffdac" path="res://Assets/Materials/EngineConeMesh.tres" id="11_q3o61"]
+[ext_resource type="TubeTrailMesh" uid="uid://cwrrdycqgiivo" path="res://Assets/Materials/TrailMesh.tres" id="12_d2i5r"]
+[ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://Assets/Curves/dampingCurve.tres" id="13_urlky"]
+[ext_resource type="Curve" uid="uid://b4kq1ut5oqcmq" path="res://Assets/Curves/EngineTrailScaleCurve.tres" id="14_nmlhj"]
+[ext_resource type="Script" uid="uid://w2iurlb7divh" path="res://Assets/Scripts/PlayerStateMachine/ShipStateMachine.gd" id="15_4ktk4"]
+[ext_resource type="Script" uid="uid://e07chentfdx1" path="res://Assets/Scripts/PlayerStateMachine/Flying.gd" id="17_lwwj1"]
+[ext_resource type="Script" uid="uid://nalshrhltoq6" path="res://Assets/Scripts/PlayerStateMachine/Hovering.gd" id="18_5y5te"]
+[ext_resource type="Script" uid="uid://dl7b0pk1wtb5i" path="res://Assets/Scripts/PlayerStateMachine/Air_Boost.gd" id="19_20pux"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_0v85l"]
+height = 1.31981
+radius = 1.91406
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_vifiu"]
+height = 1.45303
+radius = 1.22852
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_cgw0f"]
+length = 2.709
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_smq6u"]
+
+[sub_resource type="Curve" id="Curve_guwfi"]
+_data = [Vector2(0, 0), 0.0, 1.23332, 0, 1, Vector2(0.620401, 0.765156), 1.23332, 2.28507, 1, 0, Vector2(1, 1), 0.116448, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_ilw7v"]
+_limits = [0.0, 200.0, 0.0, 1.0]
+_data = [Vector2(0, 200), 0.0, -64.3081, 0, 1, Vector2(1, 135.692), -64.3081, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_y725d"]
+_data = [Vector2(0, 0), 0.0, 9.45161, 0, 1, Vector2(0.105802, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_ktdep"]
+_data = [Vector2(0, 1), 0.0, -0.691922, 0, 1, Vector2(1, 0.308078), -0.691922, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_0hif8"]
+_data = [Vector2(0, 1), 0.0, -0.691922, 0, 1, Vector2(1, 0.308078), -0.691922, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_751v6"]
+_data = [Vector2(0, 0.658109), 0.0, 3.13044, 0, 1, Vector2(0.109215, 1), 3.13044, 0.0, 1, 0, Vector2(1, 0.312148), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_m8k8q"]
+colors = PackedColorArray(1, 1, 1, 0.509804, 1, 0.813333, 0.68, 0.0196078)
+
+[sub_resource type="Gradient" id="Gradient_2ifmk"]
+offsets = PackedFloat32Array(0, 0.130357, 1)
+colors = PackedColorArray(1, 1, 1, 0.0392157, 1, 1, 1, 0.254902, 1, 1, 1, 0)
+
+[sub_resource type="Curve" id="Curve_paeve"]
+_limits = [0.0, 1.0, 0.0, 2.5]
+_data = [Vector2(0.0819672, 0.115938), 0.0, 0.510407, 0, 0, Vector2(1.87705, 1), 0.0625179, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_t36kp"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.0925704), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Player" type="CharacterBody3D"]
+transform = Transform3D(-0.978537, 0, -0.206067, 0, 1, 0, 0.206067, 0, -0.978537, 0, 0, 0)
+collision_layer = 2
+floor_max_angle = 1.05418
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
+target_position = Vector3(0, -2, 0)
+
+[node name="ShipCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.62, 0, 0, 0, 0.62, 0, 0, 0, 0.62, 0, 0, 0)
+shape = SubResource("CylinderShape3D_0v85l")
+debug_color = Color(0, 0.595, 0.7, 0.858824)
+
+[node name="HoverModeCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, -1.35601e-06, 0, 1, 0, 1.35601e-06, 0, 1, 0, -0.279323, 0)
+shape = SubResource("CylinderShape3D_vifiu")
+disabled = true
+debug_color = Color(1, 0.38793, 0.664427, 0.42)
+
+[node name="GroundedRayCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.62, 0, 0, 0, -2.71011e-08, -0.62, 0, 0.62, -2.71011e-08, 0, 0, 0)
+shape = SubResource("SeparationRayShape3D_cgw0f")
+
+[node name="CameraManager" type="Node3D" parent="."]
+transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, -1, 0)
+script = ExtResource("1_wn30j")
+
+[node name="Arm" type="SpringArm3D" parent="CameraManager"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 2.32515, -0.0321627)
+shape = SubResource("SphereShape3D_smq6u")
+spring_length = 6.0
+margin = 0.5
+
+[node name="MainCamera" type="Camera3D" parent="CameraManager/Arm"]
+physics_interpolation_mode = 1
+transform = Transform3D(1, -7.18795e-05, 0.000518501, 0.00022193, 0.955317, -0.295391, -0.000474527, 0.295379, 0.955352, 0.00769043, -0.706238, 3.08801)
+current = true
+
+[node name="PhantomCameraHost" type="Node" parent="CameraManager/Arm/MainCamera"]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("2_fhmuh")
+
+[node name="MockCamera" type="Camera3D" parent="CameraManager/Arm"]
+unique_name_in_owner = true
+physics_interpolation_mode = 1
+transform = Transform3D(1, -1.38767e-05, 7.97361e-05, 3.42131e-05, 0.965314, -0.261093, -7.33584e-05, 0.261093, 0.965315, 0.000976563, -0.555679, 3.04504)
+
+[node name="ShipContainer" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 1.6204e-08, 0, 1, 0, -1.6204e-08, 0, 1, 0, 0, 0)
+mesh = ExtResource("3_qg8i4")
+surface_material_override/0 = ExtResource("4_4w6yr")
+surface_material_override/1 = ExtResource("5_oqeib")
+surface_material_override/2 = ExtResource("6_vlifn")
+surface_material_override/3 = ExtResource("7_y01b5")
+script = ExtResource("8_3nvmb")
+ParticleSizeCurve = ExtResource("9_3g8l3")
+EngineLightCurve = ExtResource("10_264mw")
+EngineConeCurve = SubResource("Curve_guwfi")
+EngineLightIntensity = 3.625
+EngineLightEnergy = 3.0
+
+[node name="LookAtTarget" type="Node3D" parent="ShipContainer"]
+transform = Transform3D(1, 0, -4.47035e-08, 0, 1, 0, 4.47035e-08, 0, 1, 0, 0, -22.9769)
+
+[node name="HeadLight" type="SpotLight3D" parent="ShipContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.10352e-05, 0, -2.0842)
+visible = false
+light_energy = 3.315
+light_specular = 0.2
+distance_fade_begin = 4.95
+distance_fade_length = 6.1
+spot_range = 91.341
+spot_attenuation = -0.11
+spot_angle = 59.21
+spot_angle_attenuation = 1.1487
+
+[node name="OmniLights" type="Node3D" parent="ShipContainer"]
+transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
+
+[node name="TailLight" type="OmniLight3D" parent="ShipContainer/OmniLights"]
+transform = Transform3D(1, 0, 1.49012e-08, 0, 1, 0, -1.49012e-08, 0, 1, -6.10352e-05, -0.207854, 0.43457)
+light_color = Color(1, 0.802444, 0.66258, 1)
+light_specular = 0.25
+omni_range = 15.851
+omni_attenuation = -0.032
+omni_shadow_mode = 0
+
+[node name="EngineLights" type="Node3D" parent="ShipContainer"]
+transform = Transform3D(0.2299, 0, 0, 0, 0.2299, 0, 0, 0, 0.2299, 0, 0, 0)
+
+[node name="EngineLight_L" type="SpotLight3D" parent="ShipContainer/EngineLights"]
+transform = Transform3D(-4.34972, 0, 4.17233e-07, 0, 4.34972, 0, -3.57628e-07, 0, -4.34972, -3.72844, 0, 3.53577)
+light_color = Color(1, 0.636765, 0.30254, 1)
+spot_range = 8.85
+spot_angle = 61.58
+
+[node name="EngineLight_R" type="SpotLight3D" parent="ShipContainer/EngineLights"]
+transform = Transform3D(-4.34972, 0, 3.57628e-07, 0, 4.34972, 0, -3.57628e-07, 0, -4.34972, 3.728, 0, 3.536)
+light_color = Color(1, 0.636765, 0.30254, 1)
+spot_range = 8.85
+spot_angle = 61.58
+
+[node name="EngineCones" type="Node3D" parent="ShipContainer"]
+transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
+
+[node name="EngineCone_L" type="CPUParticles3D" parent="ShipContainer/EngineCones"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.918339, -1.93777e-08, 1.23789)
+local_coords = true
+mesh = ExtResource("11_q3o61")
+particle_flag_align_y = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 0.1
+linear_accel_min = 0.01
+linear_accel_max = 0.01
+linear_accel_curve = SubResource("Curve_ilw7v")
+scale_amount_curve = SubResource("Curve_y725d")
+split_scale = true
+scale_curve_x = SubResource("Curve_ktdep")
+scale_curve_y = SubResource("Curve_0hif8")
+scale_curve_z = SubResource("Curve_751v6")
+color = Color(1, 0.69912, 0.378778, 1)
+color_ramp = SubResource("Gradient_m8k8q")
+
+[node name="EngineCone_R" type="CPUParticles3D" parent="ShipContainer/EngineCones"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.918, 0, 1.238)
+local_coords = true
+mesh = ExtResource("11_q3o61")
+particle_flag_align_y = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 0.1
+linear_accel_min = 0.01
+linear_accel_max = 0.01
+linear_accel_curve = SubResource("Curve_ilw7v")
+scale_amount_curve = SubResource("Curve_y725d")
+split_scale = true
+scale_curve_x = SubResource("Curve_ktdep")
+scale_curve_y = SubResource("Curve_0hif8")
+scale_curve_z = SubResource("Curve_751v6")
+color = Color(1, 0.69912, 0.378778, 1)
+color_ramp = SubResource("Gradient_m8k8q")
+
+[node name="Particles" type="Node3D" parent="ShipContainer"]
+transform = Transform3D(0.2299, 0, 0, 0, 0.2299, 0, 0, 0, 0.2299, 0, 0, 0)
+
+[node name="EngineTrail_L" type="CPUParticles3D" parent="ShipContainer/Particles"]
+transform = Transform3D(0.707107, 1.49012e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, -1.49012e-08, -1, -4.47035e-08, -3.81274, 0, 6.89844)
+amount = 60
+lifetime = 0.5
+mesh = ExtResource("12_d2i5r")
+gravity = Vector3(0, 0, 0)
+damping_min = 0.1
+damping_max = 0.3
+damping_curve = ExtResource("13_urlky")
+scale_amount_curve = ExtResource("14_nmlhj")
+color_ramp = SubResource("Gradient_2ifmk")
+
+[node name="EngineTrail_R" type="CPUParticles3D" parent="ShipContainer/Particles"]
+transform = Transform3D(0.707107, 1.49012e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, -1.49012e-08, -1, -4.47035e-08, 3.813, 0, 6.898)
+amount = 60
+lifetime = 0.5
+mesh = ExtResource("12_d2i5r")
+gravity = Vector3(0, 0, 0)
+damping_min = 0.1
+damping_max = 0.3
+damping_curve = ExtResource("13_urlky")
+scale_amount_curve = ExtResource("14_nmlhj")
+color_ramp = SubResource("Gradient_2ifmk")
+
+[node name="Laser" type="Node" parent="."]
+
+[node name="Missile" type="Node" parent="."]
+
+[node name="ShipStateMachine" type="Node" parent="." node_paths=PackedStringArray("initialState")]
+script = ExtResource("15_4ktk4")
+easeOut = SubResource("Curve_paeve")
+initialState = NodePath("Hovering")
+
+[node name="Flying" type="Node" parent="ShipStateMachine" node_paths=PackedStringArray("Player", "ShipContainer")]
+script = ExtResource("17_lwwj1")
+Player = NodePath("../..")
+ShipContainer = NodePath("../../ShipContainer")
+
+[node name="Hovering" type="Node" parent="ShipStateMachine" node_paths=PackedStringArray("Player", "ShipContainer", "floor_raycast")]
+script = ExtResource("18_5y5te")
+Player = NodePath("../..")
+ShipContainer = NodePath("../../ShipContainer")
+floor_raycast = NodePath("../../RayCast3D")
+falling_damping_curve = SubResource("Curve_t36kp")
+
+[node name="Air_Drift" type="Node" parent="ShipStateMachine"]
+
+[node name="Air_Boost" type="Node" parent="ShipStateMachine"]
+script = ExtResource("19_20pux")
+
+[node name="Drift" type="Node" parent="ShipStateMachine"]
+
+[node name="Boost" type="Node" parent="ShipStateMachine"]
+
+[node name="AscendCharge" type="Node" parent="ShipStateMachine"]

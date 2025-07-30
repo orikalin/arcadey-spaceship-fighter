@@ -7,6 +7,7 @@ extends Node3D
 @onready var free_cam := %FreeCam
 @onready var main_camera = %MainCamera
 @onready var NetworkPopup := %NetworkPopup
+@onready var PlayerSpawner := %MultiplayerSpawner
 
 func _physics_process(delta: float) -> void:	
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -18,6 +19,7 @@ func _physics_process(delta: float) -> void:
 		NetworkPopup.visible = not NetworkPopup.is_visible()
 
 func _ready():
+	PlayerSpawner.spawned.connect(on_player_spawned)
 	spawn_local_player()
 	ConnectionSystem.player_list_changed.connect(on_player_list_changed)
 
@@ -36,7 +38,7 @@ func on_player_list_changed():
 	var LCL_player:PlayerContainer = player_container.instantiate()
 	LCL_player.spawn_transform = spawn_point.transform
 	LCL_player.network_id = multiplayer.get_unique_id()
-	active_players.add_child(LCL_player)
+	active_players.add_child(LCL_player, true)
 
 	# Remove the previous local player
 	if local_player.get_child_count() > 0:
@@ -51,8 +53,7 @@ func on_player_list_changed():
 		player.spawn_transform = spawn_point.transform
 		player.network_id = player_id
 		player.set_multiplayer_authority(player_id, true)
-		active_players.add_child(player)
-	possess_puppet.rpc()
+		active_players.add_child(player, true)
 
 
 func attach_camera_to_player(player:PlayerContainer) -> void:
@@ -74,12 +75,11 @@ func attach_camera_to_player(player:PlayerContainer) -> void:
 func spawn_local_player():
 	var player:PlayerContainer = player_container.instantiate()
 	player.spawn_transform = spawn_point.transform
-	local_player.add_child(player)
+	local_player.add_child(player, true)
 	attach_camera_to_player(player)
 
 
-@rpc("reliable")
-func possess_puppet():
+func on_player_spawned():
 	# Remove the previous local player
 	if local_player.get_child_count() > 0:
 		var prev_local = local_player.get_child(0)
@@ -88,4 +88,5 @@ func possess_puppet():
 	for _player in active_players.get_children():
 		if _player.network_id == multiplayer.get_unique_id():
 			attach_camera_to_player(_player)
+			break
 	
