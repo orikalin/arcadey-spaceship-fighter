@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://cinkyh6m8ylru"]
+[gd_scene load_steps=33 format=3 uid="uid://cinkyh6m8ylru"]
 
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/CameraManager.gd" id="1_wn30j"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="2_fhmuh"]
@@ -15,7 +15,6 @@
 [ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://Assets/Curves/dampingCurve.tres" id="13_urlky"]
 [ext_resource type="Curve" uid="uid://b4kq1ut5oqcmq" path="res://Assets/Curves/EngineTrailScaleCurve.tres" id="14_nmlhj"]
 [ext_resource type="Script" uid="uid://w2iurlb7divh" path="res://Assets/Scripts/PlayerStateMachine/ShipStateMachine.gd" id="15_4ktk4"]
-[ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="16_nboqi"]
 [ext_resource type="Script" uid="uid://e07chentfdx1" path="res://Assets/Scripts/PlayerStateMachine/Flying.gd" id="17_lwwj1"]
 [ext_resource type="Script" uid="uid://nalshrhltoq6" path="res://Assets/Scripts/PlayerStateMachine/Hovering.gd" id="18_5y5te"]
 [ext_resource type="Script" uid="uid://dl7b0pk1wtb5i" path="res://Assets/Scripts/PlayerStateMachine/Air_Boost.gd" id="19_20pux"]
@@ -258,7 +257,6 @@ color_ramp = SubResource("Gradient_2ifmk")
 [node name="ShipStateMachine" type="Node" parent="." node_paths=PackedStringArray("initialState")]
 script = ExtResource("15_4ktk4")
 easeOut = SubResource("Curve_paeve")
-ShipStats = ExtResource("16_nboqi")
 initialState = NodePath("Hovering")
 
 [node name="Flying" type="Node" parent="ShipStateMachine" node_paths=PackedStringArray("Player", "ShipContainer")]
