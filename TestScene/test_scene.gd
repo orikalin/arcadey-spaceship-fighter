@@ -10,11 +10,12 @@ extends Node3D
 
 func _physics_process(delta: float) -> void:	
 	if Input.is_action_just_pressed("ui_cancel"):
-		NetworkPopup.visible = not NetworkPopup.is_visible()
-		if NetworkPopup.is_visible():
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if Input.is_action_just_pressed("network"):
+		NetworkPopup.visible = not NetworkPopup.is_visible()
 
 func _ready():
 	spawn_local_player()
