@@ -1,9 +1,11 @@
-extends Node
+class_name PlayerContainer extends Node
 
 @export var spawn_transform:Transform3D
 @onready var player:CharacterBody3D = %Player
 @onready var mock_camera:Camera3D = %MockCamera
 @onready var lookat_target:Node3D = %LookAtTarget
+
+var network_id:int
 
 func _ready() -> void:
 	player.transform = spawn_transform

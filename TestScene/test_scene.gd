@@ -27,18 +27,32 @@ func _ready():
 func on_player_list_changed():
 	if not multiplayer.is_server():
 		return
+	
+	for connected_player in active_players.get_children():
+		active_players.remove_child(connected_player)
+		connected_player.queue_free()
+
+	var LCL_player:PlayerContainer = player_container.instantiate()
+	LCL_player.spawn_transform = spawn_point.transform
+	LCL_player.network_id = multiplayer.get_unique_id()
+	active_players.add_child(LCL_player)
+
+	# Remove the previous local player
+	if local_player.get_child_count() > 0:
+		var prev_local = local_player.get_child(0)
+		local_player.remove_child(prev_local)
+		prev_local.queue_free()
+
+	attach_camera_to_player(LCL_player)
 	var players:Array = ConnectionSystem.players.keys()
 	for player_id in players:
 		var player = player_container.instantiate()
 		player.spawn_transform = spawn_point.transform
+		player.network_id = player_id
 		active_players.add_child(player)
 
 
-
-func spawn_local_player():
-	var player = player_container.instantiate()
-	player.spawn_transform = spawn_point.transform
-	local_player.add_child(player)
+func attach_camera_to_player(player:PlayerContainer) -> void:
 	if not player.is_node_ready():
 		await player.ready	
 	base_camera.set_follow_target(player.get_mock_camera())
@@ -52,3 +66,11 @@ func spawn_local_player():
 	free_cam.follow_target = player.get_mock_camera()
 	free_cam.look_at_target = player.get_player()
 	free_cam.up_target = player.get_player()
+
+
+
+func spawn_local_player():
+	var player:PlayerContainer = player_container.instantiate()
+	player.spawn_transform = spawn_point.transform
+	local_player.add_child(player)
+	attach_camera_to_player(player)

@@ -30,7 +30,6 @@ func enter(oldState:String, flags:Dictionary):
 		forward_speed = flags.get("forward_speed")
 
 func physicsUpdate(delta:float):
-
 	get_input(delta)
 	# Rotate the transform based on the input values
 	#Player.transform.basis = Player.transform.basis.rotated(Player.transform.basis.x, pitch_input * pitch_speed * delta)
@@ -88,6 +87,8 @@ func align_with_y(xform, new_y):
 	return xform
 
 func get_input(delta):
+	if multiplayer.multiplayer_peer != null and not owner.network_id ==  multiplayer.get_unique_id():
+		return
 	if Input.is_action_just_pressed("swapMode"):
 		var flags:Dictionary = {
 		"target_speed":target_speed,
