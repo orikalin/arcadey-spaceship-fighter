@@ -11,6 +11,9 @@ class_name PlayerContainer extends Node
 @export var engine_cone_height:float
 @export var trails_scale_min:float
 @export var trails_scale_max:float
+@export var light_energy_spot:float
+@export var light_energy_omni:float
+@export var light_attenuation:float
 
 var spawn_transform:Transform3D
 

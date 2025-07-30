@@ -23,6 +23,9 @@ func _ready():
 	OmniLights = $OmniLights.get_children()
 	Particles = $Particles.get_children()
 	EngineCones = $EngineCones.get_children()
+	var engine_cone_mesh:CylinderMesh = load("res://Assets/Materials/EngineConeMesh.tres").duplicate()
+	for particles:CPUParticles3D in EngineCones:
+		particles.mesh = engine_cone_mesh
 	
 func _process(_delta:float):
 	if not is_multiplayer_authority():
@@ -32,6 +35,11 @@ func _process(_delta:float):
 		for particles:CPUParticles3D in EngineCones:
 			particles.mesh.top_radius = owner.engine_cone_top_rad
 			particles.mesh.height = owner.engine_cone_height
+		for spot_lights:SpotLight3D in EngineLights:
+			spot_lights.spot_attenuation = owner.light_attenuation
+			spot_lights.light_energy = owner.light_energy_spot
+		for omni_lights:OmniLight3D in OmniLights:
+			omni_lights.light_energy = owner.light_energy_omni
 		return
 	if shipStateMachine != null:
 		currentSpeed = shipStateMachine.currentState.forward_speed
@@ -39,11 +47,17 @@ func _process(_delta:float):
 		
 		if EngineLights.size() > 0:
 			var _EngineCurveSample:float = EngineLightCurve.sample(EnginePower)
+			var _light_energy_spot:float = lerp(1.0, EngineLightEnergy, _EngineCurveSample)
+			var _light_energy_omni:float = lerp(0.2, 2.0, _EngineCurveSample) 
+			var _light_attenuation:float = lerp(1.0, EngineLightIntensity, _EngineCurveSample)
+			owner.light_energy_spot = _light_energy_spot
+			owner.light_energy_omni = _light_energy_omni
+			owner.light_attenuation = _light_attenuation
 			for light:SpotLight3D in EngineLights:
-				light.spot_attenuation = lerp(1.0, EngineLightIntensity, _EngineCurveSample)
-				light.light_energy = lerp(1.0, EngineLightEnergy, _EngineCurveSample) 
+				light.spot_attenuation = _light_attenuation
+				light.light_energy = _light_energy_spot 
 			for omni_light:OmniLight3D in OmniLights:
-				omni_light.light_energy = lerp(0.2, 2.0, _EngineCurveSample) 
+				omni_light.light_energy = _light_energy_omni
 		if Particles.size() > 0:
 			var _ParticleCurveSample:float = ParticleSizeCurve.sample(EnginePower)
 			var _scale_min = lerp(0, 1, _ParticleCurveSample)
