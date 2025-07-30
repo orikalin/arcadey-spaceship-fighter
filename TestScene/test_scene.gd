@@ -1,4 +1,5 @@
 extends Node3D
+
 @export var player_container:PackedScene
 @onready var spawn_point := %SpawnPoint
 @onready var active_players := %ActivePlayers
@@ -20,17 +21,18 @@ func _physics_process(delta: float) -> void:
 
 func _ready():
 	PlayerSpawner.spawned.connect(on_player_spawned)
+	assert(PlayerSpawner != null)
 	spawn_local_player()
-	ConnectionSystem.player_list_changed.connect(on_player_list_changed)
+	ConnectionSystem.connection_succeeded.connect(despawn_local_player)
+	
+	if multiplayer.is_server():
+		ConnectionSystem.player_list_changed.connect(on_player_list_changed)
 
 # spawn the player
 # connect the phantom cameras
 # listen for new players
 
-func on_player_list_changed():
-	if not multiplayer.is_server():
-		return
-	
+func on_player_list_changed():	
 	for connected_player in active_players.get_children():
 		active_players.remove_child(connected_player)
 		connected_player.queue_free()
@@ -40,21 +42,13 @@ func on_player_list_changed():
 	LCL_player.network_id = multiplayer.get_unique_id()
 	active_players.add_child(LCL_player, true)
 
-	# Remove the previous local player
-	if local_player.get_child_count() > 0:
-		var prev_local = local_player.get_child(0)
-		local_player.remove_child(prev_local)
-		prev_local.queue_free()
-
 	attach_camera_to_player(LCL_player)
 	var players:Array = ConnectionSystem.players.keys()
 	for player_id in players:
 		var player = player_container.instantiate()
 		player.spawn_transform = spawn_point.transform
 		player.network_id = player_id
-		player.set_multiplayer_authority(player_id, true)
 		active_players.add_child(player, true)
-
 
 func attach_camera_to_player(player:PlayerContainer) -> void:
 	if not player.is_node_ready():
@@ -77,14 +71,20 @@ func spawn_local_player():
 	player.spawn_transform = spawn_point.transform
 	local_player.add_child(player, true)
 	attach_camera_to_player(player)
-
-
-func on_player_spawned():
+	
+	
+func despawn_local_player():
+	print_debug("Despawning local player")
 	# Remove the previous local player
 	if local_player.get_child_count() > 0:
 		var prev_local = local_player.get_child(0)
 		local_player.remove_child(prev_local)
 		prev_local.queue_free()
+
+
+func on_player_spawned():
+	print_debug("client on_player_spawned")
+	despawn_local_player()
 	for _player in active_players.get_children():
 		if _player.network_id == multiplayer.get_unique_id():
 			attach_camera_to_player(_player)
