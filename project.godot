@@ -23,7 +23,6 @@ ConnectionSystem="*res://multiplayer/connection_system.gd"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/dpi/allow_hidpi=false
 
 [editor]
 
@@ -109,3 +108,7 @@ network={
 [phantom_camera]
 
 tips/show_jitter_tips=false
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true
