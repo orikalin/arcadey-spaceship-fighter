@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://dltexcxkve7kl"]
+
+[ext_resource type="TubeTrailMesh" uid="uid://cwrrdycqgiivo" path="res://Assets/Materials/TrailMesh.tres" id="1_ldow0"]
+[ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://Assets/Curves/dampingCurve.tres" id="2_6e7m3"]
+[ext_resource type="Curve" uid="uid://b4kq1ut5oqcmq" path="res://Assets/Curves/EngineTrailScaleCurve.tres" id="3_0htt4"]
+
+[sub_resource type="Gradient" id="Gradient_2ifmk"]
+offsets = PackedFloat32Array(0, 0.130357, 1)
+colors = PackedColorArray(1, 1, 1, 0.0392157, 1, 1, 1, 0.254902, 1, 1, 1, 0)
+
+[node name="Particles" type="Node3D"]
+transform = Transform3D(0.2299, 0, 0, 0, 0.2299, 0, 0, 0, 0.2299, 0, 0, 0)
+
+[node name="EngineTrail_L" type="CPUParticles3D" parent="."]
+transform = Transform3D(0.707107, 1.49012e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, -1.49012e-08, -1, -4.47035e-08, -3.81274, 0, 6.89844)
+visible = false
+amount = 60
+lifetime = 0.5
+mesh = ExtResource("1_ldow0")
+gravity = Vector3(0, 0, 0)
+damping_min = 0.1
+damping_max = 0.3
+damping_curve = ExtResource("2_6e7m3")
+scale_amount_curve = ExtResource("3_0htt4")
+color_ramp = SubResource("Gradient_2ifmk")
+
+[node name="EngineTrail_R" type="CPUParticles3D" parent="."]
+transform = Transform3D(0.707107, 1.49012e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, -1.49012e-08, -1, -4.47035e-08, 3.813, 0, 6.898)
+visible = false
+amount = 60
+lifetime = 0.5
+mesh = ExtResource("1_ldow0")
+gravity = Vector3(0, 0, 0)
+damping_min = 0.1
+damping_max = 0.3
+damping_curve = ExtResource("2_6e7m3")
+scale_amount_curve = ExtResource("3_0htt4")
+color_ramp = SubResource("Gradient_2ifmk")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=38 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/CameraManager.gd" id="1_6g8w3"]
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Prefab scenes/player.gd" id="1_noymn"]
@@ -11,9 +11,7 @@
 [ext_resource type="Curve" uid="uid://cnnxrc2knraje" path="res://Assets/Curves/ParticleSizeCurve.tres" id="9_fjc0j"]
 [ext_resource type="Curve" uid="uid://bqxjimb8xlki1" path="res://Assets/Curves/EngineLightCurve.tres" id="10_u6sl3"]
 [ext_resource type="CylinderMesh" uid="uid://cx3jhed4ffdac" path="res://Assets/Materials/EngineConeMesh.tres" id="11_d88wy"]
-[ext_resource type="TubeTrailMesh" uid="uid://cwrrdycqgiivo" path="res://Assets/Materials/TrailMesh.tres" id="12_3v4re"]
-[ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://Assets/Curves/dampingCurve.tres" id="13_sbht4"]
-[ext_resource type="Curve" uid="uid://b4kq1ut5oqcmq" path="res://Assets/Curves/EngineTrailScaleCurve.tres" id="14_g5sqv"]
+[ext_resource type="Script" uid="uid://bqflf4vw8mem1" path="res://addons/lines_and_trails_3d/trail_3d.gd" id="12_a5vl3"]
 [ext_resource type="Script" uid="uid://w2iurlb7divh" path="res://Assets/Scripts/PlayerStateMachine/ShipStateMachine.gd" id="15_8u0bd"]
 [ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="16_eg0uq"]
 [ext_resource type="Script" uid="uid://e07chentfdx1" path="res://Assets/Scripts/PlayerStateMachine/Flying.gd" id="17_cjp2j"]
@@ -63,9 +61,13 @@ point_count = 3
 [sub_resource type="Gradient" id="Gradient_m8k8q"]
 colors = PackedColorArray(1, 1, 1, 0.509804, 1, 0.813333, 0.68, 0.0196078)
 
-[sub_resource type="Gradient" id="Gradient_2ifmk"]
-offsets = PackedFloat32Array(0, 0.130357, 1)
-colors = PackedColorArray(1, 1, 1, 0.0392157, 1, 1, 1, 0.254902, 1, 1, 1, 0)
+[sub_resource type="Curve" id="Curve_noymn"]
+_data = [Vector2(0, 0.81582), 0.0, 45.1239, 0, 0, Vector2(0.0803571, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.08738, 0.0, 1, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_a5vl3"]
+offsets = PackedFloat32Array(0, 0.0741935, 0.33871, 0.812903)
+colors = PackedColorArray(1, 0.360784, 0, 0, 1, 0.360784, 0, 1, 1, 0.360784, 0, 0.894118, 0.935743, 0.335478, 7.66242e-05, 0)
 
 [sub_resource type="Curve" id="Curve_paeve"]
 _limits = [0.0, 1.0, 0.0, 2.5]
@@ -101,25 +103,36 @@ properties/8/path = NodePath(".:ship_tilt")
 properties/8/spawn = true
 properties/8/replication_mode = 1
 
+[sub_resource type="Animation" id="Animation_svb41"]
+resource_name = "Trail_Test"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Rotation_Arm")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 2.46667, 1, 0, 1, 0, 0, 5, 1, 0, 0, 0, -1)
+
+[sub_resource type="Animation" id="Animation_6g8w3"]
+length = 0.001
+tracks/0/type = "rotation_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Rotation_Arm")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_noymn"]
+_data = {
+&"RESET": SubResource("Animation_6g8w3"),
+&"Trail_Test": SubResource("Animation_svb41")
+}
+
 [node name="PlayerContainer" type="Node"]
 script = ExtResource("1_noymn")
-
-[node name="PlayerProxy" type="CharacterBody3D" parent="."]
-unique_name_in_owner = true
-transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, 0, 0)
-collision_layer = 2
-floor_max_angle = 0.872665
-
-[node name="ShipCollider" type="CollisionShape3D" parent="PlayerProxy"]
-transform = Transform3D(0.62, 0, 0, 0, 0.62, 0, 0, 0, 0.62, 0, 0, 0)
-shape = SubResource("CylinderShape3D_0v85l")
-disabled = true
-debug_color = Color(0, 0.595, 0.7, 0.858824)
-
-[node name="GroundedRayCollider" type="CollisionShape3D" parent="PlayerProxy"]
-transform = Transform3D(0.62, 0, 4.44089e-16, 0, -2.71011e-08, -0.62, 0, 0.62, -2.71011e-08, 0, 0, 0)
-shape = SubResource("SeparationRayShape3D_cgw0f")
-disabled = true
 
 [node name="Player" type="CharacterBody3D" parent="."]
 unique_name_in_owner = true
@@ -261,32 +274,33 @@ scale_curve_z = SubResource("Curve_751v6")
 color = Color(1, 0.69912, 0.378778, 1)
 color_ramp = SubResource("Gradient_m8k8q")
 
-[node name="Particles" type="Node3D" parent="Player/ShipContainer"]
-transform = Transform3D(0.2299, 0, 0, 0, 0.2299, 0, 0, 0, 0.2299, 0, 0, 0)
+[node name="Trails" type="Node3D" parent="Player/ShipContainer"]
 
-[node name="EngineTrail_L" type="CPUParticles3D" parent="Player/ShipContainer/Particles"]
-transform = Transform3D(0.707107, 1.49012e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, -1.49012e-08, -1, -4.47035e-08, -3.81274, 0, 6.89844)
-amount = 60
-lifetime = 0.5
-mesh = ExtResource("12_3v4re")
-gravity = Vector3(0, 0, 0)
-damping_min = 0.1
-damping_max = 0.3
-damping_curve = ExtResource("13_sbht4")
-scale_amount_curve = ExtResource("14_g5sqv")
-color_ramp = SubResource("Gradient_2ifmk")
+[node name="Engine_Trail_L" type="MeshInstance3D" parent="Player/ShipContainer/Trails"]
+process_priority = 9999
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.893201, 0, 1.61417)
+skeleton = NodePath("")
+script = ExtResource("12_a5vl3")
+time_limit = 1.0
+width = 0.553
+width_curve = SubResource("Curve_noymn")
+color = Color(0.55, 0.55, 0.55, 1)
+gradient = SubResource("Gradient_a5vl3")
+material_type = 2
+metadata/_custom_type_script = "uid://bqflf4vw8mem1"
 
-[node name="EngineTrail_R" type="CPUParticles3D" parent="Player/ShipContainer/Particles"]
-transform = Transform3D(0.707107, 1.49012e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, -1.49012e-08, -1, -4.47035e-08, 3.813, 0, 6.898)
-amount = 60
-lifetime = 0.5
-mesh = ExtResource("12_3v4re")
-gravity = Vector3(0, 0, 0)
-damping_min = 0.1
-damping_max = 0.3
-damping_curve = ExtResource("13_sbht4")
-scale_amount_curve = ExtResource("14_g5sqv")
-color_ramp = SubResource("Gradient_2ifmk")
+[node name="Engine_Trail_R" type="MeshInstance3D" parent="Player/ShipContainer/Trails"]
+process_priority = 9999
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.893, 0, 1.61447)
+skeleton = NodePath("")
+script = ExtResource("12_a5vl3")
+time_limit = 1.0
+width = 0.553
+width_curve = SubResource("Curve_noymn")
+color = Color(0.55, 0.55, 0.55, 1)
+gradient = SubResource("Gradient_a5vl3")
+material_type = 2
+metadata/_custom_type_script = "uid://bqflf4vw8mem1"
 
 [node name="Laser" type="Node" parent="Player"]
 
@@ -330,5 +344,30 @@ falling_damping_curve = ExtResource("19_xar0q")
 
 [node name="AscendCharge" type="Node" parent="Player/ShipStateMachine"]
 
+[node name="PlayerProxy" type="CharacterBody3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, 0, 0)
+collision_layer = 2
+floor_max_angle = 0.872665
+
+[node name="ShipCollider" type="CollisionShape3D" parent="PlayerProxy"]
+transform = Transform3D(0.62, 0, 0, 0, 0.62, 0, 0, 0, 0.62, 0, 0, 0)
+shape = SubResource("CylinderShape3D_0v85l")
+disabled = true
+debug_color = Color(0, 0.595, 0.7, 0.858824)
+
+[node name="GroundedRayCollider" type="CollisionShape3D" parent="PlayerProxy"]
+transform = Transform3D(0.62, 0, 4.44089e-16, 0, -2.71011e-08, -0.62, 0, 0.62, -2.71011e-08, 0, 0, 0)
+shape = SubResource("SeparationRayShape3D_cgw0f")
+disabled = true
+
 [node name="PawnSync" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_noymn")
+
+[node name="Rotation_Arm" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_noymn")
+}

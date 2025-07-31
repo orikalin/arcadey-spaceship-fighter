@@ -6,5 +6,5 @@
 script = ExtResource("1_s48fq")
 duration = 0.0
 transition = 0
-ease = 2
+ease = 1
 metadata/_custom_type_script = "uid://8umksf8e80fw"

@@ -1,6 +1,6 @@
 @tool
 
-class_name Trail3D_addon
+class_name Trail3D
 extends Line3D
 
 
