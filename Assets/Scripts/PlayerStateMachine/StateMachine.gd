@@ -40,6 +40,5 @@ func transitionState(nextState:String, flags:Dictionary) -> void:
 		await owner.ready
 	currentState = get_node(nextState)
 	currentState.enter(oldState, flags)
-	print_debug("transitions from: " + oldState + " to: " + currentState.name)
 
 	
