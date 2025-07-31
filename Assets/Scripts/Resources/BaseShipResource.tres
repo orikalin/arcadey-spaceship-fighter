@@ -28,4 +28,6 @@ flying_throttle_delta = 50.0
 flying_acceleration = 18.0
 flying_rollMultiplier = 0.8
 rollCorrectionRate = 0.5
+camera_Y_offset = 2.275
+camera_FOV_offset = 0.2
 metadata/_custom_type_script = "uid://cjgf4ulxx3vnm"

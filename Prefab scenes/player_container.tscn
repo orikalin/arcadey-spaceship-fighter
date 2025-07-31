@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=36 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/CameraManager.gd" id="1_6g8w3"]
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Prefab scenes/player.gd" id="1_noymn"]
@@ -28,6 +28,10 @@ radius = 1.91406
 
 [sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_cgw0f"]
 length = 2.709
+
+[sub_resource type="Curve" id="Curve_6g8w3"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_smq6u"]
 
@@ -140,6 +144,8 @@ shape = SubResource("SeparationRayShape3D_cgw0f")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, -1, 0)
 script = ExtResource("1_6g8w3")
+camera_ease_curve = SubResource("Curve_6g8w3")
+ease_speed = 1.5
 
 [node name="Arm" type="SpringArm3D" parent="Player/CameraManager"]
 unique_name_in_owner = true

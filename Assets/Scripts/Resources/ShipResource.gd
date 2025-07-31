@@ -44,3 +44,7 @@ class_name ShipResource extends Resource
 @export var flying_rollMultiplier:float = 0.8
 
 @export var rollCorrectionRate:float = 0.5
+
+@export_category("Camera Control Variables")
+@export var camera_Y_offset:float = 1.8
+@export var camera_FOV_offset:float = 0.2

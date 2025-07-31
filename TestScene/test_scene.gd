@@ -4,8 +4,9 @@ extends Node3D
 @onready var spawn_point := %SpawnPoint
 @onready var active_players := %ActivePlayers
 @onready var local_player := %LocalPlayer
-@onready var base_camera := %BaseFollowCam
+@onready var base_cam := %BaseFollowCam
 @onready var free_cam := %FreeCam
+@onready var drift_cam := %DriftCam
 @onready var main_camera = %MainCamera
 @onready var NetworkPopup := %NetworkPopup
 @onready var PlayerSpawner := %PlayerSpawner
@@ -90,14 +91,23 @@ func attach_camera_to_player(player:PlayerContainer) -> void:
 	var packed_camera_manager:CameraManager = player.get_node("%CameraManager")
 	packed_camera_manager.phantom_free_cam = %FreeCam
 	packed_camera_manager.phantom_base_cam = %BaseFollowCam
+	packed_camera_manager.phantom_drift_cam = %DriftCam
 	var look_targets:Array[Node3D] = [
 		player.get_player(),
 		player.get_lookat_target()
 	]
-	base_camera.set_follow_target(player.get_mock_camera())
-	base_camera.look_at_targets = look_targets
-	base_camera.up_target = player.get_player()
-	free_cam.follow_target = player.get_mock_camera()
+	
+	var _mock_cam = player.get_mock_camera()
+
+	base_cam.set_follow_target(_mock_cam)
+	base_cam.look_at_targets = look_targets
+	base_cam.up_target = player.get_player()
+
+	drift_cam.set_follow_target(_mock_cam)
+	drift_cam.look_at_targets = look_targets
+	drift_cam.up_target = player.get_player()
+
+	free_cam.follow_target = _mock_cam
 	free_cam.look_at_target = player.get_player()
 	free_cam.up_target = player.get_player()
 

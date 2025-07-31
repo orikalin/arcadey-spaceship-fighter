@@ -86,13 +86,6 @@ func _process(_delta:float):
 				particles.damping_max = _damping_max
 				particles.initial_velocity_min = _initial_velocity_min
 				particles.initial_velocity_max = _initial_velocity_max
-
-
-		
-			# var _coneMesh:CylinderMesh = EngineCones[0].mesh
-			# _coneMesh.top_radius = lerp(0.4, 0.9, __ParticleCurveSample)
-			# EngineCones[0].mesh = _coneMesh
-			# for particles:CPUParticles3D in EngineCones:
 		
 		
 

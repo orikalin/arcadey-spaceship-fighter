@@ -16,6 +16,8 @@ var noPitchInputTimer:float = 0.0
 var correctingRoll:bool = false
 @onready var shipResource:StateMachine = get_parent()
 
+signal camera_Y_offset()
+
 func enter(oldState:String, flags:Dictionary):
 	if flags.has("target_speed"):
 		target_speed = clamp(flags.get("target_speed"), 0, shipResource.ship_stats.flying_max_speed)
@@ -41,6 +43,7 @@ func physicsUpdate(delta:float):
 	# Movement is always forward
 	Player.velocity = -Player.transform.basis.z * forward_speed
 	Player.move_and_slide()
+	camera_Y_offset.emit(0,0,delta)
 
 
 

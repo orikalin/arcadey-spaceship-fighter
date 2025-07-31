@@ -28,10 +28,11 @@ window/size/viewport_height=720
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+cozy_cube/gizmo_presets={}
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/phantom_camera/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
+enabled=PackedStringArray("res://addons/area_lights/plugin.cfg", "res://addons/gizmo_presets/plugin.cfg", "res://addons/light_shafts/plugin.cfg", "res://addons/lines_and_trails_3d/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/seven_segment_display/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/tile_path_3d/plugin.cfg")
 
 [input]
 

@@ -2,11 +2,13 @@ extends StateMachine
 
 @onready var Player:CharacterBody3D = %Player
 @onready var ship_container:MeshInstance3D = %ShipContainer
-signal freeCam()
 var correctingRoll:bool = false
 @export var rollCorrectionRate:float = 4.0
 @export var easeOut:Curve
 @export var ship_stats:ShipResource
+
+signal freeCam()
+signal phantom_camera_shift()
 
 func _physics_process(delta: float) -> void:	
 		
@@ -30,25 +32,12 @@ func _physics_process(delta: float) -> void:
 	if not correctingRoll:
 		check_rotation()
 	else:
-		var targetY:Vector3 = (Vector3.UP - Vector3.UP.dot(-Player.basis.z)*-Player.basis.z).normalized()
-		var targetX:Vector3 = (targetY.cross(Player.basis.z)).normalized()
-		var targetBasis:Basis = Basis(targetX, targetY, Player.basis.z)
-		var targetRotation:Quaternion = Quaternion(targetBasis.orthonormalized())
-		var currentRotation:Quaternion = Quaternion(Player.basis.orthonormalized())
-		var angleToTarget:float = currentRotation.angle_to(targetRotation)
-		var stepAngle:float = rollCorrectionRate * delta
-		var stepValue:float = stepAngle/angleToTarget
-		var curveSample = easeOut.sample(angleToTarget)
-		if stepAngle*curveSample < angleToTarget:
-			Player.basis = currentRotation.slerp(targetRotation, stepValue*curveSample)
-		else:
-			Player.basis = targetBasis
-			correctingRoll = false
+		correct_roll(delta)
 
 	super(delta)	
 	
 	# After running the state machine, we store some values from it so that
-	# information about this pawn taht we own can be replicated to other players
+	# information about this pawn that we own can be replicated to other players
 	owner.playerTransform = Player.transform
 	owner.ship_tilt = ship_container.rotation.z
 
@@ -60,3 +49,19 @@ func check_rotation():
 
 	if angle_to_down_degrees < upside_down_threshold and not Input.is_action_pressed("pitch_down") and not Input.is_action_pressed("pitch_up"):
 		correctingRoll = true
+
+func correct_roll(delta:float):
+	var targetY:Vector3 = (Vector3.UP - Vector3.UP.dot(-Player.basis.z)*-Player.basis.z).normalized()
+	var targetX:Vector3 = (targetY.cross(Player.basis.z)).normalized()
+	var targetBasis:Basis = Basis(targetX, targetY, Player.basis.z)
+	var targetRotation:Quaternion = Quaternion(targetBasis.orthonormalized())
+	var currentRotation:Quaternion = Quaternion(Player.basis.orthonormalized())
+	var angleToTarget:float = currentRotation.angle_to(targetRotation)
+	var stepAngle:float = rollCorrectionRate * delta
+	var stepValue:float = stepAngle/angleToTarget
+	var curveSample = easeOut.sample(angleToTarget)
+	if stepAngle*curveSample < angleToTarget:
+		Player.basis = currentRotation.slerp(targetRotation, stepValue*curveSample)
+	else:
+		Player.basis = targetBasis
+		correctingRoll = false
