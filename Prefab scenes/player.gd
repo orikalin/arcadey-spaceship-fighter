@@ -23,6 +23,8 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		# if we own this pawn, we update our transform to match the spawn transform
 		player.transform = spawn_transform
+		
+		get_parent().owner.attach_camera_to_player(self)
 
 func get_player() -> CharacterBody3D:
 	return player

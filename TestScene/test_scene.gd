@@ -55,46 +55,38 @@ func spawn_pawn_node(pawn_id: int) -> Node:
 	# Create the node for the incoming pawn.
 	var pawn = player_container.instantiate()
 	pawn.spawn_transform = spawn_point.transform
-	pawn.name = "Player" + str(pawn_id)
+	pawn.name = str(pawn_id)
 	
 	# Make sure that this pawn gets the appropriate authority settings
 	pawn.set_multiplayer_authority(pawn_id, true)
-	
-	# if the pawn we're spawning in here is the one this system owns,
-	# we want to attach our camera to it.
-	if pawn_id == multiplayer.get_unique_id():
-		attach_camera_to_player(pawn)
 		
 	return pawn
 	
 # Only the server should be listening for changes to the player list
 func on_player_list_changed():	
 	
-	# When we first start, we remove all active players.
-	# This is disruptive and highly inefficient, but it simplifies
-	# things later. We could do better than this by keeping a player
-	# around if they're still in the list, and just making a list of
-	# new players we need to spawn in.
-	for connected_player in active_players.get_children():
-		active_players.remove_child(connected_player)
-		connected_player.queue_free()
-		
-	# The player list only contains remote players. 
-	# We need to spawn ourselves in
-	# Since we're the server, we always spawn with a network id
-	# of 1
-	request_player_spawn(1)
-	
-	# Now the server creates pawns for every remote player that is connected
 	var players:Array = ConnectionSystem.players.keys()
+	var player_exists := {}
+		
+	for connected_player in active_players.get_children():
+		var player_id: int = connected_player.get_multiplayer_authority()
+		player_exists[player_id] = true
+		if player_id != 1 and not players.find(player_id):
+			# Remove players that aren't in the player list
+			active_players.remove_child(connected_player)
+			connected_player.queue_free()
+		
+	# Now add players
+	if active_players.get_child_count() == 0:
+		request_player_spawn(1)
+		
+	
 	for player_id in players:
-		request_player_spawn(player_id)
+		if not player_exists.has(player_id):
+			request_player_spawn(player_id)
 
 ## Used to connect a camera to a player
 func attach_camera_to_player(player:PlayerContainer) -> void:
-	if not player.is_node_ready():
-		# Wait... Does this actually work?!
-		await player.ready	
 	var packed_camera_manager:CameraManager = player.get_node("%CameraManager")
 	packed_camera_manager.phantom_free_cam = %FreeCam
 	packed_camera_manager.phantom_base_cam = %BaseFollowCam
@@ -119,9 +111,9 @@ func spawn_local_player():
 
 ## Removes the local, un-networked, player pawn
 func despawn_local_player():
-	print_debug("Despawning local player pawn")
 	# Remove the previous local player
 	if local_player.get_child_count() > 0:
+		print_debug("Despawning local player pawn")
 		var prev_local = local_player.get_child(0)
 		local_player.remove_child(prev_local)
 		prev_local.queue_free()

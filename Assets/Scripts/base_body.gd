@@ -6,9 +6,11 @@ var EngineLights
 var Particles
 var EngineCones
 var OmniLights
-@onready var hoveringState = $"../shipStateMachine/Hovering"
-@onready var flyingState = $"../shipStateMachine/Flying"
-@onready var shipStateMachine = $"../ShipStateMachine"
+
+@onready var hoveringState = %Hovering
+@onready var flyingState = %Flying
+@onready var shipStateMachine = %ShipStateMachine
+
 @export var ParticleSizeCurve:Curve
 @export var EngineLightCurve:Curve
 @export var EngineConeCurve:Curve

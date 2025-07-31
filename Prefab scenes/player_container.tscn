@@ -287,17 +287,20 @@ color_ramp = SubResource("Gradient_2ifmk")
 [node name="Missile" type="Node" parent="Player"]
 
 [node name="ShipStateMachine" type="Node" parent="Player" node_paths=PackedStringArray("initialState")]
+unique_name_in_owner = true
 script = ExtResource("15_8u0bd")
 easeOut = SubResource("Curve_paeve")
 ship_stats = ExtResource("16_eg0uq")
 initialState = NodePath("Hovering")
 
 [node name="Flying" type="Node" parent="Player/ShipStateMachine" node_paths=PackedStringArray("Player", "ShipContainer")]
+unique_name_in_owner = true
 script = ExtResource("17_cjp2j")
 Player = NodePath("../..")
 ShipContainer = NodePath("../../ShipContainer")
 
 [node name="Hovering" type="Node" parent="Player/ShipStateMachine" node_paths=PackedStringArray("Player", "ShipContainer", "floor_raycast")]
+unique_name_in_owner = true
 script = ExtResource("18_0pqif")
 Player = NodePath("../..")
 ShipContainer = NodePath("../../ShipContainer")
