@@ -1,11 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://sp83v0khro86"]
+[gd_scene load_steps=16 format=3 uid="uid://sp83v0khro86"]
 
 [ext_resource type="Script" uid="uid://xlfwqbq88n81" path="res://Assets/Scripts/Core/SceneManager.gd" id="1_tma8b"]
 [ext_resource type="PackedScene" uid="uid://c5lc6ckxyun1x" path="res://Assets/Prefab scenes/PlayerManager.tscn" id="2_6xw86"]
 [ext_resource type="Shader" uid="uid://cb7d3ktebu8u3" path="res://Assets/Scripts/Shaders/palette_limiter.gdshader" id="4_vvyv8"]
 [ext_resource type="Texture2D" uid="uid://lmrui5frxayf" path="res://Assets/Materials/palettes/apollo-1x.png" id="5_8jknt"]
+[ext_resource type="PackedScene" uid="uid://c7oosc8adu1fp" path="res://Assets/Prefab scenes/TitleBackground.tscn" id="5_hegpx"]
 [ext_resource type="Shader" uid="uid://b53d43pathm8p" path="res://Assets/Scripts/Shaders/edge_detection.gdshader" id="6_78mvm"]
 [ext_resource type="Script" path="res://Assets/Scripts/ShowOnReady.gd" id="7_biprf"]
+[ext_resource type="PackedScene" uid="uid://b6m02vqobxc2d" path="res://Assets/Prefab scenes/Titlescreen.tscn" id="7_iic1y"]
+[ext_resource type="PackedScene" uid="uid://dgr4w8k18ubg0" path="res://Assets/Prefab scenes/PlayerUI.tscn" id="9_qiyfl"]
+[ext_resource type="Script" uid="uid://cpe086b3prq0k" path="res://Assets/Prefab scenes/full_screen_fade.gd" id="9_yak2d"]
 [ext_resource type="PackedScene" uid="uid://7iywtxxqygke" path="res://multiplayer/network_popup.tscn" id="14_m0te2"]
 [ext_resource type="PackedScene" uid="uid://b6s2sr3a1tpk0" path="res://multiplayer/player_list.tscn" id="15_6rp13"]
 
@@ -59,6 +63,8 @@ render_target_update_mode = 4
 
 [node name="WorldScenes" type="Node3D" parent="World3D/SubViewportContainer/SubViewport"]
 
+[node name="TitleBackground" parent="World3D/SubViewportContainer/SubViewport/WorldScenes" instance=ExtResource("5_hegpx")]
+
 [node name="PixelEdgeHighliter" type="MeshInstance3D" parent="World3D/SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.978538, 0.0870876, -0.18676, 0, 0.906308, 0.422618, 0.206067, 0.413547, -0.886857, 667.957, 1.97913, 169.452)
 visible = false
@@ -72,9 +78,27 @@ script = ExtResource("7_biprf")
 
 [node name="GUI" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Titlescreen" parent="GUI" instance=ExtResource("7_iic1y")]
+layout_mode = 1
+player_ui = ExtResource("9_qiyfl")
+
+[node name="FullScreenFade" type="ColorRect" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("9_yak2d")
 
 [node name="NetworkPopup" parent="." instance=ExtResource("14_m0te2")]
 unique_name_in_owner = true

@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://c7oosc8adu1fp"]
+
+[node name="TitleBackground" type="Node3D"]
+
+[node name="Rotating Arm" type="Node3D" parent="."]
+
+[node name="TitleCamera" type="Camera3D" parent="Rotating Arm"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

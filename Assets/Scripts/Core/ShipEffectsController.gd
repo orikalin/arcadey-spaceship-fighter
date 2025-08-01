@@ -104,20 +104,20 @@ func _process(delta:float):
 			owner.engine_cone_height = _height
 
 			# Only need to set the mesh once, as the same instance should be used for both cones
-			EngineCones[0].mesh.top_radius = lerp(EngineCones[0].mesh.top_radius, _top_radius, delta*engine_cone_lerp_speed)
-			EngineCones[0].mesh.height = _height
-			EngineCones[0].damping_min = _damping_min
-			EngineCones[0].damping_max = _damping_max
-			EngineCones[0].initial_velocity_min = _initial_velocity_min
-			EngineCones[0].initial_velocity_max = _initial_velocity_max
+			# EngineCones[0].mesh.top_radius = lerp(EngineCones[0].mesh.top_radius, _top_radius, delta*engine_cone_lerp_speed)
+			# EngineCones[0].mesh.height = _height
+			# EngineCones[0].damping_min = _damping_min
+			# EngineCones[0].damping_max = _damping_max
+			# EngineCones[0].initial_velocity_min = _initial_velocity_min
+			# EngineCones[0].initial_velocity_max = _initial_velocity_max
 			
-			# for particles:CPUParticles3D in EngineCones:
-			# 	particles.mesh.top_radius = lerp(particles.mesh.top_radius, _top_radius, delta*engine_cone_lerp_speed)
-			# 	particles.mesh.height = _height
-			# 	particles.damping_min = _damping_min
-			# 	particles.damping_max = _damping_max
-			# 	particles.initial_velocity_min = _initial_velocity_min
-			# 	particles.initial_velocity_max = _initial_velocity_max
+			for particles:CPUParticles3D in EngineCones:
+				particles.mesh.top_radius = lerp(particles.mesh.top_radius, _top_radius, delta*engine_cone_lerp_speed)
+				particles.mesh.height = _height
+				particles.damping_min = _damping_min
+				particles.damping_max = _damping_max
+				particles.initial_velocity_min = _initial_velocity_min
+				particles.initial_velocity_max = _initial_velocity_max
 		
 		
 

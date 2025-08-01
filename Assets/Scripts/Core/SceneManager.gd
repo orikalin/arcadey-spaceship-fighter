@@ -8,11 +8,11 @@ var current_3d_scene
 var current_2d_scene
 var current_gui_scene
 
-
 func _ready() -> void:
     Global.scene_manager = self
-    current_gui_scene = $GUI/SplashScreenManager
-    get_tree()
+    current_gui_scene = $"../GUI/Titlescreen"
+    current_3d_scene = $"../World3D/SubViewportContainer/SubViewport/WorldScenes/TitleBackground"
+    # get_tree()
 
 
 func change_gui_scene(new_scene:String, delete:bool = true, keep_running:bool = false)->void: ## Change to a new scene and determine how to handle the old scene

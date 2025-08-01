@@ -136,6 +136,3 @@ spawn_path = NodePath("../ActivePlayers")
 [node name="SpawnPoint" type="Node3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 668.09, 0.380202, 183.718)
-
-[connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
-[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]

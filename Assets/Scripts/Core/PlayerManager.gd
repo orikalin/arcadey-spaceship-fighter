@@ -1,7 +1,5 @@
 class_name PlayerManager extends Node
 
-# var game_manager : GameController
-
 @export var player_container:PackedScene
 @onready var spawn_point := %SpawnPoint
 @onready var active_players := %ActivePlayers
@@ -134,13 +132,3 @@ func despawn_local_player():
 		var prev_local = local_player.get_child(0)
 		local_player.remove_child(prev_local)
 		prev_local.queue_free()
-
-	
-
-
-
-func _on_tree_exiting() -> void:
-	pass # Replace with function body.
-
-func _on_tree_entered() -> void:
-	pass # Replace with function body.

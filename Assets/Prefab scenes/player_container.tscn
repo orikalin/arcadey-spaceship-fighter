@@ -67,8 +67,8 @@ _data = [Vector2(0, 1), 0.0, 45.1239, 0, 0, Vector2(0.0446429, 1), 0.0, 0.0, 0, 
 point_count = 3
 
 [sub_resource type="Gradient" id="Gradient_a5vl3"]
-offsets = PackedFloat32Array(0, 0.0741935, 0.33871, 0.812903)
-colors = PackedColorArray(1, 0.360784, 0, 0, 1, 0.360784, 0, 1, 1, 0.360784, 0, 0.894118, 0.935743, 0.335478, 7.66242e-05, 0)
+offsets = PackedFloat32Array(0, 0.0585938, 0.33871, 0.812903)
+colors = PackedColorArray(1, 0.411019, 0.162818, 0, 1, 0.360784, 0, 1, 1, 0.360784, 0, 0.894118, 0.935743, 0.335478, 7.66242e-05, 0)
 
 [sub_resource type="Curve" id="Curve_paeve"]
 _limits = [0.0, 1.0, 0.0, 2.5]
@@ -273,9 +273,8 @@ initial_velocity_curve = ExtResource("13_guf3m")
 velocity_strength = 0.0
 width = 0.553
 width_curve = SubResource("Curve_noymn")
-color = Color(0.55, 0.55, 0.55, 1)
 gradient = SubResource("Gradient_a5vl3")
-material_type = 2
+material_type = 3
 metadata/_custom_type_script = "uid://bqflf4vw8mem1"
 
 [node name="Engine_Trail_R" type="MeshInstance3D" parent="Player/ShipContainer/Trails"]
@@ -288,9 +287,8 @@ initial_velocity_curve = ExtResource("13_guf3m")
 velocity_strength = 0.0
 width = 0.553
 width_curve = SubResource("Curve_noymn")
-color = Color(0.55, 0.55, 0.55, 1)
 gradient = SubResource("Gradient_a5vl3")
-material_type = 2
+material_type = 3
 metadata/_custom_type_script = "uid://bqflf4vw8mem1"
 
 [node name="Laser" type="Node" parent="Player"]
