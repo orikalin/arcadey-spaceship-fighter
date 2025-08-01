@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://sp83v0khro86"]
+
+[ext_resource type="Script" uid="uid://xlfwqbq88n81" path="res://Assets/Scripts/SceneManager.gd" id="1_tma8b"]
+[ext_resource type="PackedScene" uid="uid://c5lc6ckxyun1x" path="res://Prefab scenes/PlayerManager.tscn" id="2_6xw86"]
+[ext_resource type="PackedScene" uid="uid://7iywtxxqygke" path="res://multiplayer/network_popup.tscn" id="14_m0te2"]
+[ext_resource type="PackedScene" uid="uid://b6s2sr3a1tpk0" path="res://multiplayer/player_list.tscn" id="15_6rp13"]
+
+[node name="GameManager" type="Node" node_paths=PackedStringArray("world_3d", "world_2d", "gui")]
+script = ExtResource("1_tma8b")
+world_3d = NodePath("World3D")
+world_2d = NodePath("World2D")
+gui = NodePath("GUI")
+
+[node name="World3D" type="Node3D" parent="."]
+
+[node name="World2D" type="Node2D" parent="."]
+
+[node name="GUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerManager" parent="." instance=ExtResource("2_6xw86")]
+unique_name_in_owner = true
+
+[node name="NetworkPopup" parent="." instance=ExtResource("14_m0te2")]
+unique_name_in_owner = true
+visible = false
+
+[node name="PlayerList" parent="." instance=ExtResource("15_6rp13")]
+visible = false
+
+[editable path="NetworkPopup"]
+[editable path="PlayerList"]

@@ -1,0 +1,162 @@
+[gd_scene load_steps=19 format=3 uid="uid://c5lc6ckxyun1x"]
+
+[ext_resource type="Script" uid="uid://dosu6x4bim2h8" path="res://Assets/Scripts/PlayerManager.gd" id="1_02do4"]
+[ext_resource type="PackedScene" uid="uid://b3yxvmw1fmgb4" path="res://Prefab scenes/player_container.tscn" id="2_qdry4"]
+[ext_resource type="Shader" uid="uid://cb7d3ktebu8u3" path="res://Assets/Scripts/Shaders/palette_limiter.gdshader" id="3_rcp2u"]
+[ext_resource type="Texture2D" uid="uid://lmrui5frxayf" path="res://Assets/Materials/palettes/apollo-1x.png" id="4_nijwi"]
+[ext_resource type="Shader" uid="uid://b53d43pathm8p" path="res://Assets/Scripts/Shaders/edge_detection.gdshader" id="5_n5f3v"]
+[ext_resource type="Script" path="res://Assets/Scripts/ShowOnReady.gd" id="6_iqlhn"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="7_nv1l0"]
+[ext_resource type="Resource" uid="uid://c5gh8d8481nju" path="res://Assets/Scripts/Resources/PCam_Base_tween_resource.tres" id="8_aumkr"]
+[ext_resource type="Resource" uid="uid://dsaamuednm640" path="res://Assets/Scripts/Resources/PCam_Drift_tween_resource.tres" id="9_tblah"]
+[ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="10_dqwnc"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="11_oysxq"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="12_0hy2r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jkl3n"]
+shader = ExtResource("3_rcp2u")
+shader_parameter/num_colors = 128
+shader_parameter/PALETTE_TEXTURE = ExtResource("4_nijwi")
+
+[sub_resource type="QuadMesh" id="QuadMesh_g4sx0"]
+flip_faces = true
+size = Vector2(2, 2)
+center_offset = Vector3(0, -0.035, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h6xfe"]
+render_priority = 0
+shader = ExtResource("5_n5f3v")
+shader_parameter/lightIntensity = 0.5
+shader_parameter/lineAlpha = 0.475
+shader_parameter/useLighting = true
+shader_parameter/lineHighlight = 0.2
+shader_parameter/lineShadow = 0.55
+
+[sub_resource type="Resource" id="Resource_ve4uo"]
+script = ExtResource("10_dqwnc")
+keep_aspect = 1
+cull_mask = 1048575
+h_offset = 0.0
+v_offset = 0.0
+projection = 0
+fov = 75.0
+size = 1.0
+frustum_offset = Vector2(0, 0)
+near = 0.05
+far = 4000.0
+metadata/_custom_type_script = "uid://b8hhnqsugykly"
+
+[sub_resource type="Resource" id="Resource_qgvh0"]
+script = ExtResource("11_oysxq")
+duration = 0.0
+transition = 0
+ease = 0
+metadata/_custom_type_script = "uid://8umksf8e80fw"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_4h3o7"]
+
+[node name="PlayerManager" type="Node"]
+script = ExtResource("1_02do4")
+player_container = ExtResource("2_qdry4")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+material = SubResource("ShaderMaterial_jkl3n")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 4
+mouse_target = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(320, 180)
+render_target_update_mode = 4
+
+[node name="PixelEdgeHighliter" type="MeshInstance3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.978538, 0.0870876, -0.18676, 0, 0.906308, 0.422618, 0.206067, 0.413547, -0.886857, 667.957, 1.97913, 169.452)
+visible = false
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_g4sx0")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_h6xfe")
+script = ExtResource("6_iqlhn")
+
+[node name="PhantomCameras" type="Node3D" parent="SubViewportContainer/SubViewport"]
+
+[node name="BaseFollowCam" type="Node3D" parent="SubViewportContainer/SubViewport/PhantomCameras"]
+unique_name_in_owner = true
+transform = Transform3D(0.999996, -1.01021e-05, 6.75147e-05, 1.63722e-07, 0.989272, 0.14561, -6.82679e-05, -0.145604, 0.989311, 0.000976519, 2.10843, 2.96243)
+top_level = true
+script = ExtResource("7_nv1l0")
+priority = 2
+follow_mode = 2
+look_at_mode = 3
+tween_resource = ExtResource("8_aumkr")
+tween_on_load = false
+follow_damping = true
+follow_damping_value = Vector3(0.05, 0.05, 0.05)
+look_at_damping = true
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
+
+[node name="DriftCam" type="Node3D" parent="SubViewportContainer/SubViewport/PhantomCameras"]
+unique_name_in_owner = true
+transform = Transform3D(0.999996, -1.01021e-05, 6.75147e-05, 1.63722e-07, 0.989272, 0.14561, -6.82679e-05, -0.145604, 0.989311, 0.000976519, 2.10843, 2.96243)
+top_level = true
+script = ExtResource("7_nv1l0")
+priority = 1
+follow_mode = 2
+look_at_mode = 3
+tween_resource = ExtResource("9_tblah")
+tween_on_load = false
+inactive_update_mode = 1
+camera_3d_resource = SubResource("Resource_ve4uo")
+follow_damping = true
+follow_damping_value = Vector3(0.05, 0.05, 0.05)
+look_at_damping = true
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
+
+[node name="FreeCam" type="Node3D" parent="SubViewportContainer/SubViewport/PhantomCameras"]
+unique_name_in_owner = true
+transform = Transform3D(0.99984, 0.000976369, 5.55276e-11, -5.81984e-11, 1.19207e-07, -0.953957, -0.000976232, 0.999981, 1.13721e-07, 0, 0, 0)
+top_level = true
+script = ExtResource("7_nv1l0")
+follow_mode = 1
+look_at_mode = 2
+tween_resource = SubResource("Resource_qgvh0")
+tween_on_load = false
+inactive_update_mode = 1
+follow_offset = Vector3(0, 3.15, -6.57)
+follow_distance = 6.0
+spring_length = 6.0
+shape = SubResource("SphereShape3D_4h3o7")
+margin = 0.5
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
+
+[node name="MainCamera" type="Camera3D" parent="SubViewportContainer/SubViewport/PhantomCameras"]
+unique_name_in_owner = true
+transform = Transform3D(0.999996, -1.01021e-05, 6.75147e-05, 1.63722e-07, 0.989272, 0.14561, -6.82679e-05, -0.145604, 0.989311, 0.000976519, 2.10843, 2.96243)
+current = true
+
+[node name="PhantomCameraHost" type="Node" parent="SubViewportContainer/SubViewport/PhantomCameras/MainCamera"]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("12_0hy2r")
+
+[node name="ActivePlayers" type="Node" parent="SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
+
+[node name="LocalPlayer" type="Node" parent="SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
+_spawnable_scenes = PackedStringArray("uid://b3yxvmw1fmgb4")
+spawn_path = NodePath("../ActivePlayers")
+
+[node name="SpawnPoint" type="Node3D" parent="SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 668.09, 0.380202, 183.718)

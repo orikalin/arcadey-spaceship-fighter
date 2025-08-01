@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Arcadey Spaceship Fighter"
-run/main_scene="uid://c4ucco6jptrht"
+run/main_scene="uid://sp83v0khro86"
 config/features=PackedStringArray("4.4", "Forward Plus")
 
 [autoload]

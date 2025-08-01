@@ -1,4 +1,4 @@
-class_name PlayerManager extends Node3D
+class_name PlayerManager extends Node
 
 # var game_manager : GameController
 
@@ -13,7 +13,7 @@ class_name PlayerManager extends Node3D
 @onready var NetworkPopup := %NetworkPopup
 @onready var PlayerSpawner := %PlayerSpawner
 
-    
+	
 func _physics_process(delta: float) -> void:	
 	if Input.is_action_just_pressed("ui_cancel"):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -28,7 +28,7 @@ func _ready():
 	Global.player_manager = self
 	# Change the function that gets called on every system when spawning
 	# a player
-	PlayerSpawner.spawn_function = Global.scene_manager
+	PlayerSpawner.spawn_function = spawn_pawn_node
 	
 	# When we first load this scene, we aren't networked, so we spawn 
 	# a local player
