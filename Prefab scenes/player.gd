@@ -15,7 +15,7 @@ class_name PlayerContainer extends Node
 @export var light_energy_omni:float
 @export var light_attenuation:float
 @export var ship_tilt:float
-var trail_width:float
+@export var trail_width:float
 
 var spawn_transform:Transform3D
 

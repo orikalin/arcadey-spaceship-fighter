@@ -19,6 +19,7 @@ fallingPitchBase = 0.35
 slerp_speed = 10.0
 drift_turn_speed = 1.4
 drift_proxy_turn_speed = 0.6
+drift_engine_power = 0.15
 flying_min_speed = 5.0
 flying_max_speed = 50.0
 flying_turn_speed = 1.2

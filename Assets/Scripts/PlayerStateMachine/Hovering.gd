@@ -129,4 +129,5 @@ func get_input(delta):
 
 func offset_camera_Y(delta:float):
 	var _normalized_forward_speed = Helpers.Map(forward_speed, 0, ship_statemachine.ship_stats.hovering_max_speed, 0, 1)
-	camera_Y_offset.emit(_normalized_forward_speed, ship_statemachine.ship_stats.camera_Y_offset, delta)
+	var targetY = Helpers.Map(_normalized_forward_speed, 0, 1, 0, ship_statemachine.ship_stats.camera_Y_offset)
+	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)

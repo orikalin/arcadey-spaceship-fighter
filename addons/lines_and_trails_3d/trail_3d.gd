@@ -53,9 +53,19 @@ enum LimitMode {
 		notify_property_list_changed()
 		if _auto_rebuild and Engine.is_editor_hint():
 			rebuild()
+@export var initial_velocity_curve:Curve
+@export var velocity_strength:float = 1.0: 
+	get: return velocity_strength
+	set(value):
+		if velocity_strength == value:
+			return
+		velocity_strength = value
+		if _auto_rebuild and Engine.is_editor_hint():
+			_step()
 
 var _times: PackedFloat64Array
-var _last_pinned_u: float
+var _last_pinned_u:float
+		
 
 
 func _ready() -> void:
@@ -143,6 +153,14 @@ func _step() -> void:
 			curve_normals.insert(1, up)
 			_times.insert(1, time)
 			_last_pinned_u += dist_from_leading
+		var _step:float = 0
+		for i in points.size():
+			if i > 1:
+				var _sample = initial_velocity_curve.sample(_step)
+				points[i] += self.global_basis.z * (_sample * velocity_strength)
+				_step += 1/(points.size()*0.1)
+				
+
 
 	if limit_mode == LimitMode.LENGTH:
 

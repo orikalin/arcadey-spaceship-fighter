@@ -51,7 +51,7 @@ func _process(delta:float):
 	if ship_statemachine != null:
 		currentSpeed = ship_statemachine.currentState.forward_speed
 		var EnginePower:float = Helpers.Map(currentSpeed, 0, ship_statemachine.ship_stats.hovering_max_speed, 0, 1)
-		
+		var is_drifting = ship_statemachine.currentState.name == "Drift"
 		if EngineLights.size() > 0:
 			var _EngineCurveSample:float = EngineLightCurve.sample(EnginePower)
 			var _light_energy_spot:float = lerp(1.0, EngineLightEnergy, _EngineCurveSample)
@@ -68,12 +68,19 @@ func _process(delta:float):
 		if Trails.size() > 0:
 			var _ParticleCurveSample:float = ParticleSizeCurve.sample(EnginePower)
 			var trail_width = lerp(trail_width_min, trail_width_max, _ParticleCurveSample)
-			owner.trail_width = trail_width
 			for _trails:Trail3D in Trails:
 				_trails.width = trail_width
+				if is_drifting:
+					_trails.width = trail_width * 0.8
+					_trails.velocity_strength = _ParticleCurveSample
+					owner.trail_width = trail_width * 0.8
+				else:
+					_trails.width = trail_width
+					_trails.velocity_strength = 0.0
+					owner.trail_width = trail_width
 		if EngineCones.size() > 0:
 			var _ParticleCurveSample:float
-			if ship_statemachine.currentState.name == "Drift":
+			if is_drifting:
 				_ParticleCurveSample = EngineConeCurve.sample(ship_statemachine.ship_stats.drift_engine_power)
 			else:
 				_ParticleCurveSample = EngineConeCurve.sample(EnginePower)
