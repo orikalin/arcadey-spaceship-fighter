@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://tahosamrudd8"]
+
+[ext_resource type="Script" uid="uid://dnvuu071ldhdj" path="res://Assets/Prefab scenes/old/SplashScreenManager.gd" id="1_c7pj7"]
+[ext_resource type="PackedScene" uid="uid://sp83v0khro86" path="res://Assets/Prefab scenes/GameManager.tscn" id="2_a1mc2"]
+[ext_resource type="Texture2D" uid="uid://c88j3oj0lf6om" path="res://Assets/Materials/textures/rock023_alb_ht.png" id="3_5qjep"]
+[ext_resource type="Texture2D" uid="uid://ddprscrpsofah" path="res://Assets/Materials/textures/ground037_alb_ht.png" id="4_5h0x4"]
+[ext_resource type="Texture2D" uid="uid://lmrui5frxayf" path="res://Assets/Materials/palettes/apollo-1x.png" id="5_nu0nv"]
+
+[node name="SplashScreenManager" type="Control" node_paths=PackedStringArray("splash_screen_container")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+script = ExtResource("1_c7pj7")
+load_scene = ExtResource("2_a1mc2")
+splash_screen_container = NodePath("SplashScreenContainer")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SplashScreenContainer" type="CenterContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Screen1" type="TextureRect" parent="SplashScreenContainer"]
+layout_mode = 2
+texture = ExtResource("3_5qjep")
+
+[node name="Screen2" type="TextureRect" parent="SplashScreenContainer"]
+layout_mode = 2
+texture = ExtResource("4_5h0x4")
+
+[node name="Screen3" type="TextureRect" parent="SplashScreenContainer"]
+layout_mode = 2
+texture = ExtResource("5_nu0nv")
