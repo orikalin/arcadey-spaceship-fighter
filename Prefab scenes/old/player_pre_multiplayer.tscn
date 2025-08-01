@@ -7,7 +7,7 @@
 [ext_resource type="Material" uid="uid://dtu5xtqw54qjc" path="res://Assets/Materials/Ships/Wings.tres" id="5_oqeib"]
 [ext_resource type="Material" uid="uid://xufxqc2vhosk" path="res://Assets/Materials/Ships/Engines.tres" id="6_vlifn"]
 [ext_resource type="Material" uid="uid://cvy2wx33hf6xg" path="res://Assets/Materials/Ships/Energy.tres" id="7_y01b5"]
-[ext_resource type="Script" uid="uid://dufmvqfvv8eiu" path="res://Assets/Scripts/base_body.gd" id="8_3nvmb"]
+[ext_resource type="Script" uid="uid://dufmvqfvv8eiu" path="res://Assets/Scripts/ShipEffectsController.gd" id="8_3nvmb"]
 [ext_resource type="Curve" uid="uid://cnnxrc2knraje" path="res://Assets/Curves/ParticleSizeCurve.tres" id="9_3g8l3"]
 [ext_resource type="Curve" uid="uid://bqxjimb8xlki1" path="res://Assets/Curves/EngineLightCurve.tres" id="10_264mw"]
 [ext_resource type="CylinderMesh" uid="uid://cx3jhed4ffdac" path="res://Assets/Materials/EngineConeMesh.tres" id="11_q3o61"]

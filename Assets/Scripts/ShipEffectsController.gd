@@ -2,6 +2,7 @@ extends MeshInstance3D
 
 var Player:CharacterBody3D
 var currentSpeed:float
+
 var EngineLights
 var Particles
 var EngineCones
@@ -24,6 +25,7 @@ var Trails
 @export var engine_cone_lerp_speed:float = 5.0
 
 
+
 func _ready():
 	Player = get_parent()
 	EngineLights = $EngineLights.get_children()
@@ -36,6 +38,7 @@ func _ready():
 		particles.mesh = engine_cone_mesh
 	
 func _process(delta:float):
+	# if we are not the multiplayer authority, set the values recieved from multiplayer sync
 	if not is_multiplayer_authority():
 		for _trails:Trail3D in Trails:
 				_trails.width = owner.trail_width
@@ -48,18 +51,25 @@ func _process(delta:float):
 		for omni_lights:OmniLight3D in OmniLights:
 			omni_lights.light_energy = owner.light_energy_omni
 		return
+
+	# if we are the multiplayer authority, run these processes	
+	# Rewrite this logic to accept a normalized_forward_speed, and cut down calculations done per process
+	# a
 	if ship_statemachine != null:
 		currentSpeed = ship_statemachine.currentState.forward_speed
 		var EnginePower:float = Helpers.Map(currentSpeed, 0, ship_statemachine.ship_stats.hovering_max_speed, 0, 1)
 		var is_drifting = ship_statemachine.currentState.name == "Drift"
+
+		# Calculate results for various particles and materials
+		var _EngineCurveSample:float = EngineLightCurve.sample(EnginePower)
+
 		if EngineLights.size() > 0:
-			var _EngineCurveSample:float = EngineLightCurve.sample(EnginePower)
+			var _light_attenuation:float = lerp(1.0, EngineLightIntensity, _EngineCurveSample)
 			var _light_energy_spot:float = lerp(1.0, EngineLightEnergy, _EngineCurveSample)
 			var _light_energy_omni:float = lerp(0.2, 2.0, _EngineCurveSample) 
-			var _light_attenuation:float = lerp(1.0, EngineLightIntensity, _EngineCurveSample)
+			owner.light_attenuation = _light_attenuation
 			owner.light_energy_spot = _light_energy_spot
 			owner.light_energy_omni = _light_energy_omni
-			owner.light_attenuation = _light_attenuation
 			for light:SpotLight3D in EngineLights:
 				light.spot_attenuation = _light_attenuation
 				light.light_energy = _light_energy_spot 
@@ -92,13 +102,22 @@ func _process(delta:float):
 			var _initial_velocity_max = lerp(0.1, 0.8, _ParticleCurveSample)
 			owner.engine_cone_top_rad = _top_radius
 			owner.engine_cone_height = _height
-			for particles:CPUParticles3D in EngineCones:
-				particles.mesh.top_radius = lerp(particles.mesh.top_radius, _top_radius, delta*engine_cone_lerp_speed)
-				particles.mesh.height = _height
-				particles.damping_min = _damping_min
-				particles.damping_max = _damping_max
-				particles.initial_velocity_min = _initial_velocity_min
-				particles.initial_velocity_max = _initial_velocity_max
+
+			# Only need to set the mesh once, as the same instance should be used for both cones
+			EngineCones[0].mesh.top_radius = lerp(EngineCones[0].mesh.top_radius, _top_radius, delta*engine_cone_lerp_speed)
+			EngineCones[0].mesh.height = _height
+			EngineCones[0].damping_min = _damping_min
+			EngineCones[0].damping_max = _damping_max
+			EngineCones[0].initial_velocity_min = _initial_velocity_min
+			EngineCones[0].initial_velocity_max = _initial_velocity_max
+			
+			# for particles:CPUParticles3D in EngineCones:
+			# 	particles.mesh.top_radius = lerp(particles.mesh.top_radius, _top_radius, delta*engine_cone_lerp_speed)
+			# 	particles.mesh.height = _height
+			# 	particles.damping_min = _damping_min
+			# 	particles.damping_max = _damping_max
+			# 	particles.initial_velocity_min = _initial_velocity_min
+			# 	particles.initial_velocity_max = _initial_velocity_max
 		
 		
 

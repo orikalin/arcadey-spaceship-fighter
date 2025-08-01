@@ -1,9 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://c5lc6ckxyun1x"]
+[gd_scene load_steps=16 format=3 uid="uid://c5lc6ckxyun1x"]
 
 [ext_resource type="Script" uid="uid://dosu6x4bim2h8" path="res://Assets/Scripts/PlayerManager.gd" id="1_02do4"]
 [ext_resource type="PackedScene" uid="uid://b3yxvmw1fmgb4" path="res://Prefab scenes/player_container.tscn" id="2_qdry4"]
-[ext_resource type="Shader" uid="uid://cb7d3ktebu8u3" path="res://Assets/Scripts/Shaders/palette_limiter.gdshader" id="3_rcp2u"]
-[ext_resource type="Texture2D" uid="uid://lmrui5frxayf" path="res://Assets/Materials/palettes/apollo-1x.png" id="4_nijwi"]
 [ext_resource type="Shader" uid="uid://b53d43pathm8p" path="res://Assets/Scripts/Shaders/edge_detection.gdshader" id="5_n5f3v"]
 [ext_resource type="Script" path="res://Assets/Scripts/ShowOnReady.gd" id="6_iqlhn"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="7_nv1l0"]
@@ -12,11 +10,6 @@
 [ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="10_dqwnc"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="11_oysxq"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="12_0hy2r"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jkl3n"]
-shader = ExtResource("3_rcp2u")
-shader_parameter/num_colors = 128
-shader_parameter/PALETTE_TEXTURE = ExtResource("4_nijwi")
 
 [sub_resource type="QuadMesh" id="QuadMesh_g4sx0"]
 flip_faces = true
@@ -59,24 +52,7 @@ metadata/_custom_type_script = "uid://8umksf8e80fw"
 script = ExtResource("1_02do4")
 player_container = ExtResource("2_qdry4")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-texture_filter = 1
-material = SubResource("ShaderMaterial_jkl3n")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch = true
-stretch_shrink = 4
-mouse_target = true
-
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
-handle_input_locally = false
-size = Vector2i(320, 180)
-render_target_update_mode = 4
-
-[node name="PixelEdgeHighliter" type="MeshInstance3D" parent="SubViewportContainer/SubViewport"]
+[node name="PixelEdgeHighliter" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.978538, 0.0870876, -0.18676, 0, 0.906308, 0.422618, 0.206067, 0.413547, -0.886857, 667.957, 1.97913, 169.452)
 visible = false
 extra_cull_margin = 16384.0
@@ -85,9 +61,9 @@ skeleton = NodePath("")
 surface_material_override/0 = SubResource("ShaderMaterial_h6xfe")
 script = ExtResource("6_iqlhn")
 
-[node name="PhantomCameras" type="Node3D" parent="SubViewportContainer/SubViewport"]
+[node name="PhantomCameras" type="Node3D" parent="."]
 
-[node name="BaseFollowCam" type="Node3D" parent="SubViewportContainer/SubViewport/PhantomCameras"]
+[node name="BaseFollowCam" type="Node3D" parent="PhantomCameras"]
 unique_name_in_owner = true
 transform = Transform3D(0.999996, -1.01021e-05, 6.75147e-05, 1.63722e-07, 0.989272, 0.14561, -6.82679e-05, -0.145604, 0.989311, 0.000976519, 2.10843, 2.96243)
 top_level = true
@@ -102,7 +78,7 @@ follow_damping_value = Vector3(0.05, 0.05, 0.05)
 look_at_damping = true
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
-[node name="DriftCam" type="Node3D" parent="SubViewportContainer/SubViewport/PhantomCameras"]
+[node name="DriftCam" type="Node3D" parent="PhantomCameras"]
 unique_name_in_owner = true
 transform = Transform3D(0.999996, -1.01021e-05, 6.75147e-05, 1.63722e-07, 0.989272, 0.14561, -6.82679e-05, -0.145604, 0.989311, 0.000976519, 2.10843, 2.96243)
 top_level = true
@@ -119,7 +95,7 @@ follow_damping_value = Vector3(0.05, 0.05, 0.05)
 look_at_damping = true
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
-[node name="FreeCam" type="Node3D" parent="SubViewportContainer/SubViewport/PhantomCameras"]
+[node name="FreeCam" type="Node3D" parent="PhantomCameras"]
 unique_name_in_owner = true
 transform = Transform3D(0.99984, 0.000976369, 5.55276e-11, -5.81984e-11, 1.19207e-07, -0.953957, -0.000976232, 0.999981, 1.13721e-07, 0, 0, 0)
 top_level = true
@@ -136,27 +112,27 @@ shape = SubResource("SphereShape3D_4h3o7")
 margin = 0.5
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
-[node name="MainCamera" type="Camera3D" parent="SubViewportContainer/SubViewport/PhantomCameras"]
+[node name="MainCamera" type="Camera3D" parent="PhantomCameras"]
 unique_name_in_owner = true
 transform = Transform3D(0.999996, -1.01021e-05, 6.75147e-05, 1.63722e-07, 0.989272, 0.14561, -6.82679e-05, -0.145604, 0.989311, 0.000976519, 2.10843, 2.96243)
 current = true
 
-[node name="PhantomCameraHost" type="Node" parent="SubViewportContainer/SubViewport/PhantomCameras/MainCamera"]
+[node name="PhantomCameraHost" type="Node" parent="PhantomCameras/MainCamera"]
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("12_0hy2r")
 
-[node name="ActivePlayers" type="Node" parent="SubViewportContainer/SubViewport"]
+[node name="ActivePlayers" type="Node" parent="."]
 unique_name_in_owner = true
 
-[node name="LocalPlayer" type="Node" parent="SubViewportContainer/SubViewport"]
+[node name="LocalPlayer" type="Node" parent="."]
 unique_name_in_owner = true
 
-[node name="PlayerSpawner" type="MultiplayerSpawner" parent="SubViewportContainer/SubViewport"]
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 unique_name_in_owner = true
 _spawnable_scenes = PackedStringArray("uid://b3yxvmw1fmgb4")
 spawn_path = NodePath("../ActivePlayers")
 
-[node name="SpawnPoint" type="Node3D" parent="SubViewportContainer/SubViewport"]
+[node name="SpawnPoint" type="Node3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 668.09, 0.380202, 183.718)

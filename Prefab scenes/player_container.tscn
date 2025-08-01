@@ -7,7 +7,7 @@
 [ext_resource type="Material" uid="uid://dtu5xtqw54qjc" path="res://Assets/Materials/Ships/Wings.tres" id="5_4dwc2"]
 [ext_resource type="Material" uid="uid://xufxqc2vhosk" path="res://Assets/Materials/Ships/Engines.tres" id="6_3nhkb"]
 [ext_resource type="Material" uid="uid://cvy2wx33hf6xg" path="res://Assets/Materials/Ships/Energy.tres" id="7_hlptu"]
-[ext_resource type="Script" uid="uid://dufmvqfvv8eiu" path="res://Assets/Scripts/base_body.gd" id="8_3klbm"]
+[ext_resource type="Script" uid="uid://dufmvqfvv8eiu" path="res://Assets/Scripts/ShipEffectsController.gd" id="8_3klbm"]
 [ext_resource type="Curve" uid="uid://cnnxrc2knraje" path="res://Assets/Curves/ParticleSizeCurve.tres" id="9_fjc0j"]
 [ext_resource type="Curve" uid="uid://bqxjimb8xlki1" path="res://Assets/Curves/EngineLightCurve.tres" id="10_u6sl3"]
 [ext_resource type="CylinderMesh" uid="uid://cx3jhed4ffdac" path="res://Assets/Materials/EngineConeMesh.tres" id="11_d88wy"]
@@ -133,6 +133,10 @@ script = ExtResource("1_6g8w3")
 camera_ease_curve = SubResource("Curve_6g8w3")
 ease_speed = 1.5
 
+[node name="LookAtTarget" type="Node3D" parent="Player/CameraManager"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, -1.35983e-08, 0, 1, 0, 1.35983e-08, 0, 1, -7.14701e-07, 1, -22.9769)
+
 [node name="Arm" type="SpringArm3D" parent="Player/CameraManager"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 2.32515, -0.0321627)
@@ -162,9 +166,17 @@ EngineLightEnergy = 3.0
 trail_width_max = 0.45
 engine_cone_lerp_speed = 4.0
 
-[node name="LookAtTarget" type="Node3D" parent="Player/ShipContainer"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, -4.47035e-08, 0, 1, 0, 4.47035e-08, 0, 1, 0, 0, -22.9769)
+[node name="ShipMesh" type="MeshInstance3D" parent="Player/ShipContainer"]
+
+[node name="Body" type="MeshInstance3D" parent="Player/ShipContainer/ShipMesh"]
+
+[node name="Engines" type="MeshInstance3D" parent="Player/ShipContainer/ShipMesh"]
+
+[node name="WeaponPrimary" type="MeshInstance3D" parent="Player/ShipContainer/ShipMesh"]
+skeleton = NodePath("../Engines")
+
+[node name="WeaponSecondary" type="MeshInstance3D" parent="Player/ShipContainer/ShipMesh"]
+skeleton = NodePath("../Engines")
 
 [node name="HeadLight" type="SpotLight3D" parent="Player/ShipContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.10352e-05, 0, -2.0842)
@@ -307,11 +319,14 @@ floor_raycast = NodePath("../../RayCast3D")
 falling_damping_curve = ExtResource("19_xar0q")
 
 [node name="Air_Drift" type="Node" parent="Player/ShipStateMachine"]
+unique_name_in_owner = true
 
 [node name="Air_Boost" type="Node" parent="Player/ShipStateMachine"]
+unique_name_in_owner = true
 script = ExtResource("20_2e02x")
 
 [node name="Drift" type="Node" parent="Player/ShipStateMachine" node_paths=PackedStringArray("Player", "proxy", "ShipContainer", "floor_raycast")]
+unique_name_in_owner = true
 script = ExtResource("21_opfna")
 Player = NodePath("../..")
 proxy = NodePath("../../../PlayerProxy")
@@ -320,10 +335,13 @@ floor_raycast = NodePath("../../RayCast3D")
 falling_damping_curve = ExtResource("19_xar0q")
 
 [node name="Boost" type="Node" parent="Player/ShipStateMachine"]
+unique_name_in_owner = true
 
 [node name="Rolling" type="Node" parent="Player/ShipStateMachine"]
+unique_name_in_owner = true
 
 [node name="AscendCharge" type="Node" parent="Player/ShipStateMachine"]
+unique_name_in_owner = true
 
 [node name="PlayerProxy" type="CharacterBody3D" parent="."]
 unique_name_in_owner = true
