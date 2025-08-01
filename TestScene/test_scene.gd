@@ -72,6 +72,7 @@ func on_player_list_changed():
 	for connected_player in active_players.get_children():
 		var player_id: int = connected_player.get_multiplayer_authority()
 		player_exists[player_id] = true
+		print_debug(player_exists)
 		if player_id != 1 and not players.find(player_id):
 			# Remove players that aren't in the player list
 			active_players.remove_child(connected_player)
