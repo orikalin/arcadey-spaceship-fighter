@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://2qfpxufthvtf"]
+
+[ext_resource type="Script" uid="uid://cel3mcassq31h" path="res://Assets/Scripts/Shaders/Trail3D.gd" id="1_qrwqs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ve4uo"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+
+[node name="Trail3DTest" type="Node3D"]
+
+[node name="Trail3D_L" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.37842, 0, 2.30249)
+material_override = SubResource("StandardMaterial3D_ve4uo")
+script = ExtResource("1_qrwqs")
+_fromWidth = 0.3
+_scaleAcceleration = 1.204
+_lifespan = 0.25
+_startColor = Color(0.994491, 0.66766, 0.168365, 1)
+_endColor = Color(1, 1, 1, 1)
+metadata/_custom_type_script = "uid://cel3mcassq31h"
+
+[node name="Trail3D_R" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.37915, 0, 2.302)
+material_override = SubResource("StandardMaterial3D_ve4uo")
+script = ExtResource("1_qrwqs")
+_fromWidth = 0.3
+_scaleAcceleration = 1.204
+_lifespan = 0.25
+_startColor = Color(0.994491, 0.66766, 0.168365, 1)
+_endColor = Color(1, 1, 1, 1)
+metadata/_custom_type_script = "uid://cel3mcassq31h"

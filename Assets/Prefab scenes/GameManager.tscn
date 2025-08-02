@@ -1,0 +1,111 @@
+[gd_scene load_steps=16 format=3 uid="uid://sp83v0khro86"]
+
+[ext_resource type="Script" uid="uid://xlfwqbq88n81" path="res://Assets/Scripts/Core/SceneManager.gd" id="1_tma8b"]
+[ext_resource type="PackedScene" uid="uid://c5lc6ckxyun1x" path="res://Assets/Prefab scenes/PlayerManager.tscn" id="2_6xw86"]
+[ext_resource type="Shader" uid="uid://cb7d3ktebu8u3" path="res://Assets/Scripts/Shaders/palette_limiter.gdshader" id="4_vvyv8"]
+[ext_resource type="Texture2D" uid="uid://lmrui5frxayf" path="res://Assets/Materials/palettes/apollo-1x.png" id="5_8jknt"]
+[ext_resource type="PackedScene" uid="uid://c7oosc8adu1fp" path="res://Assets/Prefab scenes/TitleBackground.tscn" id="5_hegpx"]
+[ext_resource type="Shader" uid="uid://b53d43pathm8p" path="res://Assets/Scripts/Shaders/edge_detection.gdshader" id="6_78mvm"]
+[ext_resource type="Script" path="res://Assets/Scripts/ShowOnReady.gd" id="7_biprf"]
+[ext_resource type="PackedScene" uid="uid://b6m02vqobxc2d" path="res://Assets/Prefab scenes/Titlescreen.tscn" id="7_iic1y"]
+[ext_resource type="PackedScene" uid="uid://dgr4w8k18ubg0" path="res://Assets/Prefab scenes/PlayerUI.tscn" id="9_qiyfl"]
+[ext_resource type="Script" uid="uid://cpe086b3prq0k" path="res://Assets/Prefab scenes/full_screen_fade.gd" id="9_yak2d"]
+[ext_resource type="PackedScene" uid="uid://7iywtxxqygke" path="res://multiplayer/network_popup.tscn" id="14_m0te2"]
+[ext_resource type="PackedScene" uid="uid://b6s2sr3a1tpk0" path="res://multiplayer/player_list.tscn" id="15_6rp13"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jkl3n"]
+shader = ExtResource("4_vvyv8")
+shader_parameter/num_colors = 128
+shader_parameter/PALETTE_TEXTURE = ExtResource("5_8jknt")
+
+[sub_resource type="QuadMesh" id="QuadMesh_g4sx0"]
+flip_faces = true
+size = Vector2(2, 2)
+center_offset = Vector3(0, -0.035, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h6xfe"]
+render_priority = 0
+shader = ExtResource("6_78mvm")
+shader_parameter/lightIntensity = 0.5
+shader_parameter/lineAlpha = 0.475
+shader_parameter/useLighting = true
+shader_parameter/lineHighlight = 0.2
+shader_parameter/lineShadow = 0.55
+
+[node name="GameManager" type="Node"]
+
+[node name="SceneManager" type="Node" parent="." node_paths=PackedStringArray("world_3d", "world_2d", "gui")]
+script = ExtResource("1_tma8b")
+world_3d = NodePath("../World3D/SubViewportContainer/SubViewport/WorldScenes")
+world_2d = NodePath("../World2D")
+gui = NodePath("../GUI")
+
+[node name="World3D" type="Node3D" parent="."]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="World3D"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_jkl3n")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 4
+mouse_target = true
+
+[node name="SubViewport" type="SubViewport" parent="World3D/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(320, 180)
+render_target_update_mode = 4
+
+[node name="PlayerManager" parent="World3D/SubViewportContainer/SubViewport" instance=ExtResource("2_6xw86")]
+
+[node name="WorldScenes" type="Node3D" parent="World3D/SubViewportContainer/SubViewport"]
+
+[node name="TitleBackground" parent="World3D/SubViewportContainer/SubViewport/WorldScenes" instance=ExtResource("5_hegpx")]
+
+[node name="PixelEdgeHighliter" type="MeshInstance3D" parent="World3D/SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.978538, 0.0870876, -0.18676, 0, 0.906308, 0.422618, 0.206067, 0.413547, -0.886857, 667.957, 1.97913, 169.452)
+visible = false
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_g4sx0")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_h6xfe")
+script = ExtResource("7_biprf")
+
+[node name="World2D" type="Node2D" parent="."]
+
+[node name="GUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Titlescreen" parent="GUI" instance=ExtResource("7_iic1y")]
+layout_mode = 1
+player_ui = ExtResource("9_qiyfl")
+
+[node name="FullScreenFade" type="ColorRect" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("9_yak2d")
+
+[node name="NetworkPopup" parent="." instance=ExtResource("14_m0te2")]
+unique_name_in_owner = true
+visible = false
+
+[node name="PlayerList" parent="." instance=ExtResource("15_6rp13")]
+visible = false
+
+[editable path="NetworkPopup"]
+[editable path="PlayerList"]
