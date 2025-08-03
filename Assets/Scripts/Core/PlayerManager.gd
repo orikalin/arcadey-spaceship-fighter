@@ -59,7 +59,7 @@ func spawn_pawn_node(pawn_id: int) -> Node:
 	
 	# Create the node for the incoming pawn.
 	var pawn = player_container.instantiate()
-	pawn.spawn_transform = spawn_point.transform
+	pawn.spawn_transform = Global.spawn_point
 	pawn.name = str(pawn_id)
 	
 	# Make sure that this pawn gets the appropriate authority settings
@@ -119,7 +119,8 @@ func attach_camera_to_player(player:PlayerContainer) -> void:
 ## Spawns a local player pawn that is not in any way networked
 func spawn_local_player():
 	var player:PlayerContainer = player_container.instantiate()
-	player.spawn_transform = spawn_point.transform
+	print_debug(Global.spawn_point)
+	player.spawn_transform = Global.spawn_point
 	local_player.add_child(player, true)
 	attach_camera_to_player(player)
 	

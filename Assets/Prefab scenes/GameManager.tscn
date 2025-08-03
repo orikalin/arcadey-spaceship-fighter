@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://sp83v0khro86"]
+[gd_scene load_steps=15 format=3 uid="uid://sp83v0khro86"]
 
 [ext_resource type="Script" uid="uid://xlfwqbq88n81" path="res://Assets/Scripts/Core/SceneManager.gd" id="1_tma8b"]
 [ext_resource type="PackedScene" uid="uid://c5lc6ckxyun1x" path="res://Assets/Prefab scenes/PlayerManager.tscn" id="2_6xw86"]
@@ -8,7 +8,6 @@
 [ext_resource type="Shader" uid="uid://b53d43pathm8p" path="res://Assets/Scripts/Shaders/edge_detection.gdshader" id="6_78mvm"]
 [ext_resource type="Script" path="res://Assets/Scripts/ShowOnReady.gd" id="7_biprf"]
 [ext_resource type="PackedScene" uid="uid://b6m02vqobxc2d" path="res://Assets/Prefab scenes/Titlescreen.tscn" id="7_iic1y"]
-[ext_resource type="PackedScene" uid="uid://dgr4w8k18ubg0" path="res://Assets/Prefab scenes/PlayerUI.tscn" id="9_qiyfl"]
 [ext_resource type="Script" uid="uid://cpe086b3prq0k" path="res://Assets/Prefab scenes/full_screen_fade.gd" id="9_yak2d"]
 [ext_resource type="PackedScene" uid="uid://7iywtxxqygke" path="res://multiplayer/network_popup.tscn" id="14_m0te2"]
 [ext_resource type="PackedScene" uid="uid://b6s2sr3a1tpk0" path="res://multiplayer/player_list.tscn" id="15_6rp13"]
@@ -83,10 +82,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="Titlescreen" parent="GUI" instance=ExtResource("7_iic1y")]
 layout_mode = 1
-player_ui = ExtResource("9_qiyfl")
+mouse_filter = 1
 
 [node name="FullScreenFade" type="ColorRect" parent="."]
 unique_name_in_owner = true

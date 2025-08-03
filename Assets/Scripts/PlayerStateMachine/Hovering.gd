@@ -124,7 +124,7 @@ func get_input(delta):
 					"Player.basis":Player.basis
 				}
 				align_to_floor_normal(delta, true)
-				finished.emit("Drift", flags)
+				finished.emit("Rolling", flags)
 
 
 func offset_camera_Y(delta:float):

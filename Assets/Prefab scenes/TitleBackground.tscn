@@ -35,9 +35,9 @@ length = 2.709
 [sub_resource type="CylinderMesh" id="CylinderMesh_bssow"]
 lightmap_size_hint = Vector2i(14, 11)
 material = ExtResource("6_imcdm")
-top_radius = 0.775
+top_radius = 0.695
 bottom_radius = 0.0
-height = 0.627
+height = 0.487
 radial_segments = 12
 cap_top = false
 cap_bottom = false
@@ -89,6 +89,21 @@ point_count = 4
 offsets = PackedFloat32Array(0.00409836, 0.307377, 0.610656, 0.942623, 1)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.603922, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0)
 
+[sub_resource type="Animation" id="Animation_6kelh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Rotating Arm:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 6.28319, 0)]
+}
+
 [sub_resource type="Animation" id="Animation_1le0s"]
 resource_name = "rotating arm"
 length = 4.0
@@ -106,21 +121,6 @@ tracks/0/keys = {
 "values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_6kelh"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Rotating Arm:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 6.28319, 0)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xt377"]
 _data = {
 &"RESET": SubResource("Animation_6kelh"),
@@ -133,7 +133,7 @@ _data = {
 environment = SubResource("Environment_we81v")
 
 [node name="Rotating Arm" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, 4.46638e-06, 0, 1, 0, -4.46638e-06, 0, 1, 0, 0, 0)
 
 [node name="TitleCamera" type="Camera3D" parent="Rotating Arm"]
 transform = Transform3D(0.313827, 0.377348, 0.871215, -0.163165, 0.925417, -0.341999, -0.935281, -0.0348272, 0.351994, 7.385, -0.61, 0)

@@ -129,7 +129,7 @@ func toggle_collision_shapes():
 	player_collision_shapes.append(%Player/GroundedRayCollider)
 	var proxy_collision_shapes:Array = Array()
 	proxy_collision_shapes.append(%PlayerProxy/ShipCollider)
-	player_collision_shapes.append(%PlayerProxy/GroundedRayCollider)
+	proxy_collision_shapes.append(%PlayerProxy/GroundedRayCollider)
 	for shapes in player_collision_shapes:
 		shapes.disabled = not shapes.disabled
 	for shapes in proxy_collision_shapes:

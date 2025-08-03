@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=40 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
@@ -20,6 +20,8 @@
 [ext_resource type="Curve" uid="uid://ctbfowvcgr80h" path="res://Assets/Curves/FallingDampingCurve.tres" id="18_2lat7"]
 [ext_resource type="Script" uid="uid://dl7b0pk1wtb5i" path="res://Assets/Scripts/PlayerStateMachine/Air_Boost.gd" id="19_xhmyi"]
 [ext_resource type="Script" uid="uid://1tjhfsykqpp3" path="res://Assets/Scripts/PlayerStateMachine/Drift.gd" id="20_1itww"]
+[ext_resource type="Script" uid="uid://breiaj8f72g46" path="res://Assets/Scripts/PlayerStateMachine/Rolling.gd" id="21_de37j"]
+[ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://Assets/Curves/dampingCurve.tres" id="22_uksnq"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_0v85l"]
 height = 1.31981
@@ -75,8 +77,13 @@ _limits = [0.0, 1.0, 0.0, 2.5]
 _data = [Vector2(0.0819672, 0.115938), 0.0, 0.510407, 0, 0, Vector2(1.87705, 1), 0.0625179, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uksnq"]
+friction = 0.0
+rough = true
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_svb41"]
-radius = 2.0
+margin = 0.2
+radius = 1.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_noymn"]
 properties/0/path = NodePath(".:playerTransform")
@@ -335,8 +342,17 @@ falling_damping_curve = ExtResource("18_2lat7")
 [node name="Boost" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
 
-[node name="Rolling" type="Node" parent="Player/ShipStateMachine"]
+[node name="Rolling" type="Node" parent="Player/ShipStateMachine" node_paths=PackedStringArray("player", "proxy", "ShipContainer", "floor_raycast")]
 unique_name_in_owner = true
+script = ExtResource("21_de37j")
+player = NodePath("../..")
+proxy = NodePath("../../../RollingProxy/Orb")
+ShipContainer = NodePath("../../ShipContainer")
+floor_raycast = NodePath("../../RayCast3D")
+falling_damping_curve = ExtResource("22_uksnq")
+accel_force = 100.0
+turn_force = 9.0
+rolling_level_speed = 4.0
 
 [node name="AscendCharge" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
@@ -358,11 +374,31 @@ transform = Transform3D(0.62, 0, 4.44089e-16, 0, -2.71011e-08, -0.62, 0, 0.62, -
 shape = SubResource("SeparationRayShape3D_cgw0f")
 disabled = true
 
-[node name="RollingProxy" type="RigidBody3D" parent="."]
+[node name="RollingProxy" type="Node3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(0.999999, 0, -1.77636e-15, 0, 1, 0, 1.77636e-15, 0, 0.999999, 0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RollingProxy"]
+[node name="Orb" type="RigidBody3D" parent="RollingProxy"]
+unique_name_in_owner = true
+collision_layer = 2
+mass = 5.0
+physics_material_override = SubResource("PhysicsMaterial_uksnq")
+gravity_scale = 0.1
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 10
+linear_damp = 0.1
+angular_damp = 5.0
+
+[node name="WeBallNow" type="CollisionShape3D" parent="RollingProxy/Orb"]
+transform = Transform3D(1, 0, -2.11758e-22, 0, 1, 0, 2.11758e-22, 0, 1, 0, 0, 0)
 shape = SubResource("SphereShape3D_svb41")
+disabled = true
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="RollingProxy"]
 
 [node name="PawnSync" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_noymn")
+
+[connection signal="body_entered" from="RollingProxy/Orb" to="Player/ShipStateMachine/Rolling" method="_on_orb_body_entered"]
+[connection signal="body_exited" from="RollingProxy/Orb" to="Player/ShipStateMachine/Rolling" method="_on_orb_body_exited"]

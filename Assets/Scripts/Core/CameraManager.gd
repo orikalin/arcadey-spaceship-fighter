@@ -48,7 +48,7 @@ func toggleFreeCam():
 func set_drift_cam_priority(priority:int):
 	phantom_drift_cam.set_priority(priority)
 
-func _input(p_event: InputEvent) -> void:
+func _input(p_event:InputEvent) -> void:
 	if !freeCam:
 		return
 	if p_event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
@@ -65,8 +65,9 @@ func rotate_camera(p_relative:Vector2) -> void:
 
 
 func camera_offset_control(EnginePower:float, targetY:float, delta:float):
-	var _curve_sample:float = camera_ease_curve.sample(EnginePower)
-	phantom_base_cam.follow_offset.y = lerp (phantom_base_cam.follow_offset.y, targetY, _curve_sample * ease_speed * delta)
+	if !freeCam:
+		var _curve_sample:float = camera_ease_curve.sample(EnginePower)
+		phantom_base_cam.follow_offset.y = lerp (phantom_base_cam.follow_offset.y, targetY, _curve_sample * ease_speed * delta)
 
 
 		

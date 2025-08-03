@@ -92,6 +92,10 @@ cozy_cube/gizmo_presets={
 
 enabled=PackedStringArray("res://addons/area_lights/plugin.cfg", "res://addons/gizmo_presets/plugin.cfg", "res://addons/light_shafts/plugin.cfg", "res://addons/lines_and_trails_3d/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/seven_segment_display/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/tile_path_3d/plugin.cfg")
 
+[global_group]
+
+terrain=""
+
 [input]
 
 throttle_up={
@@ -167,6 +171,12 @@ network={
 [phantom_camera]
 
 tips/show_jitter_tips=false
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+3d/solver/solver_iterations=24
+3d/solver/default_contact_bias=0.06
 
 [rendering]
 
