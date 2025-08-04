@@ -1,29 +1,13 @@
-[gd_scene load_steps=16 format=3 uid="uid://c5lc6ckxyun1x"]
+[gd_scene load_steps=12 format=3 uid="uid://c5lc6ckxyun1x"]
 
 [ext_resource type="Script" uid="uid://dosu6x4bim2h8" path="res://Assets/Scripts/Core/PlayerManager.gd" id="1_02do4"]
 [ext_resource type="PackedScene" uid="uid://b3yxvmw1fmgb4" path="res://Assets/Prefab scenes/player_container.tscn" id="2_qdry4"]
-[ext_resource type="Shader" uid="uid://b53d43pathm8p" path="res://Assets/Scripts/Shaders/edge_detection.gdshader" id="5_n5f3v"]
-[ext_resource type="Script" path="res://Assets/Scripts/ShowOnReady.gd" id="6_iqlhn"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="7_nv1l0"]
 [ext_resource type="Resource" uid="uid://c5gh8d8481nju" path="res://Assets/Scripts/Resources/PCam_Base_tween_resource.tres" id="8_aumkr"]
 [ext_resource type="Resource" uid="uid://dsaamuednm640" path="res://Assets/Scripts/Resources/PCam_Drift_tween_resource.tres" id="9_tblah"]
 [ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="10_dqwnc"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="11_oysxq"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="12_0hy2r"]
-
-[sub_resource type="QuadMesh" id="QuadMesh_g4sx0"]
-flip_faces = true
-size = Vector2(2, 2)
-center_offset = Vector3(0, -0.035, 0)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_h6xfe"]
-render_priority = 0
-shader = ExtResource("5_n5f3v")
-shader_parameter/lightIntensity = 0.5
-shader_parameter/lineAlpha = 0.475
-shader_parameter/useLighting = true
-shader_parameter/lineHighlight = 0.2
-shader_parameter/lineShadow = 0.55
 
 [sub_resource type="Resource" id="Resource_ve4uo"]
 script = ExtResource("10_dqwnc")
@@ -51,15 +35,6 @@ metadata/_custom_type_script = "uid://8umksf8e80fw"
 [node name="PlayerManager" type="Node"]
 script = ExtResource("1_02do4")
 player_container = ExtResource("2_qdry4")
-
-[node name="PixelEdgeHighliter" type="MeshInstance3D" parent="."]
-transform = Transform3D(-0.978538, 0.0870876, -0.18676, 0, 0.906308, 0.422618, 0.206067, 0.413547, -0.886857, 667.957, 1.97913, 169.452)
-visible = false
-extra_cull_margin = 16384.0
-mesh = SubResource("QuadMesh_g4sx0")
-skeleton = NodePath("")
-surface_material_override/0 = SubResource("ShaderMaterial_h6xfe")
-script = ExtResource("6_iqlhn")
 
 [node name="PhantomCameras" type="Node3D" parent="."]
 

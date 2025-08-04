@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=41 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
@@ -77,13 +77,17 @@ _limits = [0.0, 1.0, 0.0, 2.5]
 _data = [Vector2(0.0819672, 0.115938), 0.0, 0.510407, 0, 0, Vector2(1.87705, 1), 0.0625179, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="Curve" id="Curve_uksnq"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uksnq"]
-friction = 0.0
+friction = 40.0
 rough = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_svb41"]
 margin = 0.2
-radius = 1.0
+radius = 2.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_noymn"]
 properties/0/path = NodePath(".:playerTransform")
@@ -350,9 +354,13 @@ proxy = NodePath("../../../RollingProxy/Orb")
 ShipContainer = NodePath("../../ShipContainer")
 floor_raycast = NodePath("../../RayCast3D")
 falling_damping_curve = ExtResource("22_uksnq")
-accel_force = 100.0
-turn_force = 9.0
-rolling_level_speed = 4.0
+easeOut = SubResource("Curve_uksnq")
+accel_force = 60.0
+turn_force = 12.0
+rolling_level_speed = 5.0
+gravity_grounded = 0.4
+ground_stick_force = 100.0
+max_normal_alignment = 180.0
 
 [node name="AscendCharge" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
@@ -381,14 +389,13 @@ transform = Transform3D(0.999999, 0, -1.77636e-15, 0, 1, 0, 1.77636e-15, 0, 0.99
 [node name="Orb" type="RigidBody3D" parent="RollingProxy"]
 unique_name_in_owner = true
 collision_layer = 2
-mass = 5.0
+mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_uksnq")
 gravity_scale = 0.1
-continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 10
-linear_damp = 0.1
-angular_damp = 5.0
+linear_damp = 0.25
+angular_damp = 0.1
 
 [node name="WeBallNow" type="CollisionShape3D" parent="RollingProxy/Orb"]
 transform = Transform3D(1, 0, -2.11758e-22, 0, 1, 0, 2.11758e-22, 0, 1, 0, 0, 0)
