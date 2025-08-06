@@ -9,7 +9,7 @@ enum LimitMode {
 	LENGTH
 }
 
-
+@export var initial_velocity_toggle:bool = false
 @export_range(0.01, 1.0) var max_section_length: float = 0.1:
 	get: return max_section_length
 	set(value):
@@ -54,15 +54,8 @@ enum LimitMode {
 		if _auto_rebuild and Engine.is_editor_hint():
 			rebuild()
 @export var initial_velocity_curve:Curve
-@export var velocity_strength:float = 1.0: 
-	get: return velocity_strength
-	set(value):
-		if velocity_strength == value:
-			return
-		velocity_strength = value
-		if _auto_rebuild and Engine.is_editor_hint():
-			_step()
 
+var velocity_strength:float = 20.0
 var _times: PackedFloat64Array
 var _last_pinned_u:float
 		
@@ -153,12 +146,14 @@ func _step() -> void:
 			curve_normals.insert(1, up)
 			_times.insert(1, time)
 			_last_pinned_u += dist_from_leading
-		var _step:float = 0
-		for i in points.size():
-			if i > 1:
-				var _sample = initial_velocity_curve.sample(_step)
-				points[i] += self.global_basis.z * (_sample * velocity_strength)
-				_step += 1/(points.size()*0.1)
+		# increase initial velocity in z
+		if initial_velocity_toggle:
+			var _step:float = 0
+			for i in points.size():
+				if i > 1:
+					var _sample = initial_velocity_curve.sample(_step)
+					points[i] += self.global_basis.z * (_sample * velocity_strength)
+					_step += 1/(points.size()*0.1)
 				
 
 

@@ -49,7 +49,7 @@ look_at_mode = 3
 tween_resource = ExtResource("8_aumkr")
 tween_on_load = false
 follow_damping = true
-follow_damping_value = Vector3(0.05, 0.05, 0.05)
+follow_damping_value = Vector3(0.03, 0.03, 0.03)
 look_at_damping = true
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 

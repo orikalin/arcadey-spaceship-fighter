@@ -1,31 +1,49 @@
 extends State
 
 @export var player:CharacterBody3D
-@export var proxy:RigidBody3D
+@export var proxy_xform:CharacterBody3D
+@export var proxy_orb:RigidBody3D
 @export var ShipContainer:MeshInstance3D
-@export var floor_raycast:RayCast3D
-@export var falling_damping_curve:Curve
-@export var easeOut:Curve
+@export var StickCurve:Curve
+@export var accel_force:float = 180.0
+@export var turn_force:float = 9.0 
+@export var turn_stop_limit:float
+@export var rolling_level_speed:float = 5.0
+@export var gravity_airborne:float = 4.0
+@export var gravity_grounded:float = 0.2
+@export var ground_stick_force:float = 150
+@export var max_normal_alignment:float = 180.0
+@export var state_max_speed:float = 75.0
+@export var fallingPitchSpeed:float = 0.8
+
+# duration since the player left the ground
+@export var ungrounded_grace:float = 2.0
+var ungrounded_time:float = 0.0
+
+# duration of a mid air leveling manuver, eased by a curve
+@export var level_duration:float = 1.0
+@export var easeInOut:Curve
+var elapsed_time:float = 0.0
+var duration:float = 1.0
+var eased_t:float = 0.0
 
 # Current speed
 var forward_speed:float = 0.0
+
 # Throttle input speed
-var target_speed:float = 0.0
-var turn_input:float = 0.0
 var accel_input:float = 0.0
+
+# deprecated
+var target_speed:float = 0.0
+
+# turn strength in radians
+var turn_input:float = 0.0
+
+
 var ship_statemachine:StateMachine
 var is_grounded:bool = false
-var ungrounded_time:float = 0
-@export var ungrounded_grace:float = 2.0
+var average_terrain_normal:Vector3
 
-@export var accel_force:float
-@export var turn_force:float 
-@export var turn_stop_limit:float
-@export var rolling_level_speed:float = 10.0
-@export var gravity_airborne:float = 4.0
-@export var gravity_grounded:float = 1.0
-@export var ground_stick_force:float = 50.0
-@export var max_normal_alignment:float = 0.0
 signal camera_Y_offset
 
 func _ready():
@@ -35,30 +53,44 @@ func _ready():
 
 func enter(oldState:String, flags:Dictionary):
 	if oldState == "Hovering":
-		proxy.transform = player.transform
+		ShipContainer.transform = Transform3D()
+		proxy_orb.transform = player.transform
 		toggle_collision_shapes()
 		target_speed = flags.get("target_speed")
 		forward_speed = flags.get("forward_speed")
-		proxy.set_axis_velocity(flags.get("Player.velocity"))
-		# example for how to change phantom camera priority on state change
-		# ship_statemachine.phantom_camera_shift.emit(5)
+		proxy_orb.set_axis_velocity(flags.get("Player.velocity"))
+	elif oldState == "Flying":
+		pass
+	else:
+		proxy_orb.transform = player.transform
 
-# func exit(newState:String, flags:Dictionary):
-# 	ship_statemachine.phantom_camera_shift.emit(0)
-		
+func update(delta:float):
+	if ungrounded_time > 0.0:
+		return
+
+	if elapsed_time < level_duration:
+		elapsed_time += delta
+		var t = elapsed_time / level_duration
+		eased_t = easeInOut.sample(t)		
 
 func physicsUpdate(delta:float):
 	get_input(delta)
-
 	# access the physics server directly for detailed contact information
-	var physics_state = PhysicsServer3D.body_get_direct_state(proxy.get_rid())
+	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
 	var contact_count = physics_state.get_contact_count()
+	forward_speed = physics_state.linear_velocity.length()
+	var _normalized_forward_speed := forward_speed / state_max_speed
+	var _stick_force = _normalized_forward_speed * ground_stick_force
+	if physics_state.linear_velocity.length() > state_max_speed:
+		physics_state.linear_velocity = physics_state.linear_velocity.normalized() * state_max_speed
 
-	var average_terrain_normal:Vector3
+	# update player to orb position
+	player.transform.origin = proxy_orb.transform.origin
+	player.global_transform = player.global_transform.orthonormalized()
 
 	# check contact count to determine if grounded
-	if contact_count > 0:
-		if contact_count > 1:
+	if contact_count > 0: # grounded
+		if contact_count > 1: # get average normals, in case of multiple collisions
 			var terrain_normals = Array()
 			var sum_terrain_normals := Vector3.ZERO
 
@@ -74,48 +106,66 @@ func physicsUpdate(delta:float):
 			average_terrain_normal = physics_state.get_contact_local_normal(0)
 
 		# Check the angle to the target rotation, if its too great, don't rotate!
-		var xform = align_with_y(player.global_transform, average_terrain_normal.normalized())
+		# var _player_quat:Quaternion = Quaternion(player.basis.orthonormalized())
+		# var _target_quat:Quaternion = Quaternion(_xform.basis.orthonormalized())
+		# var angle_to_target:float = rad_to_deg(_player_quat.angle_to(_target_quat))
 
-		var relative_xform = player.global_basis.inverse() * xform.basis
+		# if angle_to_target < max_normal_alignment:
+		# 	player.global_transform = player.global_transform.interpolate_with(_xform, rolling_level_speed * delta).orthonormalized()
 
-		var _player_quat:Quaternion = Quaternion(player.basis.orthonormalized())
-		var _target_quat:Quaternion = Quaternion(xform.basis.orthonormalized())
-		var angle_to_target:float = rad_to_deg(_player_quat.angle_to(_target_quat))
+		var _xform = align_with_y(player.global_transform, average_terrain_normal.normalized())
+		player.global_transform = player.global_transform.interpolate_with(_xform, rolling_level_speed * delta)
+		player.global_transform = player.global_transform.orthonormalized()
+		# apply gravity and force
+		proxy_orb.gravity_scale = gravity_grounded
+		var _stick_curve_sample = StickCurve.sample(_normalized_forward_speed)
+		proxy_orb.apply_central_force(-average_terrain_normal * ground_stick_force * _stick_curve_sample)
+		proxy_orb.apply_central_force(-player.basis.z * accel_force * accel_input)
+		ungrounded_time = ungrounded_grace
+		is_grounded = true
+		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
 
-
-		print_debug(angle_to_target)
-		# if statement checking angle_to_target vs max terrain angle
-		if angle_to_target < max_normal_alignment:
-			player.global_transform = player.global_transform.interpolate_with(xform, rolling_level_speed * delta)
+	else: # airborne
+		if ungrounded_time > 0.0:
+			ungrounded_time -= delta	
+		else:
+			# if elapsed_time < level_duration:
+			# 	elapsed_time += delta
+			# 	var t = elapsed_time / level_duration
+			# 	eased_t = easeInOut.sample(t)	
+			if is_grounded:
+				elapsed_time = 0
+			is_grounded = false
+			# rotate towards the orbs forward direction, without turning
+			var proxy_linear_velocity = physics_state.linear_velocity.normalized()
+			var _right = Vector3.UP.cross(proxy_linear_velocity)
+			var proxy_direction_up = proxy_linear_velocity.cross(_right)
+			var _orb_local_up  = align_with_y(player.global_transform, proxy_direction_up)
+			print_debug(eased_t)
+			player.global_transform = player.global_transform.interpolate_with(_orb_local_up, rolling_level_speed * delta * eased_t)
 			player.global_transform = player.global_transform.orthonormalized()
-		elif angle_to_target > max_normal_alignment and check_rotation():
-			correct_roll(delta)
+			# rotate towards a neutral position, without changing the players forward direction
+			# var proxy_linear_velocity = physics_state.linear_velocity.normalized()
+			# if proxy_linear_velocity.length_squared() > 0.01:
+			# 	var _target_basis = Basis.looking_at(proxy_linear_velocity, Vector3.UP)
+			# 	var _final_basis = Basis(-player.global_basis.z.cross(_target_basis.y), _target_basis.y, player.global_basis.z) 
+			# 	player.global_basis = player.basis.slerp(_final_basis, delta * rolling_level_speed).orthonormalized()
+		# apply airborne gravity and input forces
+		proxy_orb.gravity_scale = gravity_airborne
+		proxy_orb.apply_central_force(-player.basis.z * accel_force * accel_input * 0.25)		
+		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
-
-
-		proxy.gravity_scale = gravity_grounded
-		proxy.apply_central_force(-average_terrain_normal * ground_stick_force)
-		proxy.apply_central_force(-player.basis.z * accel_force * accel_input)
-	else:
-		proxy.gravity_scale = gravity_airborne
-		proxy.apply_central_force(-player.basis.z * accel_force * accel_input * 0.25)
 	
-	player.transform.origin = proxy.transform.origin
-	player.global_transform = player.global_transform.orthonormalized()
 
 	# turn ship
-	if proxy.linear_velocity.length() > turn_stop_limit:
+	if proxy_orb.linear_velocity.length() > turn_stop_limit:		
 		var new_basis = player.global_transform.basis.rotated(player.global_basis.y, turn_input)
 		player.global_basis = player.global_basis.slerp(new_basis, turn_force * delta)
 		player.global_transform = player.global_transform.orthonormalized()
 
-	# else:
-		# ShipContainer.global_transform = ShipContainer.global_transform.interpolate_with(player.transform, rolling_level_speed * 0.5 * delta)
-		# if ungrounded_time <= 0.0:
-		# 	proxy.gravity_scale = gravity_airborne
-		# else:
-		# 	ungrounded_time -= delta
-	#player.transform = player.global_transform.interpolate_with(ShipContainer.global_transform, rolling_level_speed * delta)
+	# Roll the body based on the turn input
+	ShipContainer.rotation.z = lerp(ShipContainer.rotation.z, turn_input*ship_statemachine.ship_stats.hovering_rollMultiplier, ship_statemachine.ship_stats.hovering_level_speed * delta)
+	offset_camera_Y
 
 
 
@@ -125,42 +175,6 @@ func align_with_y(xform, new_y):
 	xform.basis = xform.basis.orthonormalized()
 	return xform
 
-func check_rotation() -> bool:
-	var node_up_vector = player.basis.y
-	var angle_to_down_radians = node_up_vector.angle_to(Vector3.DOWN)
-	var angle_to_down_degrees = rad_to_deg(angle_to_down_radians)
-	var upside_down_threshold = 89
-
-	if angle_to_down_degrees < upside_down_threshold:
-		return true
-	else:
-		return false
-
-
-func correct_roll(delta:float):
-	var targetY:Vector3 = (Vector3.UP - Vector3.UP.dot(-player.basis.z)*-player.basis.z).normalized()
-	var targetX:Vector3 = (targetY.cross(player.basis.z)).normalized()
-	var targetBasis:Basis = Basis(targetX, targetY, player.basis.z)
-	var targetRotation:Quaternion = Quaternion(targetBasis.orthonormalized())
-	var currentRotation:Quaternion = Quaternion(player.basis.orthonormalized())
-	var angleToTarget:float = currentRotation.angle_to(targetRotation)
-	var stepAngle:float = rolling_level_speed * delta
-	var stepValue:float = stepAngle/angleToTarget
-	var curveSample = easeOut.sample(angleToTarget)
-	if stepAngle*curveSample < angleToTarget:
-		player.basis = currentRotation.slerp(targetRotation, stepValue*curveSample)
-	else:
-		player.basis = targetBasis
-
-
-func align_to_floor_normal(delta, instant:bool):
-	var floor_normal = floor_raycast.get_collision_normal()
-	var target_normal_local = floor_normal * proxy.basis
-	var target_pitch = atan2(target_normal_local.z, target_normal_local.y)
-	if not instant:
-		proxy.transform.basis = proxy.transform.basis.rotated(proxy.transform.basis.x, target_pitch * ship_statemachine.ship_stats.slerp_speed * delta)
-	else:
-		proxy.transform.basis = proxy.transform.basis.rotated(proxy.transform.basis.x, target_pitch)
 
 func get_input(delta):
 	# turning input
@@ -172,22 +186,27 @@ func get_input(delta):
 	# Brake/Accelerate input
 	accel_input = 0.0
 	accel_input += Input.get_action_strength("pitch_down")
-	accel_input -= Input.get_action_strength("pitch_up")
+	accel_input -= Input.get_action_strength("pitch_up") * 0.4
 	
+	if Input.is_action_just_pressed("drift"):
+		pass
+
 	# if not Input.is_action_pressed("drift"):
 	# 	var flags:Dictionary = {
 	# 	"target_speed":target_speed,
-	# 	"player.velocity":proxy.velocity,
+	# 	"player.velocity":proxy_orb.velocity,
 	# 	"forward_speed":forward_speed
 	# 	}
 	# 	toggle_collision_shapes()
 	# 	finished.emit("Rolling", flags)
+
 
 func toggle_collision_shapes():
 	var player_collision_shapes:Array = Array()
 	player_collision_shapes.append(%Player/ShipCollider)
 	player_collision_shapes.append(%Player/GroundedRayCollider)
 	var proxy_collision_shapes:Array = Array()
+	proxy_collision_shapes.append(%RollingProxy/Orb)
 	proxy_collision_shapes.append(%RollingProxy/Orb/WeBallNow)
 
 	for shapes in player_collision_shapes:
@@ -197,21 +216,6 @@ func toggle_collision_shapes():
 	
 
 func offset_camera_Y(delta:float):
-	var _normalized_forward_speed = Helpers.Map(forward_speed, 0, ship_statemachine.ship_stats.hovering_max_speed, 0, 1)
-	camera_Y_offset.emit(_normalized_forward_speed, 0, delta)
-
-
-func _on_orb_body_entered(body:Node) -> void:
-	if body.is_in_group("terrain"):
-		#print_debug("is grounded setting true, collding with: ")
-		if !is_grounded:
-			is_grounded = true
-			ungrounded_time = ungrounded_grace
-		
-
-
-
-func _on_orb_body_exited(body:Node) -> void:
-	if body.is_in_group("terrain"):
-		#print_debug("is grounded setting false, collding with: ")
-		is_grounded = false
+	var _normalized_forward_speed = forward_speed / state_max_speed
+	var targetY = Helpers.Map(_normalized_forward_speed, 0, 1, 0, ship_statemachine.ship_stats.camera_Y_offset)
+	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)
