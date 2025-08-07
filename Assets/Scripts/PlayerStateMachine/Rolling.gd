@@ -75,19 +75,25 @@ func update(delta:float):
 
 func physicsUpdate(delta:float):
 	get_input(delta)
+
+	# turn ship
+	if proxy_orb.linear_velocity.length() > turn_stop_limit:		
+		var new_basis = proxy_xform.global_transform.basis.rotated(proxy_xform.global_basis.y, turn_input)
+		proxy_xform.global_basis = proxy_xform.global_basis.slerp(new_basis, turn_force * delta)
+		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
+
 	# access the physics server directly for detailed contact information
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
 	var contact_count = physics_state.get_contact_count()
 	forward_speed = physics_state.linear_velocity.length()
 	var _normalized_forward_speed := forward_speed / state_max_speed
 	var _stick_force = _normalized_forward_speed * ground_stick_force
+	var _stick_curve_sample = StickCurve.sample(_normalized_forward_speed)
 	if physics_state.linear_velocity.length() > state_max_speed:
 		physics_state.linear_velocity = physics_state.linear_velocity.normalized() * state_max_speed
 
-	# update player to orb position
-	player.transform.origin = proxy_orb.transform.origin
-	player.global_transform = player.global_transform.orthonormalized()
-
+	proxy_xform.transform.origin = proxy_orb.transform.origin
+	
 	# check contact count to determine if grounded
 	if contact_count > 0: # grounded
 		if contact_count > 1: # get average normals, in case of multiple collisions
@@ -113,12 +119,12 @@ func physicsUpdate(delta:float):
 		# if angle_to_target < max_normal_alignment:
 		# 	player.global_transform = player.global_transform.interpolate_with(_xform, rolling_level_speed * delta).orthonormalized()
 
-		var _xform = align_with_y(player.global_transform, average_terrain_normal.normalized())
-		player.global_transform = player.global_transform.interpolate_with(_xform, rolling_level_speed * delta)
-		player.global_transform = player.global_transform.orthonormalized()
+		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
+		proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, rolling_level_speed * delta)
+		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
+		
 		# apply gravity and force
 		proxy_orb.gravity_scale = gravity_grounded
-		var _stick_curve_sample = StickCurve.sample(_normalized_forward_speed)
 		proxy_orb.apply_central_force(-average_terrain_normal * ground_stick_force * _stick_curve_sample)
 		proxy_orb.apply_central_force(-player.basis.z * accel_force * accel_input)
 		ungrounded_time = ungrounded_grace
@@ -128,6 +134,10 @@ func physicsUpdate(delta:float):
 	else: # airborne
 		if ungrounded_time > 0.0:
 			ungrounded_time -= delta	
+			var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
+			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, rolling_level_speed * delta)
+			proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
+			proxy_orb.apply_central_force(-average_terrain_normal * ground_stick_force * _stick_curve_sample)
 		else:
 			# if elapsed_time < level_duration:
 			# 	elapsed_time += delta
@@ -136,14 +146,15 @@ func physicsUpdate(delta:float):
 			if is_grounded:
 				elapsed_time = 0
 			is_grounded = false
+
 			# rotate towards the orbs forward direction, without turning
 			var proxy_linear_velocity = physics_state.linear_velocity.normalized()
 			var _right = Vector3.UP.cross(proxy_linear_velocity)
 			var proxy_direction_up = proxy_linear_velocity.cross(_right)
-			var _orb_local_up  = align_with_y(player.global_transform, proxy_direction_up)
-			print_debug(eased_t)
-			player.global_transform = player.global_transform.interpolate_with(_orb_local_up, rolling_level_speed * delta * eased_t)
-			player.global_transform = player.global_transform.orthonormalized()
+			var _orb_local_up  = align_with_y(proxy_xform.global_transform, proxy_direction_up)
+			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, rolling_level_speed * delta * eased_t)
+			proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
+
 			# rotate towards a neutral position, without changing the players forward direction
 			# var proxy_linear_velocity = physics_state.linear_velocity.normalized()
 			# if proxy_linear_velocity.length_squared() > 0.01:
@@ -151,21 +162,21 @@ func physicsUpdate(delta:float):
 			# 	var _final_basis = Basis(-player.global_basis.z.cross(_target_basis.y), _target_basis.y, player.global_basis.z) 
 			# 	player.global_basis = player.basis.slerp(_final_basis, delta * rolling_level_speed).orthonormalized()
 		# apply airborne gravity and input forces
+
 		proxy_orb.gravity_scale = gravity_airborne
 		proxy_orb.apply_central_force(-player.basis.z * accel_force * accel_input * 0.25)		
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
 	
+	# update player to orb position
+	player.transform.origin = proxy_xform.transform.origin.slerp(proxy_orb.transform.origin, 0.5)
+	player.transform = player.global_transform.interpolate_with(proxy_xform.transform, ship_statemachine.ship_stats.rolling_alignment_speed * delta)
+	player.global_transform = player.global_transform.orthonormalized()
 
-	# turn ship
-	if proxy_orb.linear_velocity.length() > turn_stop_limit:		
-		var new_basis = player.global_transform.basis.rotated(player.global_basis.y, turn_input)
-		player.global_basis = player.global_basis.slerp(new_basis, turn_force * delta)
-		player.global_transform = player.global_transform.orthonormalized()
-
+	
 	# Roll the body based on the turn input
 	ShipContainer.rotation.z = lerp(ShipContainer.rotation.z, turn_input*ship_statemachine.ship_stats.hovering_rollMultiplier, ship_statemachine.ship_stats.hovering_level_speed * delta)
-	offset_camera_Y
+	offset_camera_Y(delta)
 
 
 
@@ -217,5 +228,5 @@ func toggle_collision_shapes():
 
 func offset_camera_Y(delta:float):
 	var _normalized_forward_speed = forward_speed / state_max_speed
-	var targetY = Helpers.Map(_normalized_forward_speed, 0, 1, 0, ship_statemachine.ship_stats.camera_Y_offset)
+	var targetY = _normalized_forward_speed * ship_statemachine.ship_stats.camera_Y_offset
 	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)

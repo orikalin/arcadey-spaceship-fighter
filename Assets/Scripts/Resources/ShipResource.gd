@@ -1,6 +1,7 @@
 class_name ShipResource extends Resource
 
 @export_category("Hover Stats")
+@export var rolling_alignment_speed:float = 12.0
 # Can't fly below this speed
 @export var hovering_min_speed:float = 5.0
 # Maximum airspeed

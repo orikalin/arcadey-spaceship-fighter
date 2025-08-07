@@ -129,16 +129,19 @@ floor_max_angle = 0.872665
 
 [node name="RayCast3D" type="RayCast3D" parent="Player"]
 transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
+enabled = false
 target_position = Vector3(0, -2, 0)
 
 [node name="ShipCollider" type="CollisionShape3D" parent="Player"]
 transform = Transform3D(0.62, 0, 0, 0, 0.62, 0, 0, 0, 0.62, 0, 0, 0)
 shape = SubResource("CylinderShape3D_0v85l")
+disabled = true
 debug_color = Color(0, 0.595, 0.7, 0.858824)
 
 [node name="GroundedRayCollider" type="CollisionShape3D" parent="Player"]
 transform = Transform3D(0.62, 0, 0, 0, -2.71011e-08, -0.62, 0, 0.62, -2.71011e-08, 0, 0, 0)
 shape = SubResource("SeparationRayShape3D_cgw0f")
+disabled = true
 
 [node name="CameraManager" type="Node3D" parent="Player"]
 unique_name_in_owner = true
@@ -360,11 +363,12 @@ proxy_orb = NodePath("../../../RollingProxy/Orb")
 ShipContainer = NodePath("../../ShipContainer")
 StickCurve = SubResource("Curve_4trtj")
 turn_force = 8.0
-rolling_level_speed = 4.0
-gravity_airborne = 2.0
-gravity_grounded = 0.5
+rolling_level_speed = 6.0
+gravity_airborne = 3.0
+gravity_grounded = 0.4
 ground_stick_force = 100.0
-ungrounded_grace = 5.0
+state_max_speed = 80.0
+ungrounded_grace = 0.4
 easeInOut = SubResource("Curve_de37j")
 
 [node name="AscendCharge" type="Node" parent="Player/ShipStateMachine"]
@@ -394,7 +398,7 @@ transform = Transform3D(0.999999, 0, -1.77636e-15, 0, 1, 0, 1.77636e-15, 0, 0.99
 [node name="Orb" type="RigidBody3D" parent="RollingProxy"]
 unique_name_in_owner = true
 collision_layer = 2
-mass = 3.0
+mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_uksnq")
 gravity_scale = 0.1
 contact_monitor = true
