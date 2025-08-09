@@ -168,6 +168,11 @@ network={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Terrain"
+3d_physics/layer_2="Player"
+
 [phantom_camera]
 
 tips/show_jitter_tips=false

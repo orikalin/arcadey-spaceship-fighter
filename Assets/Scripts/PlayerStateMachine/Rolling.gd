@@ -1,5 +1,7 @@
 extends State
 
+@onready var ground_raycasts:Array = %ground_check_rays.get_children()
+
 @export var player:CharacterBody3D
 @export var proxy_xform:CharacterBody3D
 @export var proxy_orb:RigidBody3D
@@ -15,6 +17,7 @@ extends State
 @export var max_normal_alignment:float = 180.0
 @export var state_max_speed:float = 75.0
 @export var fallingPitchSpeed:float = 0.8
+@export var falling_level_speed:float = 6.0
 
 # duration since the player left the ground
 @export var ungrounded_grace:float = 2.0
@@ -97,23 +100,44 @@ func physicsUpdate(delta:float):
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 	
 	# test rewriting this to use the aeverage normal of 4 local downward raycasts
-	
-	# check contact count to determine if grounded
-	if contact_count > 0: # grounded
-		if contact_count > 1: # get average normals, in case of multiple collisions
-			var terrain_normals = Array()
-			var sum_terrain_normals := Vector3.ZERO
+	# array of all raycast that hit terrain, ge thte average normal
+	# set grounded if any rays hit terrain
 
-			for i in range(physics_state.get_contact_count()):
-				var normal = physics_state.get_contact_local_normal(i)
-				terrain_normals.append(normal)
-
-			for normal in terrain_normals:
-				sum_terrain_normals += normal
+	var _new_terrain_normals:Array
+	var _new_sum_terrain_normals := Vector3.ZERO
+	var _new_average_terrain_normal:Vector3
+	for raycast:RayCast3D in ground_raycasts:
+		var _raycast_hit := raycast.get_collider()
+		if _raycast_hit != null:
+			if _raycast_hit.get_collision_mask_value(1):
+				_new_terrain_normals.append(raycast.get_collision_normal())
+	if _new_terrain_normals.size() > 0:
+		for _normal in _new_terrain_normals:
+			_new_sum_terrain_normals += _normal
+		average_terrain_normal = _new_sum_terrain_normals / _new_terrain_normals.size()
+		is_grounded = true
+	else:
+		is_grounded = false
 			
-			average_terrain_normal = sum_terrain_normals / float(terrain_normals.size())
-		else:
-			average_terrain_normal = physics_state.get_contact_local_normal(0)
+
+
+	# check contact count to determine if grounded
+	if is_grounded:
+	# if contact_count > 0:
+		# if contact_count > 1:
+		# 	var terrain_normals = Array()
+		# 	var sum_terrain_normals := Vector3.ZERO
+
+		# 	for i in range(physics_state.get_contact_count()):
+		# 		var normal = physics_state.get_contact_local_normal(i)
+		# 		terrain_normals.append(normal)
+
+		# 	for normal in terrain_normals:
+		# 		sum_terrain_normals += normal
+			
+		# 	average_terrain_normal = sum_terrain_normals / float(terrain_normals.size())
+		# else:
+		# 	average_terrain_normal = physics_state.get_contact_local_normal(0)
 
 		# Check the angle to the target rotation, if its too great, don't rotate!
 		# var _player_quat:Quaternion = Quaternion(player.basis.orthonormalized())
@@ -132,15 +156,12 @@ func physicsUpdate(delta:float):
 		proxy_orb.apply_central_force(-average_terrain_normal * ground_stick_force * _stick_curve_sample)
 		proxy_orb.apply_central_force(-player.basis.z * accel_force * accel_input)
 		ungrounded_time = ungrounded_grace
-		is_grounded = true
+		# is_grounded = true
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
 
 	else: # airborne
 		if ungrounded_time > 0.0:
 			ungrounded_time -= delta	
-			var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
-			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, rolling_level_speed * delta)
-			proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 			proxy_orb.apply_central_force(-average_terrain_normal * ground_stick_force * _stick_curve_sample)
 		else:
 			# if elapsed_time < level_duration:
@@ -156,7 +177,7 @@ func physicsUpdate(delta:float):
 			var _right = Vector3.UP.cross(proxy_linear_velocity)
 			var proxy_direction_up = proxy_linear_velocity.cross(_right)
 			var _orb_local_up  = align_with_y(proxy_xform.global_transform, proxy_direction_up)
-			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, rolling_level_speed * delta * eased_t)
+			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, falling_level_speed * delta * eased_t)
 			proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 
 			# rotate towards a neutral position, without changing the players forward direction

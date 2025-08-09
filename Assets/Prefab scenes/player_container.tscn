@@ -199,7 +199,7 @@ skeleton = NodePath("../Engines")
 
 [node name="HeadLight" type="SpotLight3D" parent="Player/ShipContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.10352e-05, 0, -2.0842)
-light_energy = 10.1
+light_energy = 3.8
 light_specular = 0.2
 distance_fade_begin = 4.95
 distance_fade_length = 6.1
@@ -213,7 +213,6 @@ transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
 
 [node name="TailLight" type="OmniLight3D" parent="Player/ShipContainer/OmniLights"]
 transform = Transform3D(1, 0, 1.49012e-08, 0, 1, 0, -1.49012e-08, 0, 1, -6.10352e-05, -0.207854, 0.43457)
-light_color = Color(1, 0.802444, 0.66258, 1)
 light_specular = 0.25
 omni_range = 15.851
 omni_attenuation = -0.032
@@ -362,12 +361,13 @@ proxy_orb = NodePath("../../../RollingProxy/Orb")
 ShipContainer = NodePath("../../ShipContainer")
 StickCurve = SubResource("Curve_4trtj")
 turn_force = 8.0
-rolling_level_speed = 6.0
+rolling_level_speed = 12.0
 gravity_airborne = 3.0
 gravity_grounded = 0.4
 ground_stick_force = 100.0
 state_max_speed = 80.0
-ungrounded_grace = 0.4
+falling_level_speed = 2.0
+ungrounded_grace = 0.1
 easeInOut = SubResource("Curve_de37j")
 
 [node name="AscendCharge" type="Node" parent="Player/ShipStateMachine"]
@@ -389,6 +389,28 @@ debug_color = Color(0, 0.595, 0.7, 0.858824)
 transform = Transform3D(0.62, 0, 4.44089e-16, 0, -2.71011e-08, -0.62, 0, 0.62, -2.71011e-08, 0, 0, 0)
 shape = SubResource("SeparationRayShape3D_cgw0f")
 disabled = true
+
+[node name="ground_check_rays" type="Node3D" parent="PlayerProxy"]
+unique_name_in_owner = true
+
+[node name="back_right" type="RayCast3D" parent="PlayerProxy/ground_check_rays"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0, 1.4)
+target_position = Vector3(0, -2.25, 0)
+
+[node name="back_left" type="RayCast3D" parent="PlayerProxy/ground_check_rays"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 0, 1.4)
+target_position = Vector3(0, -2.25, 0)
+
+[node name="front_right" type="RayCast3D" parent="PlayerProxy/ground_check_rays"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0, -1.4)
+target_position = Vector3(0, -2.25, 0)
+
+[node name="front_left" type="RayCast3D" parent="PlayerProxy/ground_check_rays"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 0, -1.4)
+target_position = Vector3(0, -2.25, 0)
+
+[node name="center" type="RayCast3D" parent="PlayerProxy/ground_check_rays"]
+target_position = Vector3(0, -2.25, 0)
 
 [node name="RollingProxy" type="Node3D" parent="."]
 unique_name_in_owner = true
