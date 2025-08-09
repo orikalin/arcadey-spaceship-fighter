@@ -49,7 +49,7 @@ look_at_mode = 3
 tween_resource = ExtResource("8_aumkr")
 tween_on_load = false
 follow_damping = true
-follow_damping_value = Vector3(0.03, 0.03, 0.03)
+follow_damping_value = Vector3(0.05, 0.05, 0.05)
 look_at_damping = true
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
@@ -89,6 +89,7 @@ metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 [node name="MainCamera" type="Camera3D" parent="PhantomCameras"]
 unique_name_in_owner = true
 transform = Transform3D(0.999996, -1.01021e-05, 6.75147e-05, 1.63722e-07, 0.989272, 0.14561, -6.82679e-05, -0.145604, 0.989311, 0.000976519, 2.10843, 2.96243)
+cull_mask = 524287
 current = true
 
 [node name="PhantomCameraHost" type="Node" parent="PhantomCameras/MainCamera"]

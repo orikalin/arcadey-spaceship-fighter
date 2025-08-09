@@ -152,7 +152,7 @@ ease_speed = 1.5
 
 [node name="LookAtTarget" type="Node3D" parent="Player/CameraManager"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, -1.35983e-08, 0, 1, 0, 1.35983e-08, 0, 1, -7.14701e-07, 1, -22.9769)
+transform = Transform3D(1, 0, -1.35983e-08, 0, 1, 0, 1.35983e-08, 0, 1, 0, 5, -15)
 
 [node name="Arm" type="SpringArm3D" parent="Player/CameraManager"]
 unique_name_in_owner = true
@@ -199,15 +199,14 @@ skeleton = NodePath("../Engines")
 
 [node name="HeadLight" type="SpotLight3D" parent="Player/ShipContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.10352e-05, 0, -2.0842)
-visible = false
-light_energy = 3.315
+light_energy = 10.1
 light_specular = 0.2
 distance_fade_begin = 4.95
 distance_fade_length = 6.1
-spot_range = 91.341
-spot_attenuation = -0.11
-spot_angle = 59.21
-spot_angle_attenuation = 1.1487
+spot_range = 150.0
+spot_attenuation = 0.12
+spot_angle = 60.0
+spot_angle_attenuation = 0.482969
 
 [node name="OmniLights" type="Node3D" parent="Player/ShipContainer"]
 transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)

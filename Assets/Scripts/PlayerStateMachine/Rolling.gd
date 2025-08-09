@@ -43,6 +43,7 @@ var turn_input:float = 0.0
 var ship_statemachine:StateMachine
 var is_grounded:bool = false
 var average_terrain_normal:Vector3
+var gamepad:bool = false
 
 signal camera_Y_offset
 
@@ -62,6 +63,7 @@ func enter(oldState:String, flags:Dictionary):
 	elif oldState == "Flying":
 		pass
 	else:
+		proxy_xform.transform = player.transform
 		proxy_orb.transform = player.transform
 
 func update(delta:float):
@@ -93,6 +95,8 @@ func physicsUpdate(delta:float):
 		physics_state.linear_velocity = physics_state.linear_velocity.normalized() * state_max_speed
 
 	proxy_xform.transform.origin = proxy_orb.transform.origin
+	
+	# test rewriting this to use the aeverage normal of 4 local downward raycasts
 	
 	# check contact count to determine if grounded
 	if contact_count > 0: # grounded
@@ -161,8 +165,8 @@ func physicsUpdate(delta:float):
 			# 	var _target_basis = Basis.looking_at(proxy_linear_velocity, Vector3.UP)
 			# 	var _final_basis = Basis(-player.global_basis.z.cross(_target_basis.y), _target_basis.y, player.global_basis.z) 
 			# 	player.global_basis = player.basis.slerp(_final_basis, delta * rolling_level_speed).orthonormalized()
+		
 		# apply airborne gravity and input forces
-
 		proxy_orb.gravity_scale = gravity_airborne
 		proxy_orb.apply_central_force(-player.basis.z * accel_force * accel_input * 0.25)		
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
@@ -196,8 +200,14 @@ func get_input(delta):
 
 	# Brake/Accelerate input
 	accel_input = 0.0
-	accel_input += Input.get_action_strength("pitch_down")
-	accel_input -= Input.get_action_strength("pitch_up") * 0.4
+	if  gamepad:
+		if Input.is_action_pressed("throttle_up"):
+			accel_input += 1
+		elif gamepad and Input.is_action_pressed("throttle_down"):
+			accel_input -= 0.4
+	else:
+		accel_input += Input.get_action_strength("pitch_down")
+		accel_input -= Input.get_action_strength("pitch_up") * 0.4
 	
 	if Input.is_action_just_pressed("drift"):
 		pass
@@ -230,3 +240,9 @@ func offset_camera_Y(delta:float):
 	var _normalized_forward_speed = forward_speed / state_max_speed
 	var targetY = _normalized_forward_speed * ship_statemachine.ship_stats.camera_Y_offset
 	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey or event is InputEventMouse:
+		gamepad = false
+	elif event is InputEventJoypadMotion or event is InputEventJoypadButton:
+		gamepad = true
