@@ -18,8 +18,9 @@
 [ext_resource type="Texture2D" uid="uid://c307hdmos4gtm" path="res://Assets/Materials/textures/rock023_nrm_rgh.png" id="25_n50bp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vibap"]
-sky_top_color = Color(0.192157, 0.282353, 0.509804, 1)
-sky_horizon_color = Color(0.206041, 0.460628, 0.682676, 1)
+sky_top_color = Color(0.129804, 0.198677, 0.373165, 1)
+sky_horizon_color = Color(0.541191, 0.742763, 0.934342, 1)
+sky_curve = 0.27991
 ground_bottom_color = Color(0.211765, 0.313726, 0.552941, 1)
 ground_horizon_color = Color(0.207843, 0.458824, 0.682353, 1)
 ground_curve = 0.13
@@ -31,17 +32,18 @@ sky_material = SubResource("ProceduralSkyMaterial_vibap")
 background_mode = 2
 sky = SubResource("Sky_srg7c")
 ambient_light_source = 3
-ambient_light_color = Color(0.55, 0.55, 0.55, 1)
+ambient_light_color = Color(0.920995, 0.920995, 0.920995, 1)
 ambient_light_sky_contribution = 0.3
+ambient_light_energy = 0.68
 tonemap_mode = 3
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_0gcl0"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_s0c8u"]
-size = Vector3(4918.9, 100, 1)
+size = Vector3(5950, 1197, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pyqb2"]
-size = Vector3(1, 100, 4959.41)
+size = Vector3(1, 1214, 4959.41)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_goiy4"]
 size = Vector3(530.482, 38.6343, 235.603)
@@ -213,9 +215,7 @@ camera_attributes = SubResource("CameraAttributesPractical_0gcl0")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
 transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
-shadow_blur = 2.0
 directional_shadow_blend_splits = true
-directional_shadow_fade_start = 0.84
 directional_shadow_max_distance = 1000.0
 
 [node name="Borders" type="StaticBody3D" parent="." groups=["terrain"]]
@@ -223,19 +223,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 512, -3, 512)
 collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Borders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 426.868, 50, 1536.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 114.318, 598.5, 1439.5)
 shape = SubResource("BoxShape3D_s0c8u")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Borders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 431.755, 50, -2586.38)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 228.755, 50, -2504.38)
 shape = SubResource("BoxShape3D_s0c8u")
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="Borders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2626.02, 50, -532.196)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2490.02, 50, -532.196)
 shape = SubResource("BoxShape3D_pyqb2")
 
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="Borders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1574.6, 50, -733.667)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2538.6, 607, -733.667)
 shape = SubResource("BoxShape3D_pyqb2")
 
 [node name="Tunnel" type="Node3D" parent="." groups=["terrain"]]

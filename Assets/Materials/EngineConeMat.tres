@@ -6,6 +6,6 @@ blend_mode = 1
 cull_mode = 2
 shading_mode = 0
 vertex_color_use_as_albedo = true
-albedo_color = Color(1, 0.73232, 0.359339, 1)
+albedo_color = Color(0.987929, 0.60855, 0, 1)
 detail_blend_mode = 3
 grow_amount = -2.097

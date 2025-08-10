@@ -29,6 +29,7 @@ var Trails
 @export var cone_flare_speed:float = 1
 @export var trail_speed_velocity:float = 1.0
 var target_cone_power:float = 0.2
+@export var target_light_power:float = 2.0
 var cone_flare_power:float
 
 ## ==================================================================================================
@@ -89,11 +90,12 @@ func _process(delta:float):
 		var EnginePower:float = Helpers.Map(currentSpeed, 0, ship_statemachine.currentState.state_max_speed, 0, 1)
 		var is_drifting = ship_statemachine.currentState.name == "Drift"
 
+
+
 		# Calculate results for various particles and materials
-		var _EngineCurveSample:float = EngineLightCurve.sample(EnginePower)
-
-
 		if EngineLights.size() > 0:
+			target_light_power = lerp(target_light_power, accel_input, delta * cone_flare_speed * cone_flare_power)
+			var _EngineCurveSample:float = EngineLightCurve.sample(target_light_power)
 			var _light_attenuation:float = lerp(1.0, EngineLightIntensity, _EngineCurveSample)
 			var _light_energy_spot:float = lerp(1.0, EngineLightEnergy, _EngineCurveSample)
 			var _light_energy_omni:float = lerp(0.2, 2.0, _EngineCurveSample) 

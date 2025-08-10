@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=41 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
@@ -13,6 +13,7 @@
 [ext_resource type="CylinderMesh" uid="uid://cx3jhed4ffdac" path="res://Assets/Materials/EngineConeMesh.tres" id="11_txwvw"]
 [ext_resource type="Curve" uid="uid://eb184d2a41yc" path="res://Assets/Curves/EngineConeCurve.tres" id="11_uksnq"]
 [ext_resource type="Script" uid="uid://bqflf4vw8mem1" path="res://addons/lines_and_trails_3d/trail_3d.gd" id="12_r5ri1"]
+[ext_resource type="Curve" uid="uid://bihtqihjfgawq" path="res://Assets/Curves/engine_cone_linear_accel.tres" id="13_4trtj"]
 [ext_resource type="Curve" uid="uid://c1yv3tea7x6gj" path="res://Assets/Curves/trail_velocity_curve.tres" id="13_guf3m"]
 [ext_resource type="Script" uid="uid://w2iurlb7divh" path="res://Assets/Scripts/PlayerStateMachine/ShipStateMachine.gd" id="14_kj614"]
 [ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="15_0cqmc"]
@@ -37,12 +38,7 @@ point_count = 4
 [sub_resource type="SphereShape3D" id="SphereShape3D_smq6u"]
 
 [sub_resource type="Curve" id="Curve_uksnq"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0495049, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 3
-
-[sub_resource type="Curve" id="Curve_ilw7v"]
-_limits = [0.0, 200.0, 0.0, 1.0]
-_data = [Vector2(0, 200), 0.0, -64.3081, 0, 1, Vector2(1, 135.692), -64.3081, 0.0, 1, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_y725d"]
@@ -62,24 +58,21 @@ _data = [Vector2(0, 0.658109), 0.0, 3.13044, 0, 1, Vector2(0.109215, 1), 3.13044
 point_count = 3
 
 [sub_resource type="Gradient" id="Gradient_m8k8q"]
-colors = PackedColorArray(1, 1, 1, 0.509804, 1, 0.813333, 0.68, 0.0196078)
+offsets = PackedFloat32Array(0, 0.0574713, 1)
+colors = PackedColorArray(0.934757, 0.559541, 0.305453, 1, 1, 0.988333, 0.98, 1, 1, 0.813333, 0.68, 0.0196078)
 
 [sub_resource type="Curve" id="Curve_noymn"]
-_data = [Vector2(0, 1), 0.0, 45.1239, 0, 0, Vector2(0.0446429, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.04673, 0.0, 1, 0]
-point_count = 3
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
 
 [sub_resource type="Gradient" id="Gradient_a5vl3"]
-offsets = PackedFloat32Array(0, 0.0585938, 0.33871, 0.812903)
-colors = PackedColorArray(1, 0.411019, 0.162818, 0, 1, 0.360784, 0, 1, 1, 0.360784, 0, 0.894118, 0.935743, 0.335478, 7.66242e-05, 0)
+offsets = PackedFloat32Array(0, 0.021978, 0.33871, 0.812903)
+colors = PackedColorArray(1, 0.67, 0.45, 0, 1, 0.360784, 0, 1, 1, 0.360784, 0, 0.894118, 0.935743, 0.335478, 7.66242e-05, 0)
 
 [sub_resource type="Curve" id="Curve_paeve"]
 _limits = [0.0, 1.0, 0.0, 2.5]
 _data = [Vector2(0.0819672, 0.115938), 0.0, 0.510407, 0, 0, Vector2(1.87705, 1), 0.0625179, 0.0, 0, 0]
 point_count = 2
-
-[sub_resource type="Curve" id="Curve_4trtj"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.551155, 0.0528075), 0.0958123, 9.6943, 1, 1, Vector2(0.623762, 0.756685), 9.6943, 1.81578, 1, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 4
 
 [sub_resource type="Curve" id="Curve_de37j"]
 _data = [Vector2(0, 0), 0.0, -0.0392011, 0, 0, Vector2(1, 1), 3.83173e-07, 0.0, 0, 0]
@@ -180,7 +173,7 @@ EngineLightCurve = ExtResource("10_vwhge")
 EngineConeCurve = ExtResource("11_uksnq")
 TrailCurve = SubResource("Curve_uksnq")
 EngineLightIntensity = 3.625
-EngineLightEnergy = 3.0
+EngineLightEnergy = 2.0
 trail_width_max = 0.45
 engine_cone_lerp_speed = 8.0
 trail_speed_velocity = 1.5
@@ -199,6 +192,7 @@ skeleton = NodePath("../Engines")
 
 [node name="HeadLight" type="SpotLight3D" parent="Player/ShipContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.10352e-05, 0, -2.0842)
+visible = false
 light_energy = 3.8
 light_specular = 0.2
 distance_fade_begin = 4.95
@@ -212,9 +206,9 @@ spot_angle_attenuation = 0.482969
 transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
 
 [node name="TailLight" type="OmniLight3D" parent="Player/ShipContainer/OmniLights"]
-transform = Transform3D(1, 0, 1.49012e-08, 0, 1, 0, -1.49012e-08, 0, 1, -6.10352e-05, -0.207854, 0.43457)
+transform = Transform3D(1, 0, 1.49012e-08, 0, 1, 0, -1.49012e-08, 0, 1, -6.10362e-05, -0.324421, 0.369416)
 light_specular = 0.25
-omni_range = 15.851
+omni_range = 24.025
 omni_attenuation = -0.032
 omni_shadow_mode = 0
 
@@ -223,13 +217,11 @@ transform = Transform3D(0.2299, 0, 0, 0, 0.2299, 0, 0, 0, 0.2299, 0, 0, 0)
 
 [node name="EngineLight_L" type="SpotLight3D" parent="Player/ShipContainer/EngineLights"]
 transform = Transform3D(-4.34972, 0, 4.17233e-07, 0, 4.34972, 0, -3.57628e-07, 0, -4.34972, -3.72844, 0, 3.53577)
-light_color = Color(1, 0.636765, 0.30254, 1)
 spot_range = 8.85
 spot_angle = 61.58
 
 [node name="EngineLight_R" type="SpotLight3D" parent="Player/ShipContainer/EngineLights"]
 transform = Transform3D(-4.34972, 0, 3.57628e-07, 0, 4.34972, 0, -3.57628e-07, 0, -4.34972, 3.728, 0, 3.536)
-light_color = Color(1, 0.636765, 0.30254, 1)
 spot_range = 8.85
 spot_angle = 61.58
 
@@ -244,17 +236,17 @@ particle_flag_align_y = true
 direction = Vector3(0, -1, 0)
 spread = 0.0
 gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.1
-initial_velocity_max = 0.1
+initial_velocity_min = 0.2
+initial_velocity_max = 0.2
 linear_accel_min = 0.01
 linear_accel_max = 0.01
-linear_accel_curve = SubResource("Curve_ilw7v")
+linear_accel_curve = ExtResource("13_4trtj")
 scale_amount_curve = SubResource("Curve_y725d")
 split_scale = true
 scale_curve_x = SubResource("Curve_ktdep")
 scale_curve_y = SubResource("Curve_0hif8")
 scale_curve_z = SubResource("Curve_751v6")
-color = Color(1, 0.69912, 0.378778, 1)
+color = Color(0.91, 0.592562, 0.0819, 1)
 color_ramp = SubResource("Gradient_m8k8q")
 
 [node name="EngineCone_R" type="CPUParticles3D" parent="Player/ShipContainer/EngineCones"]
@@ -265,24 +257,24 @@ particle_flag_align_y = true
 direction = Vector3(0, -1, 0)
 spread = 0.0
 gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.1
-initial_velocity_max = 0.1
+initial_velocity_min = 0.2
+initial_velocity_max = 0.2
 linear_accel_min = 0.01
 linear_accel_max = 0.01
-linear_accel_curve = SubResource("Curve_ilw7v")
+linear_accel_curve = ExtResource("13_4trtj")
 scale_amount_curve = SubResource("Curve_y725d")
 split_scale = true
 scale_curve_x = SubResource("Curve_ktdep")
 scale_curve_y = SubResource("Curve_0hif8")
 scale_curve_z = SubResource("Curve_751v6")
-color = Color(1, 0.69912, 0.378778, 1)
+color = Color(0.91, 0.592562, 0.0819, 1)
 color_ramp = SubResource("Gradient_m8k8q")
 
 [node name="Trails" type="Node3D" parent="Player/ShipContainer"]
 
 [node name="Engine_Trail_L" type="MeshInstance3D" parent="Player/ShipContainer/Trails"]
 process_priority = 9999
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.893201, 0, 1.61417)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.893201, 0, 1.95546)
 skeleton = NodePath("")
 script = ExtResource("12_r5ri1")
 initial_velocity_toggle = true
@@ -290,13 +282,14 @@ time_limit = 1.0
 initial_velocity_curve = ExtResource("13_guf3m")
 width = 0.553
 width_curve = SubResource("Curve_noymn")
+color = Color(0.999749, 0.752747, 0.524661, 1)
 gradient = SubResource("Gradient_a5vl3")
 material_type = 3
 metadata/_custom_type_script = "uid://bqflf4vw8mem1"
 
 [node name="Engine_Trail_R" type="MeshInstance3D" parent="Player/ShipContainer/Trails"]
 process_priority = 9999
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.893, 0, 1.61447)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.893, 0, 1.95576)
 skeleton = NodePath("")
 script = ExtResource("12_r5ri1")
 initial_velocity_toggle = true
@@ -304,6 +297,7 @@ time_limit = 1.0
 initial_velocity_curve = ExtResource("13_guf3m")
 width = 0.553
 width_curve = SubResource("Curve_noymn")
+color = Color(0.999749, 0.752747, 0.524661, 1)
 gradient = SubResource("Gradient_a5vl3")
 material_type = 3
 metadata/_custom_type_script = "uid://bqflf4vw8mem1"
@@ -359,14 +353,6 @@ player = NodePath("../..")
 proxy_xform = NodePath("../../../PlayerProxy")
 proxy_orb = NodePath("../../../RollingProxy/Orb")
 ShipContainer = NodePath("../../ShipContainer")
-StickCurve = SubResource("Curve_4trtj")
-turn_force = 8.0
-rolling_level_speed = 12.0
-gravity_airborne = 3.0
-gravity_grounded = 0.4
-ground_stick_force = 100.0
-state_max_speed = 80.0
-falling_level_speed = 2.0
 ungrounded_grace = 0.1
 easeInOut = SubResource("Curve_de37j")
 

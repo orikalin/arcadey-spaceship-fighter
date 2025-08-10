@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://xlfwqbq88n81" path="res://Assets/Scripts/Core/SceneManager.gd" id="1_tma8b"]
 [ext_resource type="PackedScene" uid="uid://c5lc6ckxyun1x" path="res://Assets/Prefab scenes/PlayerManager.tscn" id="2_6xw86"]
+[ext_resource type="Texture2D" uid="uid://b6h2gia3nla80" path="res://Assets/Materials/palettes/apollo-resaturated-1x.png" id="3_yak2d"]
 [ext_resource type="Shader" uid="uid://cb7d3ktebu8u3" path="res://Assets/Scripts/Shaders/palette_limiter.gdshader" id="4_vvyv8"]
-[ext_resource type="Texture2D" uid="uid://lmrui5frxayf" path="res://Assets/Materials/palettes/apollo-1x.png" id="5_8jknt"]
 [ext_resource type="PackedScene" uid="uid://c7oosc8adu1fp" path="res://Assets/Prefab scenes/TitleBackground.tscn" id="5_hegpx"]
 [ext_resource type="Shader" uid="uid://b53d43pathm8p" path="res://Assets/Scripts/Shaders/edge_detection.gdshader" id="6_78mvm"]
 [ext_resource type="Script" path="res://Assets/Scripts/ShowOnReady.gd" id="7_biprf"]
@@ -14,8 +14,8 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jkl3n"]
 shader = ExtResource("4_vvyv8")
-shader_parameter/num_colors = 128
-shader_parameter/PALETTE_TEXTURE = ExtResource("5_8jknt")
+shader_parameter/num_colors = 126
+shader_parameter/PALETTE_TEXTURE = ExtResource("3_yak2d")
 
 [sub_resource type="QuadMesh" id="QuadMesh_g4sx0"]
 flip_faces = true
