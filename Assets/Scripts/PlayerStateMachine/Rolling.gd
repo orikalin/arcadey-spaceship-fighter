@@ -7,8 +7,6 @@ extends State
 @export var proxy_orb:RigidBody3D
 @export var ShipContainer:MeshInstance3D
 
-# duration since the player left the ground
-@export var ungrounded_grace:float = 2.0
 var ungrounded_time:float = 0.0
 
 # duration of a mid air leveling manuver, eased by a curve
@@ -99,6 +97,8 @@ func physicsUpdate(delta:float):
 	var _terrain_normals:Array
 	var _sum_terrain_normals := Vector3.ZERO
 	var _new_average_terrain_normal:Vector3
+
+	# check the 5 raycasts, get the average normal of all terrain hit, mark as grounded if any hit terrain
 	for raycast:RayCast3D in ground_raycasts:
 		var _raycast_hit := raycast.get_collider()
 		if _raycast_hit != null:
@@ -123,10 +123,11 @@ func physicsUpdate(delta:float):
 		proxy_orb.gravity_scale = ship_stats.gravity_grounded
 		proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.ground_stick_force * _stick_curve_sample)
 		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input)
-		ungrounded_time = ungrounded_grace
+		ungrounded_time = ship_stats.ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
 
+	## while airborne, align to the direction of the orbs forward direction, without turning the player
 	else:
 		if ungrounded_time > 0.0:
 			ungrounded_time -= delta	

@@ -10,7 +10,7 @@ as_normal_map = true
 noise = SubResource("FastNoiseLite_wis17")
 
 [resource]
-albedo_color = Color(0.237539, 0.237539, 0.237539, 1)
+albedo_color = Color(0.197937, 0.197937, 0.197937, 1)
 normal_enabled = true
 normal_scale = 0.86
 normal_texture = SubResource("NoiseTexture2D_fetrj")

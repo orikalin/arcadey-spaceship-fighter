@@ -1,6 +1,7 @@
-[gd_scene load_steps=41 format=3 uid="uid://ookdxcwivpy7"]
+[gd_scene load_steps=42 format=3 uid="uid://ookdxcwivpy7"]
 
 [ext_resource type="Script" uid="uid://wb6qs4vv7kcw" path="res://Assets/LevelScene.gd" id="1_ilnvi"]
+[ext_resource type="Texture2D" uid="uid://b6h2gia3nla80" path="res://Assets/Materials/palettes/apollo-resaturated-1x.png" id="2_v0fjc"]
 [ext_resource type="PackedScene" uid="uid://be6nrf0b8j4l0" path="res://Assets/Terrain3DModels/RockA.tscn" id="7_qda7k"]
 [ext_resource type="PackedScene" uid="uid://bwvtgwartxt0g" path="res://Assets/Terrain3DModels/RockB.tscn" id="8_64n0d"]
 [ext_resource type="PackedScene" uid="uid://lsvs8a7urkca" path="res://Assets/Terrain3DModels/RockC.tscn" id="9_dc56b"]
@@ -20,7 +21,6 @@
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vibap"]
 sky_top_color = Color(0.129804, 0.198677, 0.373165, 1)
 sky_horizon_color = Color(0.541191, 0.742763, 0.934342, 1)
-sky_curve = 0.27991
 ground_bottom_color = Color(0.211765, 0.313726, 0.552941, 1)
 ground_horizon_color = Color(0.207843, 0.458824, 0.682353, 1)
 ground_curve = 0.13
@@ -28,14 +28,27 @@ ground_curve = 0.13
 [sub_resource type="Sky" id="Sky_srg7c"]
 sky_material = SubResource("ProceduralSkyMaterial_vibap")
 
-[sub_resource type="Environment" id="Environment_8jcgm"]
+[sub_resource type="Environment" id="Environment_l0jcy"]
 background_mode = 2
+background_color = Color(1, 1, 1, 1)
 sky = SubResource("Sky_srg7c")
-ambient_light_source = 3
-ambient_light_color = Color(0.920995, 0.920995, 0.920995, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.720468, 0.720468, 0.720467, 1)
 ambient_light_sky_contribution = 0.3
-ambient_light_energy = 0.68
 tonemap_mode = 3
+sdfgi_enabled = true
+sdfgi_bounce_feedback = 1.5
+sdfgi_min_cell_size = 3.90625
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.193899, 0.213973, 0.245531, 1)
+fog_density = 0.5
+fog_sky_affect = 0.0
+fog_depth_curve = 2.63898
+fog_depth_begin = 2000.0
+fog_depth_end = 4000.0
+volumetric_fog_density = 0.0033
+adjustment_color_correction = ExtResource("2_v0fjc")
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_0gcl0"]
 
@@ -209,12 +222,14 @@ script = ExtResource("1_ilnvi")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -625.533, 0, 1639.56)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
-environment = SubResource("Environment_8jcgm")
+environment = SubResource("Environment_l0jcy")
 camera_attributes = SubResource("CameraAttributesPractical_0gcl0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
 transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_color = Color(0.973535, 0.973535, 0.973535, 1)
 shadow_enabled = true
+shadow_opacity = 0.9
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 1000.0
 
@@ -379,8 +394,9 @@ surface_material_override/0 = ExtResource("13_dmca1")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Tunnel/CrystalGroup3"]
 transform = Transform3D(1.74454, 2.98023e-08, -2.98023e-08, -5.60482e-08, 1.74454, 1.49012e-07, 3.43338e-08, -1.78814e-07, 1.74454, 1.11737, 4.79865, 1.8949)
-light_color = Color(0.388235, 0.101961, 0.2, 1)
-light_energy = 16.0
+light_color = Color(0.858447, 0.561849, 1, 1)
+light_energy = 14.234
+light_specular = 4.136
 shadow_enabled = true
 omni_range = 83.054
 
