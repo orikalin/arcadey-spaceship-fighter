@@ -67,8 +67,8 @@ offsets = PackedFloat32Array(0.00383142, 0.111111, 0.306513, 1)
 colors = PackedColorArray(0.99388, 0.522884, 3.85046e-07, 1, 0.948392, 0.519618, 0, 1, 1, 1, 1, 0.966193, 1, 0.416667, 0, 0.0196078)
 
 [sub_resource type="Curve" id="Curve_noymn"]
-_data = [Vector2(0, 1), 0.0, 84.4999, 0, 0, Vector2(0.0434783, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.04545, 0.0, 1, 0]
-point_count = 3
+_data = [Vector2(0, 1), 0.0, 84.4999, 0, 0, Vector2(0.0434783, 1), 0.0, 0.0, 0, 0, Vector2(0.645485, 1), -2.95129, -2.82076, 0, 1, Vector2(1, 0), -2.82076, 0.0, 1, 0]
+point_count = 4
 
 [sub_resource type="Curve" id="Curve_paeve"]
 _limits = [0.0, 1.0, 0.0, 2.5]
@@ -273,7 +273,8 @@ process_priority = 9999
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.893201, 0, 1.6692)
 skeleton = NodePath("")
 script = ExtResource("12_r5ri1")
-time_limit = 1.0
+max_section_length = 0.2
+time_limit = 6.0
 initial_velocity_curve = ExtResource("13_guf3m")
 velocity_strength = 8.0
 width = 0.553
@@ -288,7 +289,8 @@ process_priority = 9999
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.893, 0, 1.6695)
 skeleton = NodePath("")
 script = ExtResource("12_r5ri1")
-time_limit = 1.0
+max_section_length = 0.2
+time_limit = 6.0
 initial_velocity_curve = ExtResource("13_guf3m")
 velocity_strength = 8.0
 width = 0.553
