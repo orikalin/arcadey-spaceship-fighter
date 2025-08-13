@@ -28,6 +28,7 @@ var is_grounded:bool = false
 var average_terrain_normal:Vector3
 var gamepad:bool = false
 var boost_duration:float = 0.0
+var ship_mesh_tween:Tween
 
 signal camera_Y_offset
 
@@ -40,11 +41,20 @@ func _ready():
 func enter(oldState:String, flags:Dictionary = {}):
 	proxy_orb.physics_material_override = physics_material
 	ship_stats.state_max_speed = ship_stats.boost_max_speed
+	proxy_orb.linear_damp = ship_stats.linear_damp
 	boost_duration = 0.0
 	SignalHub.tune_engine_cone_minmax.emit(1.0, 1.5)
 	SignalHub.camera_FOV_control.emit(105.0, 5.0)
 	print_debug("boost state entered")
-	# if oldState == "Rolling":
+	if oldState == "drift":
+		is_grounded = flags.get("is_grounded")
+		if ship_mesh_tween:
+			ship_mesh_tween.kill()
+		ship_mesh_tween = create_tween()
+		ship_mesh_tween.set_trans(Tween.TRANS_QUAD)
+		ship_mesh_tween.set_ease(Tween.EASE_OUT)
+		ship_mesh_tween.tween_property(ShipContainer, "position", Vector3.ZERO, 1.0)
+	# if oldState == "hover":
 	# 	forward_speed = flags.get("forward_speed")
 	# elif oldState == "Flying":
 	# 	pass
@@ -197,7 +207,12 @@ func get_input():
 		var flags:Dictionary = {
 		"forward_speed":forward_speed
 		}
-		finished.emit("Rolling", flags)
+		finished.emit("hover", flags)
+	elif Input.is_action_pressed("drift") and is_grounded:
+		var flags:Dictionary = {
+		"forward_speed":forward_speed
+		}
+		finished.emit("drift", flags)
 
 
 func toggle_collision_shapes():

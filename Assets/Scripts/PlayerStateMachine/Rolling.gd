@@ -34,7 +34,8 @@ var ship_stats:ShipResource
 var is_grounded:bool = false
 var average_terrain_normal:Vector3
 var gamepad:bool = false
-var tween:Tween
+var state_max_speed_tween:Tween
+var ship_mesh_tween:Tween
 
 signal camera_Y_offset
 
@@ -46,25 +47,34 @@ func _ready():
 
 func enter(oldState:String, flags:Dictionary):
 	proxy_orb.physics_material_override = physics_material
+	proxy_orb.linear_damp = ship_stats.linear_damp
 	SignalHub.tune_engine_cone_minmax.emit(0.1, 0.9)
 
-	if oldState == "Boost":
+	if oldState == "boost":
+		do_max_speed_tween()
 		SignalHub.camera_FOV_control.emit(75.0, 1.5)
-		if tween:
-			tween.kill()
-		tween = create_tween()
-		tween.set_trans(Tween.TRANS_QUART)
-		tween.set_ease(Tween.EASE_OUT)
-		tween.tween_property(ship_stats, "state_max_speed", ship_stats.rolling_max_speed, ship_stats.max_speed_decay_duration)
+	elif oldState == "drift":
+		do_max_speed_tween()
+		is_grounded = flags.get("is_grounded")
+		SignalHub.camera_FOV_control.emit(75.0, 1.5)
+		if ship_mesh_tween:
+			ship_mesh_tween.kill()
+		ship_mesh_tween = create_tween()
+		ship_mesh_tween.set_trans(Tween.TRANS_QUAD)
+		ship_mesh_tween.set_ease(Tween.EASE_OUT)
+		ship_mesh_tween.tween_property(ShipContainer, "position", Vector3.ZERO, 2.0)
 	else:
 		ship_stats.state_max_speed = ship_stats.rolling_max_speed
 		proxy_xform.transform = player.transform
 		proxy_orb.transform = player.transform
 
 func exit(newState:String):
-	if newState == "Boost":
-		if tween:
-			tween.kill()
+	if newState == "boost":
+		if state_max_speed_tween:
+			state_max_speed_tween.kill()
+	elif newState == "drift":
+		if ship_mesh_tween:
+			ship_mesh_tween.kill()
 
 func update(delta:float):
 	if ungrounded_time > 0.0:
@@ -176,6 +186,14 @@ func physicsUpdate(delta:float):
 	offset_camera_Y(delta)
 
 
+func do_max_speed_tween():
+	if state_max_speed_tween:
+		state_max_speed_tween.kill()
+	state_max_speed_tween = create_tween()
+	state_max_speed_tween.set_trans(Tween.TRANS_QUART)
+	state_max_speed_tween.set_ease(Tween.EASE_OUT)
+	state_max_speed_tween.tween_property(ship_stats, "state_max_speed", ship_stats.rolling_max_speed, ship_stats.max_speed_decay_duration)
+
 
 func align_with_y(xform, new_y):
 	xform.basis.y = new_y
@@ -202,14 +220,17 @@ func get_input():
 		accel_input += Input.get_action_strength("pitch_down")
 		accel_input -= Input.get_action_strength("pitch_up") * 0.4
 	
-	if Input.is_action_just_pressed("drift"):
-		pass
-
-	if Input.is_action_pressed("boost"):
+	if Input.is_action_pressed("drift") and is_grounded:
 		var flags:Dictionary = {
 		"forward_speed":forward_speed
 		}
-		finished.emit("Boost", flags)
+		finished.emit("drift", flags)
+
+	elif Input.is_action_pressed("boost"):
+		var flags:Dictionary = {
+		"forward_speed":forward_speed
+		}
+		finished.emit("boost", flags)
 
 
 func toggle_collision_shapes():

@@ -35,9 +35,9 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("headlights"):
 		var headlight = $"../ShipContainer/HeadLight"
 		headlight.visible = not headlight.visible
-	if not correctingRoll and not currentState.name == "Rolling":
+	if not correctingRoll and not currentState.name == "hover":
 		check_rotation()
-	elif correctingRoll and not currentState.name == "Rolling":
+	elif correctingRoll and not currentState.name == "hover":
 		correct_roll(delta)
 
 	super(delta)	

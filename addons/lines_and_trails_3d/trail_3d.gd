@@ -148,13 +148,14 @@ func _step() -> void:
 			_last_pinned_u += dist_from_leading
 		# increase initial velocity in z
 		if initial_velocity_toggle:
-			var _step:float = 1
+			var _step:float = 0
 			for i in points.size():
-				if i > 1 and i < points.size():
+				if i > 1 and _step < 1:
 					var _sample = initial_velocity_curve.sample(_step)
-					var _displacement = global_basis.z * velocity_strength * width * 5
+					_sample *= velocity_strength
+					var _displacement = (global_basis.z * _sample)
 					points[i] += _displacement
-					_step -= 1/(points.size()-i)
+					_step += 0.2
 				
 
 
