@@ -40,12 +40,14 @@ func _ready():
 
 func enter(oldState:String, flags:Dictionary = {}):
 	proxy_orb.physics_material_override = physics_material
-	ship_stats.state_max_speed = ship_stats.boost_max_speed
 	proxy_orb.linear_damp = ship_stats.linear_damp
 	boost_duration = 0.0
 	SignalHub.tune_engine_cone_minmax.emit(1.0, 1.5)
 	SignalHub.camera_FOV_control.emit(105.0, 5.0)
 	print_debug("boost state entered")
+	if %hover.state_max_speed_tween:
+		%hover.state_max_speed_tween.kill()
+	ship_stats.state_max_speed = ship_stats.boost_max_speed
 	if oldState == "drift":
 		is_grounded = flags.get("is_grounded")
 		if ship_mesh_tween:
@@ -210,7 +212,8 @@ func get_input():
 		finished.emit("hover", flags)
 	elif Input.is_action_pressed("drift") and is_grounded:
 		var flags:Dictionary = {
-		"forward_speed":forward_speed
+		"forward_speed":forward_speed,
+		"accel_input":accel_input
 		}
 		finished.emit("drift", flags)
 

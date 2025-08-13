@@ -222,7 +222,8 @@ func get_input():
 	
 	if Input.is_action_pressed("drift") and is_grounded:
 		var flags:Dictionary = {
-		"forward_speed":forward_speed
+		"forward_speed":forward_speed,
+		"accel_input":accel_input
 		}
 		finished.emit("drift", flags)
 

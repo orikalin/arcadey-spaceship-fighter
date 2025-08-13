@@ -64,6 +64,7 @@ func _ready():
 
 func enter(oldState:String, flags:Dictionary):
 	end_drift = false
+	accel_input = flags.get("accel_input")
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.drift_linear_damp
 	SignalHub.tune_engine_cone_minmax.emit(0.1, 0.2)
@@ -80,11 +81,14 @@ func enter(oldState:String, flags:Dictionary):
 
 
 func exit(newState:String):
-	if newState == "boost" or newState == "hover":
-		if ship_mesh_tween:
-			ship_mesh_tween.kill()
-		if state_max_speed_tween:
-			state_max_speed_tween.kill()
+	if ship_mesh_tween:
+		ship_mesh_tween.kill()
+	if state_max_speed_tween:
+		state_max_speed_tween.kill()
+	# if newState == "hover":
+	# 	pass
+	# elif newState == "boost":		
+			
 	proxy_xform.global_transform = player.global_transform
 	proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 
@@ -208,7 +212,7 @@ func get_input():
 	turn_input *= deg_to_rad(ship_stats.drift_turn_force)
 
 	# Brake/Accelerate input
-	accel_input = 1.0
+	# accel_input = 1.0
 	# if  gamepad:
 	# 	if Input.is_action_pressed("throttle_up"):
 	# 		accel_input += 1
