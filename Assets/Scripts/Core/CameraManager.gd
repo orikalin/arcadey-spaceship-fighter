@@ -18,9 +18,11 @@ const CAMERA_RATIO: float = .625
 var phantom_base_cam:PhantomCamera3D
 var phantom_drift_cam:PhantomCamera3D
 var phantom_free_cam:PhantomCamera3D
+var pcam_host_cam:Camera3D
 var freeCam:bool = false
 var cameraDefaultYaw
 var cameraDefaultPitch
+var tween_FOV:Tween
 signal get_phantom_freecam()
 
 func _ready() -> void:
@@ -29,6 +31,7 @@ func _ready() -> void:
 	ship_statemachine.phantom_camera_shift.connect(set_drift_cam_priority)
 	for _child:State in ship_statemachine.find_children("*", "State"):
 		_child.camera_Y_offset.connect(camera_offset_control)
+	SignalHub.camera_FOV_control.connect(camera_FOV_control)
 	
 
 
@@ -68,6 +71,14 @@ func camera_offset_control(EnginePower:float, targetY:float, delta:float):
 	if !freeCam:
 		var _curve_sample:float = camera_ease_curve.sample(EnginePower)
 		phantom_base_cam.follow_offset.y = lerp (phantom_base_cam.follow_offset.y, targetY, _curve_sample * ease_speed * delta)
+
+func camera_FOV_control(_fov:float, _duration:float) -> void:
+	if tween_FOV:
+		tween_FOV.kill()
+	tween_FOV = create_tween()
+	tween_FOV.set_trans(Tween.TRANS_CUBIC)
+	tween_FOV.set_ease(Tween.EASE_OUT)
+	tween_FOV.tween_property(pcam_host_cam, "fov", _fov, _duration)
 
 
 		

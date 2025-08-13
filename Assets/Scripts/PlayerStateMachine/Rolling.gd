@@ -49,6 +49,7 @@ func enter(oldState:String, flags:Dictionary):
 	SignalHub.tune_engine_cone_minmax.emit(0.1, 0.9)
 
 	if oldState == "Boost":
+		SignalHub.camera_FOV_control.emit(75.0, 1.5)
 		if tween:
 			tween.kill()
 		tween = create_tween()
@@ -159,7 +160,7 @@ func physicsUpdate(delta:float):
 	# if physics_state.linear_velocity.length() > ship_stats.state_max_speed: 
 	# 	physics_state.linear_velocity = physics_state.linear_velocity.normalized() * ship_stats.state_max_speed
 	_integrate_forces(physics_state)
-	
+
 	# update player to orb position
 	player.transform.origin = proxy_xform.transform.origin.slerp(proxy_orb.transform.origin, 0.5)
 	player.transform = player.global_transform.interpolate_with(proxy_xform.transform, ship_stats.player_alignment_speed * delta)

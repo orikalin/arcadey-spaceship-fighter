@@ -42,6 +42,7 @@ func enter(oldState:String, flags:Dictionary = {}):
 	ship_stats.state_max_speed = ship_stats.boost_max_speed
 	boost_duration = 0.0
 	SignalHub.tune_engine_cone_minmax.emit(1.0, 1.5)
+	SignalHub.camera_FOV_control.emit(105.0, 5.0)
 	print_debug("boost state entered")
 	# if oldState == "Rolling":
 	# 	forward_speed = flags.get("forward_speed")
