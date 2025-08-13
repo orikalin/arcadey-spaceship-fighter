@@ -14,13 +14,12 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jkl3n"]
 shader = ExtResource("4_vvyv8")
-shader_parameter/num_colors = 126
+shader_parameter/num_colors = 128
 shader_parameter/PALETTE_TEXTURE = ExtResource("3_yak2d")
 
 [sub_resource type="QuadMesh" id="QuadMesh_g4sx0"]
 flip_faces = true
 size = Vector2(2, 2)
-center_offset = Vector3(0, -0.035, 0)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h6xfe"]
 render_priority = 0
@@ -65,7 +64,7 @@ render_target_update_mode = 4
 [node name="TitleBackground" parent="World3D/SubViewportContainer/SubViewport/WorldScenes" instance=ExtResource("5_hegpx")]
 
 [node name="PixelEdgeHighliter" type="MeshInstance3D" parent="World3D/SubViewportContainer/SubViewport"]
-transform = Transform3D(-0.978538, 0.0870876, -0.18676, 0, 0.906308, 0.422618, 0.206067, 0.413547, -0.886857, 667.957, 1.97913, 169.452)
+transform = Transform3D(-0.978538, 0.0870875, -0.18676, 0, 0.906308, 0.422617, 0.206067, 0.413547, -0.886857, 667.957, 1.97913, 169.452)
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_g4sx0")
 skeleton = NodePath("")

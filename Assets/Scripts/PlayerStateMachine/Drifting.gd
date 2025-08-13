@@ -7,7 +7,6 @@ extends State
 @export var proxy_orb:RigidBody3D
 @export var ShipContainer:MeshInstance3D
 
-var ungrounded_time:float = 0.0
 
 # duration of a mid air leveling manuver, eased by a curve
 @export var level_duration:float = 1.0
@@ -15,16 +14,11 @@ var ungrounded_time:float = 0.0
 var elapsed_time:float = 0.0
 var duration:float = 1.0
 var eased_t:float = 0.0
-
+var ungrounded_time:float = 0.0
 # Current speed
 var forward_speed:float = 0.0
-
 # Throttle input speed
 var accel_input:float = 0.0
-
-# deprecated
-var target_speed:float = 0.0
-
 # turn strength in radians
 var turn_input:float = 0.0
 
@@ -46,13 +40,8 @@ func _ready():
 	state_max_speed = ship_stats.rolling_max_speed
 
 func enter(oldState:String, flags:Dictionary):
-	if oldState == "Hovering":
-		ShipContainer.transform = Transform3D()
-		proxy_orb.transform = player.transform
-		toggle_collision_shapes()
-		target_speed = flags.get("target_speed")
+	if oldState == "Rolling":
 		forward_speed = flags.get("forward_speed")
-		proxy_orb.set_axis_velocity(flags.get("Player.velocity"))
 	elif oldState == "Flying":
 		pass
 	else:
@@ -79,8 +68,8 @@ func physicsUpdate(delta:float):
 		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 
 	# access the physics server directly for detailed contact information, and prepare some variables
+	# var contact_count = physics_state.get_contact_count()
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
-	var contact_count = physics_state.get_contact_count()
 	forward_speed = physics_state.linear_velocity.length()
 	var _normalized_forward_speed := forward_speed / state_max_speed
 
@@ -151,8 +140,8 @@ func physicsUpdate(delta:float):
 
 	# update player to orb position
 	player.transform.origin = proxy_xform.transform.origin.slerp(proxy_orb.transform.origin, 0.5)
-	player.transform = player.global_transform.interpolate_with(proxy_xform.transform, ship_stats.player_alignment_speed * delta)
-	player.global_transform = player.global_transform.orthonormalized()
+	## player.transform = player.global_transform.interpolate_with(proxy_xform.transform, ship_stats.player_alignment_speed * delta)
+	## player.global_transform = player.global_transform.orthonormalized()
 	
 	# Roll the body based on the turn input
 	var _current_rotation = ShipContainer.rotation.z

@@ -55,7 +55,7 @@ enum LimitMode {
 			rebuild()
 @export var initial_velocity_curve:Curve
 
-var velocity_strength:float = 20.0
+@export var velocity_strength:float = 5.0
 var _times: PackedFloat64Array
 var _last_pinned_u:float
 		
@@ -148,12 +148,13 @@ func _step() -> void:
 			_last_pinned_u += dist_from_leading
 		# increase initial velocity in z
 		if initial_velocity_toggle:
-			var _step:float = 0
+			var _step:float = 1
 			for i in points.size():
-				if i > 1:
+				if i > 1 and i < points.size():
 					var _sample = initial_velocity_curve.sample(_step)
-					points[i] += self.global_basis.z * (_sample * velocity_strength)
-					_step += 1/(points.size()*0.1)
+					var _displacement = global_basis.z * velocity_strength * width * 5
+					points[i] += _displacement
+					_step -= 1/(points.size()-i)
 				
 
 

@@ -9,6 +9,12 @@ var correctingRoll:bool = false
 
 signal freeCam()
 signal phantom_camera_shift()
+	
+
+func _process(delta: float) -> void:
+	if currentState:
+		SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed)
+	super(delta)
 
 func _physics_process(delta: float) -> void:	
 		

@@ -14,6 +14,7 @@ var Trails
 @onready var flyingState = %Flying
 @onready var ship_statemachine = %ShipStateMachine
 
+@export var ship_stats:ShipResource
 @export var ParticleSizeCurve:Curve
 @export var EngineLightCurve:Curve
 @export var EngineConeCurve:Curve
@@ -87,7 +88,7 @@ func _process(delta:float):
 	if ship_statemachine != null:
 		currentSpeed = ship_statemachine.currentState.forward_speed
 		#var EnginePower:float = Helpers.Map(currentSpeed, 0, ship_statemachine.ship_stats.hovering_max_speed, 0, 1)
-		var EnginePower:float = Helpers.Map(currentSpeed, 0, ship_statemachine.currentState.state_max_speed, 0, 1)
+		var EnginePower:float = Helpers.Map(currentSpeed, 0, ship_stats.state_max_speed, 0, 1)
 		var is_drifting = ship_statemachine.currentState.name == "Drift"
 
 
@@ -130,7 +131,7 @@ func _process(delta:float):
 			# recieve throttle input, and curve sample += base_drain + throttle_input, result clamped between a min and max
 			# min and max need to also be adjustable... separate function that can be called on state enter
 			# lerp from current value to target value at a rate of lerp speed * delta
-			target_cone_power = lerp(target_cone_power, accel_input, delta * cone_flare_speed * cone_flare_power)
+			target_cone_power = lerp(target_cone_power, engine_power, delta * cone_flare_speed * cone_flare_power)
 			var _ConeCurveSmaple:float
 			if is_drifting:
 				_ConeCurveSmaple = EngineConeCurve.sample(ship_statemachine.ship_stats.drift_engine_power)

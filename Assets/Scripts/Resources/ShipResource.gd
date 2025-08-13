@@ -34,6 +34,17 @@ class_name ShipResource extends Resource
 @export var stick_curve:Curve ## used to define a relationship between normalized forward speed and stick force
 @export var easeInOut:Curve
 
+@export_category("Boosting Stats")
+@export var boost_max_speed:float = 160
+@export var boost_accel_force:float = 300
+@export var boost_min_duration:float = 1.0
+@export var boost_turn_force:float = 7.0
+@export var boost_ground_stick_force:float = 350
+@export var boost_ground_alignment_speed:float = 12.0
+@export var boost_player_alignment_speed:float = 12.0
+@export var cone_flare_mult:float = 2.0
+
+
 @export_category("Drifting Stats")
 @export var drift_turn_speed:float = 1.0
 @export var drift_proxy_turn_speed:float = 0.25
@@ -52,4 +63,8 @@ class_name ShipResource extends Resource
 
 @export_category("Camera Control Variables")
 @export var camera_Y_offset:float = 1.8
+@export var boost_cam_Y_offset:float = -0.8
 @export var camera_FOV_offset:float = 0.2
+
+var state_max_speed:float = 0.0
+@export var max_speed_decay_duration:float = 3.0

@@ -7,7 +7,7 @@ func _ready() -> void:
 
 
 func _on_body_entered(body: Node3D) -> void:
-	if body.name == "Player":
+	if body.name == "Player" or "Orb":
 		var env: WorldEnvironment = get_node_or_null("../../Environment/WorldEnvironment")
 		if env:
 			var tween: Tween = get_tree().create_tween()
@@ -15,7 +15,7 @@ func _on_body_entered(body: Node3D) -> void:
 	
 
 func _on_body_exited(body: Node3D) -> void:
-	if body.name == "Player":
+	if body.name == "Player" or "Orb":
 		var env: WorldEnvironment = get_node_or_null("../../Environment/WorldEnvironment")
 		if env:
 			var tween: Tween = get_tree().create_tween()

@@ -6,12 +6,12 @@ extends State
 @export var proxy_xform:CharacterBody3D
 @export var proxy_orb:RigidBody3D
 @export var ShipContainer:MeshInstance3D
+@export var physics_material:PhysicsMaterial
 
 var ungrounded_time:float = 0.0
 
 # duration of a mid air leveling manuver, eased by a curve
 @export var level_duration:float = 1.0
-@export var easeInOut:Curve
 var elapsed_time:float = 0.0
 var duration:float = 1.0
 var eased_t:float = 0.0
@@ -31,10 +31,10 @@ var turn_input:float = 0.0
 
 var ship_statemachine:StateMachine
 var ship_stats:ShipResource
-var state_max_speed:float
 var is_grounded:bool = false
 var average_terrain_normal:Vector3
 var gamepad:bool = false
+var tween:Tween
 
 signal camera_Y_offset
 
@@ -43,21 +43,27 @@ func _ready():
 	connect("body_exited", Callable(self, "_on_body_exited"))
 	ship_statemachine = get_parent()
 	ship_stats = ship_statemachine.ship_stats
-	state_max_speed = ship_stats.rolling_max_speed
 
 func enter(oldState:String, flags:Dictionary):
-	if oldState == "Hovering":
-		ShipContainer.transform = Transform3D()
-		proxy_orb.transform = player.transform
-		toggle_collision_shapes()
-		target_speed = flags.get("target_speed")
-		forward_speed = flags.get("forward_speed")
-		proxy_orb.set_axis_velocity(flags.get("Player.velocity"))
-	elif oldState == "Flying":
-		pass
+	proxy_orb.physics_material_override = physics_material
+	SignalHub.tune_engine_cone_minmax.emit(0.1, 0.9)
+
+	if oldState == "Boost":
+		if tween:
+			tween.kill()
+		tween = create_tween()
+		tween.set_trans(Tween.TRANS_QUART)
+		tween.set_ease(Tween.EASE_OUT)
+		tween.tween_property(ship_stats, "state_max_speed", ship_stats.rolling_max_speed, ship_stats.max_speed_decay_duration)
 	else:
+		ship_stats.state_max_speed = ship_stats.rolling_max_speed
 		proxy_xform.transform = player.transform
 		proxy_orb.transform = player.transform
+
+func exit(newState:String):
+	if newState == "Boost":
+		if tween:
+			tween.kill()
 
 func update(delta:float):
 	if ungrounded_time > 0.0:
@@ -66,11 +72,10 @@ func update(delta:float):
 	if elapsed_time < level_duration:
 		elapsed_time += delta
 		var t = elapsed_time / level_duration
-		eased_t = easeInOut.sample(t)		
+		eased_t = ship_stats.easeInOut.sample(t)		
 
 func physicsUpdate(delta:float):
-	state_max_speed = ship_stats.rolling_max_speed
-	get_input(delta)
+	get_input()
 
 	# turn ship
 	if proxy_orb.linear_velocity.length() > ship_stats.turn_stop_limit:		
@@ -78,17 +83,15 @@ func physicsUpdate(delta:float):
 		proxy_xform.global_basis = proxy_xform.global_basis.slerp(new_basis, ship_stats.rolling_turn_force * delta)
 		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 
-	# access the physics server directly for detailed contact information, and prepare some variables
+	# access the physics server directly for detailed rigidbody information, and prepare some variables
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
 	var contact_count = physics_state.get_contact_count()
 	forward_speed = physics_state.linear_velocity.length()
-	var _normalized_forward_speed := forward_speed / state_max_speed
+	var _normalized_forward_speed := forward_speed / ship_stats.state_max_speed
 
 	# This defines _stick_force based on forward speed. Higher speed = higher downward force applied, to helps cling to surfaces against gravity
 	var _stick_force = _normalized_forward_speed * ship_stats.ground_stick_force
 	var _stick_curve_sample = ship_stats.stick_curve.sample(_normalized_forward_speed)
-	if physics_state.linear_velocity.length() > state_max_speed:
-		physics_state.linear_velocity = physics_state.linear_velocity.normalized() * state_max_speed
 
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 
@@ -97,13 +100,16 @@ func physicsUpdate(delta:float):
 	var _terrain_normals:Array
 	var _sum_terrain_normals := Vector3.ZERO
 	var _new_average_terrain_normal:Vector3
-
 	# check the 5 raycasts, get the average normal of all terrain hit, mark as grounded if any hit terrain
 	for raycast:RayCast3D in ground_raycasts:
+		# if raycast.target_position.y < 0:
+		# 	raycast.target_position.y = abs(raycast.target_position.y)
+		# 	raycast.force_raycast_update()
 		var _raycast_hit := raycast.get_collider()
 		if _raycast_hit != null:
 			if _raycast_hit.get_collision_mask_value(1):
 				_terrain_normals.append(raycast.get_collision_normal())
+	
 	if _terrain_normals.size() > 0:
 		for _normal in _terrain_normals:
 			_sum_terrain_normals += _normal
@@ -141,7 +147,7 @@ func physicsUpdate(delta:float):
 			var _right = Vector3.UP.cross(_proxy_linear_velocity)
 			var _proxy_direction_up = _proxy_linear_velocity.cross(_right)
 			var _orb_local_up  = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
-			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta * eased_t)
+			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta)
 			proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 		
 		# apply airborne gravity and input forces
@@ -149,6 +155,11 @@ func physicsUpdate(delta:float):
 		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.25)		
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
+	# # clamps max speed
+	# if physics_state.linear_velocity.length() > ship_stats.state_max_speed: 
+	# 	physics_state.linear_velocity = physics_state.linear_velocity.normalized() * ship_stats.state_max_speed
+	_integrate_forces(physics_state)
+	
 	# update player to orb position
 	player.transform.origin = proxy_xform.transform.origin.slerp(proxy_orb.transform.origin, 0.5)
 	player.transform = player.global_transform.interpolate_with(proxy_xform.transform, ship_stats.player_alignment_speed * delta)
@@ -172,7 +183,7 @@ func align_with_y(xform, new_y):
 	return xform
 
 
-func get_input(delta):
+func get_input():
 	# turning input
 	turn_input = 0.0
 	turn_input -= Input.get_action_strength("roll_right")
@@ -193,14 +204,11 @@ func get_input(delta):
 	if Input.is_action_just_pressed("drift"):
 		pass
 
-	# if not Input.is_action_pressed("drift"):
-	# 	var flags:Dictionary = {
-	# 	"target_speed":target_speed,
-	# 	"player.velocity":proxy_orb.velocity,
-	# 	"forward_speed":forward_speed
-	# 	}
-	# 	toggle_collision_shapes()
-	# 	finished.emit("Rolling", flags)
+	if Input.is_action_pressed("boost"):
+		var flags:Dictionary = {
+		"forward_speed":forward_speed
+		}
+		finished.emit("Boost", flags)
 
 
 func toggle_collision_shapes():
@@ -218,7 +226,7 @@ func toggle_collision_shapes():
 	
 
 func offset_camera_Y(delta:float):
-	var _normalized_forward_speed = forward_speed / state_max_speed
+	var _normalized_forward_speed = forward_speed / ship_stats.state_max_speed
 	var targetY = _normalized_forward_speed * ship_stats.camera_Y_offset
 	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)
 
@@ -227,3 +235,10 @@ func _input(event: InputEvent) -> void:
 		gamepad = false
 	elif event is InputEventJoypadMotion or event is InputEventJoypadButton:
 		gamepad = true
+
+func _integrate_forces(state):
+	var _current_velocity = state.linear_velocity
+	var _speed = _current_velocity.length()
+
+	if _speed > ship_stats.state_max_speed:
+		state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed
