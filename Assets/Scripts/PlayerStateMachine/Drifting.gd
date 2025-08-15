@@ -41,6 +41,7 @@ var end_drift:bool = false
 signal camera_Y_offset
 
 
+
 ## new drift state: while drifting, movement damping is reduced to (near) 0
 ## orb aligns to player much slower
 ## player turn speed increased, but coupled with the slower orb alignment, this should result in the player being able to rotate,
@@ -67,7 +68,9 @@ func enter(oldState:String, flags:Dictionary):
 	accel_input = flags.get("accel_input")
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.drift_linear_damp
+	SignalHub.set_starting_z.emit()
 	SignalHub.tune_engine_cone_minmax.emit(0.1, 0.2)
+	SignalHub.reset_Z_offset.emit(true)
 	if ship_mesh_tween:
 		ship_mesh_tween.kill()
 	ship_mesh_tween = create_tween()
@@ -85,10 +88,7 @@ func exit(newState:String):
 		ship_mesh_tween.kill()
 	if state_max_speed_tween:
 		state_max_speed_tween.kill()
-	# if newState == "hover":
-	# 	pass
-	# elif newState == "boost":		
-			
+	SignalHub.reset_Z_offset.emit()		
 	proxy_xform.global_transform = player.global_transform
 	proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 
@@ -160,6 +160,7 @@ func physicsUpdate(delta:float):
 		ungrounded_time = ship_stats.drift_ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
+		SignalHub.camera_Z_offset.emit()
 
 	## while airborne, align to the direction of the orbs forward direction, without turning the player
 	else: 
@@ -193,6 +194,7 @@ func physicsUpdate(delta:float):
 
 	# offsets the phantom camera Y based on speed - experimenting with not adjusting during drift
 	# offset_camera_Y(delta)
+	SignalHub.camera_Z_offset.emit(player.global_basis, physics_state.linear_velocity.normalized())
 
 
 
@@ -208,7 +210,6 @@ func get_input():
 	turn_input = 0.0
 	turn_input -= Input.get_action_strength("roll_right")
 	turn_input += Input.get_action_strength("roll_left")
-	print_debug(turn_input)
 	turn_input *= deg_to_rad(ship_stats.drift_turn_force)
 
 	# Brake/Accelerate input

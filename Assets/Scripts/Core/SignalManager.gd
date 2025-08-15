@@ -9,4 +9,9 @@ signal tune_engine_cone_minmax(min:float, max:float)
 signal update_speed_ui(speed:float, state_max_speed:float)
 signal camera_FOV_control(fov:float, duration:float)
 
+## offsets the camera Z based on the difference in angle between the proxy_orbs forward velocity direction, and the players forward facing direction
+signal camera_Z_offset(player:Basis, orb_forward:Vector3)
+signal reset_Z_offset
+signal set_starting_z
+
 

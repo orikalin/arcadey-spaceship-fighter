@@ -120,9 +120,9 @@ func attach_camera_to_player(player:PlayerContainer) -> void:
 ## Spawns a local player pawn that is not in any way networked
 func spawn_local_player():
 	var player:PlayerContainer = player_container.instantiate()
+	attach_camera_to_player(player)
 	player.spawn_transform = Global.spawn_point
 	local_player.add_child(player, true)
-	attach_camera_to_player(player)
 	
 
 ## Removes the local, un-networked, player pawn

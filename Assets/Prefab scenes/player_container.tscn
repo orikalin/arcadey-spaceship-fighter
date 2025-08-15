@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=45 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
@@ -19,6 +19,8 @@
 [ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="15_0cqmc"]
 [ext_resource type="Gradient" uid="uid://bqhbihlkd6tsw" path="res://Assets/Materials/Engine_trail_gradient_.tres" id="16_jv85r"]
 [ext_resource type="Script" uid="uid://e07chentfdx1" path="res://Assets/Scripts/PlayerStateMachine/Flying.gd" id="16_lji6i"]
+[ext_resource type="Material" uid="uid://vobewhs4sexp" path="res://Assets/Materials/targetting_sights/sight_base.tres" id="18_cmkl5"]
+[ext_resource type="Script" uid="uid://vgj2kaxrfc40" path="res://Assets/Prefab scenes/raycast3d_signal_emitter.gd" id="18_m6m72"]
 [ext_resource type="Script" uid="uid://dl7b0pk1wtb5i" path="res://Assets/Scripts/PlayerStateMachine/Air_Boost.gd" id="19_xhmyi"]
 [ext_resource type="Script" uid="uid://breiaj8f72g46" path="res://Assets/Scripts/PlayerStateMachine/Rolling.gd" id="21_de37j"]
 [ext_resource type="Script" uid="uid://dqukyyon7bkf2" path="res://Assets/Scripts/PlayerStateMachine/Boost.gd" id="23_s3mlt"]
@@ -37,6 +39,10 @@ length = 2.709
 [sub_resource type="Curve" id="Curve_6g8w3"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.247126, 0.484711), 0.0, 0.0, 0, 0, Vector2(0.744253, 0.492073), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 4
+
+[sub_resource type="Curve" id="Curve_vwhge"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.247492, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_smq6u"]
 
@@ -67,6 +73,10 @@ colors = PackedColorArray(0.99388, 0.522884, 3.85046e-07, 1, 0.948392, 0.519618,
 [sub_resource type="Curve" id="Curve_noymn"]
 _data = [Vector2(0, 1), 0.0, 84.4999, 0, 0, Vector2(0.0434783, 1), 0.0, 0.0, 0, 0, Vector2(0.645485, 1), -2.95129, -2.82076, 0, 1, Vector2(1, 0), -2.82076, 0.0, 1, 0]
 point_count = 4
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_m6m72"]
+material = ExtResource("18_cmkl5")
+size = Vector2(3, 3)
 
 [sub_resource type="Curve" id="Curve_paeve"]
 _limits = [0.0, 1.0, 0.0, 2.5]
@@ -132,7 +142,9 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, -1, 0)
 script = ExtResource("2_de37j")
 camera_ease_curve = SubResource("Curve_6g8w3")
+z_offset_curve = SubResource("Curve_vwhge")
 ease_speed = 1.5
+z_offset_by_angle_max = 10.0
 
 [node name="LookAtTarget" type="Node3D" parent="Player/CameraManager"]
 unique_name_in_owner = true
@@ -140,7 +152,7 @@ transform = Transform3D(1, 0, -1.35983e-08, 0, 1, 0, 1.35983e-08, 0, 1, 0, 5, -1
 
 [node name="Arm" type="SpringArm3D" parent="Player/CameraManager"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 2.32515, -0.0321627)
+transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 2.325, 0)
 shape = SubResource("SphereShape3D_smq6u")
 spring_length = 6.0
 margin = 0.5
@@ -300,9 +312,30 @@ gradient = ExtResource("16_jv85r")
 material_type = 3
 metadata/_custom_type_script = "uid://bqflf4vw8mem1"
 
-[node name="Laser" type="Node" parent="Player"]
+[node name="weapons" type="Node3D" parent="Player"]
+unique_name_in_owner = true
 
-[node name="Missile" type="Node" parent="Player"]
+[node name="laser" type="Node" parent="Player/weapons"]
+unique_name_in_owner = true
+
+[node name="missile" type="Node" parent="Player/weapons"]
+unique_name_in_owner = true
+
+[node name="sights" type="Node3D" parent="Player/weapons"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28163, 0)
+
+[node name="sight_raycast" type="RayCast3D" parent="Player/weapons/sights"]
+target_position = Vector3(0, 0, -60)
+collide_with_areas = true
+script = ExtResource("18_m6m72")
+
+[node name="sight_near" type="MeshInstance3D" parent="Player/weapons/sights"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -15)
+mesh = SubResource("PlaneMesh_m6m72")
+
+[node name="sight_far" type="MeshInstance3D" parent="Player/weapons/sights"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -60)
+mesh = SubResource("PlaneMesh_m6m72")
 
 [node name="ShipStateMachine" type="Node" parent="Player" node_paths=PackedStringArray("initialState")]
 unique_name_in_owner = true
