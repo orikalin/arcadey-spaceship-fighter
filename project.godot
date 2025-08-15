@@ -183,6 +183,9 @@ boost={
 
 3d_physics/layer_1="Terrain"
 3d_physics/layer_2="Player"
+3d_physics/layer_3="enemy"
+3d_physics/layer_4="sights"
+3d_physics/layer_8="sights_limit"
 
 [phantom_camera]
 
