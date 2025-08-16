@@ -1,32 +1,47 @@
-[gd_scene load_steps=6 format=3 uid="uid://dgr4w8k18ubg0"]
+[gd_scene load_steps=9 format=3 uid="uid://dgr4w8k18ubg0"]
 
 [ext_resource type="Script" uid="uid://dxlyrdodsnp1f" path="res://Assets/Scripts/Core/debug_speed_display.gd" id="1_038ug"]
+[ext_resource type="Script" uid="uid://c7h3h3aa18qgv" path="res://Assets/Prefab scenes/sights_ui.gd" id="2_hsioy"]
+[ext_resource type="Texture2D" uid="uid://c6scog5jojwhu" path="res://Assets/Materials/textures/reticle_small.png" id="3_b57ac"]
+[ext_resource type="Texture2D" uid="uid://btscim6dctbtt" path="res://Assets/Materials/textures/reticle_medium.png" id="4_kwpbd"]
 
 [sub_resource type="Animation" id="Animation_038ug"]
 resource_name = "IDLE"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("sight_near_ui:scale")
+tracks/0/path = NodePath("sight_far_ui:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(1, 1)]
+"values": [Color(0, 0.941176, 0.737255, 0.588235)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("sight_near_ui:rotation")
+tracks/1/path = NodePath("sight_far_ui:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sight_far_ui:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_u2y4o"]
@@ -34,19 +49,19 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("sight_near_ui:scale")
+tracks/0/path = NodePath("sight_far_ui:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(1, 1)]
+"values": [Color(0, 0.94, 0.736333, 0.588235)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("sight_near_ui:rotation")
+tracks/1/path = NodePath("sight_far_ui:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -55,9 +70,59 @@ tracks/1/keys = {
 "update": 0,
 "values": [0.0]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sight_far_ui:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_hsioy"]
 resource_name = "TARGET_IN_SIGHTS"
+length = 3.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("sight_far_ui:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.94, 0, 0.0156664, 0.72549)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sight_far_ui:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sight_far_ui:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.5, 3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.8, 0.8), Vector2(1, 1)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_b57ac"]
 _data = {
@@ -101,12 +166,26 @@ horizontal_alignment = 2
 vertical_alignment = 2
 script = ExtResource("1_038ug")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="sights_ui" type="CanvasLayer" parent="." node_paths=PackedStringArray("sight_one_ui", "sight_two_ui", "anim")]
 layer = 10
+follow_viewport_enabled = true
+script = ExtResource("2_hsioy")
+sight_one_ui = NodePath("sight_near_ui")
+sight_two_ui = NodePath("sight_far_ui")
+anim = NodePath("sight_anims")
 
-[node name="sight_near_ui" type="Sprite2D" parent="CanvasLayer"]
+[node name="sight_far_ui" type="Sprite2D" parent="sights_ui"]
+modulate = Color(0, 0.94, 0.736333, 0.588235)
+texture_filter = 1
+texture = ExtResource("3_b57ac")
 
-[node name="sight_anims" type="AnimationPlayer" parent="CanvasLayer"]
+[node name="sight_near_ui" type="Sprite2D" parent="sights_ui"]
+modulate = Color(0, 0.94, 0.736333, 0.588235)
+texture_filter = 1
+texture = ExtResource("4_kwpbd")
+
+[node name="sight_anims" type="AnimationPlayer" parent="sights_ui"]
+unique_name_in_owner = true
 libraries = {
 &"": SubResource("AnimationLibrary_b57ac")
 }

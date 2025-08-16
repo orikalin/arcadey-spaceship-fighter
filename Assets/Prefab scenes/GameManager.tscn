@@ -49,12 +49,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 stretch = true
-stretch_shrink = 4
+stretch_shrink = 3
 mouse_target = true
 
 [node name="SubViewport" type="SubViewport" parent="World3D/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(320, 180)
+size = Vector2i(426, 240)
 render_target_update_mode = 4
 
 [node name="PlayerManager" parent="World3D/SubViewportContainer/SubViewport" instance=ExtResource("2_6xw86")]

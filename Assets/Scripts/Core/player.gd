@@ -26,6 +26,7 @@ func _ready() -> void:
 		player.transform = spawn_transform
 		
 		get_parent().owner.attach_camera_to_player(self)
+	SignalHub.ping_sights.emit(%sight_near, %sight_far)
 
 func get_player() -> CharacterBody3D:
 	return player

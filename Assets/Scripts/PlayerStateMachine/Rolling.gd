@@ -143,7 +143,6 @@ func physicsUpdate(delta:float):
 		ungrounded_time = ship_stats.ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
-		SignalHub.camera_Z_offset.emit()
 
 	## while airborne, align to the direction of the orbs forward direction, without turning the player
 	else:
@@ -185,6 +184,7 @@ func physicsUpdate(delta:float):
 
 	# offsets the phantom camera Y based on speed
 	offset_camera_Y(delta)
+	SignalHub.camera_Z_offset.emit(player.global_basis, physics_state.linear_velocity.normalized())
 
 
 func do_max_speed_tween():

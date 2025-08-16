@@ -160,7 +160,6 @@ func physicsUpdate(delta:float):
 		ungrounded_time = ship_stats.drift_ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
-		SignalHub.camera_Z_offset.emit()
 
 	## while airborne, align to the direction of the orbs forward direction, without turning the player
 	else: 

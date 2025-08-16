@@ -14,4 +14,9 @@ signal camera_Z_offset(player:Basis, orb_forward:Vector3)
 signal reset_Z_offset
 signal set_starting_z
 
+signal ping_sights(near:MeshInstance3D, far:MeshInstance3D)
+signal update_sight_ui()
+signal sight_lock_change(locked_on:bool)
+signal lock_on_break()
+
 

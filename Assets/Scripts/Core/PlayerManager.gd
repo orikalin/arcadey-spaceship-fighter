@@ -98,6 +98,7 @@ func attach_camera_to_player(player:PlayerContainer) -> void:
 	packed_camera_manager.phantom_base_cam = %BaseFollowCam
 	packed_camera_manager.phantom_drift_cam = %DriftCam
 	packed_camera_manager.pcam_host_cam = %MainCamera
+	Global.main_cam = %MainCamera
 	var look_targets:Array[Node3D] = [
 		player.get_player(),
 		player.get_lookat_target()
