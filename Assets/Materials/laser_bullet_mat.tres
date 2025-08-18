@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://re2lopsjq1c0"]
+
+[resource]
+shading_mode = 0
+diffuse_mode = 1
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(0.454902, 0.803922, 1, 1)
+disable_receive_shadows = true

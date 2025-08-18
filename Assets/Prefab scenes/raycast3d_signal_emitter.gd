@@ -18,12 +18,12 @@ func _physics_process(delta: float) -> void:
 func _body_entered() -> void:
     if get_collision_mask_value(mask_value):
         current_target = get_collider()
-        print_debug(current_target.name + " in sights!")
+        # print_debug(current_target.name + " in sights!")
     elif get_collision_mask_value(1):
         current_target = get_collider()
         print_debug("Line of sight broken by " + current_target.name)
 
 func _body_exited() -> void:
     if current_target:
-        print_debug(current_target.name + " exited sights!")
+        # print_debug(current_target.name + " exited sights!")
         current_target = null

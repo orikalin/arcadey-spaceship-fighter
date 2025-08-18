@@ -56,6 +56,7 @@ camera_Y_offset = 1.4
 boost_cam_Y_offset = -0.8
 camera_FOV_offset = 0.2
 max_speed_decay_duration = 3.0
+max_speed_decay_multiplier = 0.8
 hovering_min_speed = 5.0
 hovering_max_speed = 120.0
 fallingPitchMax = -0.75

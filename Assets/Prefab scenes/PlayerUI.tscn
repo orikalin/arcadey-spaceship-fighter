@@ -173,6 +173,7 @@ script = ExtResource("2_hsioy")
 sight_one_ui = NodePath("sight_near_ui")
 sight_two_ui = NodePath("sight_far_ui")
 anim = NodePath("sight_anims")
+far_reticle_speed = 30.0
 
 [node name="sight_far_ui" type="Sprite2D" parent="sights_ui"]
 modulate = Color(0, 0.94, 0.736333, 0.588235)

@@ -166,6 +166,10 @@ func physicsUpdate(delta:float):
 		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.25)		
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
+	if accel_input > 0:
+		accel_input = lerp(accel_input, 0.0, delta * ship_stats.max_speed_decay_multiplier)
+	else:
+		accel_input = 0
 	# # clamps max speed
 	# if physics_state.linear_velocity.length() > ship_stats.state_max_speed: 
 	# 	physics_state.linear_velocity = physics_state.linear_velocity.normalized() * ship_stats.state_max_speed
@@ -211,15 +215,15 @@ func get_input():
 	turn_input *= deg_to_rad(ship_stats.rolling_turn_force)
 
 	# Brake/Accelerate input
-	accel_input = 0.0
+	# accel_input = 0.0
 	if  gamepad:
 		if Input.is_action_pressed("throttle_up"):
-			accel_input += 1
+			accel_input = 1
 		elif gamepad and Input.is_action_pressed("throttle_down"):
-			accel_input -= 0.4
+			accel_input = -0.4
 	else:
-		accel_input += Input.get_action_strength("pitch_down")
-		accel_input -= Input.get_action_strength("pitch_up") * 0.4
+		accel_input = Input.get_action_strength("pitch_down")
+		accel_input = Input.get_action_strength("pitch_up") * -0.4
 	
 	if Input.is_action_pressed("drift") and is_grounded:
 		var flags:Dictionary = {

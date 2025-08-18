@@ -71,3 +71,4 @@ func correct_roll(delta:float):
 	else:
 		Player.basis = targetBasis
 		correctingRoll = false
+

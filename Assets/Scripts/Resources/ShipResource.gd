@@ -58,6 +58,7 @@ class_name ShipResource extends Resource
 @export var camera_FOV_offset:float = 0.2
 
 @export var max_speed_decay_duration:float = 3.0
+@export var max_speed_decay_multiplier:float = 1.0
 var state_max_speed:float = 0.0
 
 
