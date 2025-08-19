@@ -373,7 +373,7 @@ shape = SubResource("BoxShape3D_0cqmc")
 
 [node name="sight_raycast" type="RayCast3D" parent="Player/weapons/sights"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, -7.27596e-12, 9.09495e-13, 1, 0, 0, 0, 1, 0.000976518, 2.10827, 2.99458)
+transform = Transform3D(1, 0, -7.27596e-12, 9.09495e-13, 1, 0, 0, 0, 1, 0, 0, 0)
 target_position = Vector3(0, 0, -300)
 collision_mask = 5
 collide_with_areas = true
@@ -392,7 +392,7 @@ shape = SubResource("ConcavePolygonShape3D_txwvw")
 
 [node name="sight_near" type="MeshInstance3D" parent="Player/weapons/sights/sight_raycast"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.105, -100)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 2.44, -100)
 visible = false
 mesh = SubResource("PlaneMesh_m6m72")
 skeleton = NodePath("../..")
