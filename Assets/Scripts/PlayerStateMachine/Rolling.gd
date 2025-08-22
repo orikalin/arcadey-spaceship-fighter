@@ -7,7 +7,7 @@ extends State
 @export var proxy_orb:RigidBody3D
 @export var ShipContainer:MeshInstance3D
 @export var physics_material:PhysicsMaterial
-
+@export var accel_multiplier:float = 1.0
 var ungrounded_time:float = 0.0
 
 # duration of a mid air leveling manuver, eased by a curve
@@ -86,7 +86,7 @@ func update(delta:float):
 		eased_t = ship_stats.easeInOut.sample(t)		
 
 func physicsUpdate(delta:float):
-	get_input()
+	get_input(delta)
 
 	# turn ship
 	if proxy_orb.linear_velocity.length() > ship_stats.turn_stop_limit:		
@@ -96,7 +96,6 @@ func physicsUpdate(delta:float):
 
 	# access the physics server directly for detailed rigidbody information, and prepare some variables
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
-	var contact_count = physics_state.get_contact_count()
 	forward_speed = physics_state.linear_velocity.length()
 	var _normalized_forward_speed := forward_speed / ship_stats.state_max_speed
 
@@ -170,9 +169,8 @@ func physicsUpdate(delta:float):
 		accel_input = lerp(accel_input, 0.0, delta * ship_stats.max_speed_decay_multiplier)
 	else:
 		accel_input = 0
-	# # clamps max speed
-	# if physics_state.linear_velocity.length() > ship_stats.state_max_speed: 
-	# 	physics_state.linear_velocity = physics_state.linear_velocity.normalized() * ship_stats.state_max_speed
+
+	# clamps max speed
 	_integrate_forces(physics_state)
 
 	# update player to orb position
@@ -207,7 +205,7 @@ func align_with_y(xform, new_y):
 	return xform
 
 
-func get_input():
+func get_input(delta:float):
 	# turning input
 	turn_input = 0.0
 	turn_input -= Input.get_action_strength("roll_right")
@@ -218,7 +216,10 @@ func get_input():
 	# accel_input = 0.0
 	if  gamepad:
 		if Input.is_action_pressed("throttle_up"):
-			accel_input = 1
+			if accel_input < 1:
+				accel_input += delta * accel_multiplier
+			else:
+				accel_input = 1
 		elif gamepad and Input.is_action_pressed("throttle_down"):
 			accel_input = -0.4
 	else:

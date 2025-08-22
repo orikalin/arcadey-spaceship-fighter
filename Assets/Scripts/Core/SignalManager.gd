@@ -18,5 +18,6 @@ signal ping_sights(near:MeshInstance3D, far:MeshInstance3D)
 signal update_sight_ui()
 signal sight_lock_change(locked_on:bool)
 signal lock_on_break()
+signal check_line_of_sight() ## double check line of sight with a simple ray from player to target
 
 

@@ -162,6 +162,7 @@ grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
 text = "0"
+scroll_active = false
 horizontal_alignment = 2
 vertical_alignment = 2
 script = ExtResource("1_038ug")

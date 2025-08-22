@@ -3,9 +3,9 @@ extends Node3D
 @export var spawn_point:Node3D
 @export var burst_interval:float = 0.15
 @export var cooldown:float = 0.8
+@export var bullet:PackedScene
 var cooldown_timer:float = 0.0
 
-var bullet = load("res://Assets/Prefab scenes/laser_bullet.tscn")
 
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("fire1") and cooldown_timer <= 0.0:

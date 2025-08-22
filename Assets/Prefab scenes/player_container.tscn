@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=53 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
@@ -23,6 +23,7 @@
 [ext_resource type="Script" uid="uid://ck8lrflos88qw" path="res://Assets/Prefab scenes/burst_laser.gd" id="18_guf3m"]
 [ext_resource type="Script" uid="uid://vgj2kaxrfc40" path="res://Assets/Prefab scenes/raycast3d_signal_emitter.gd" id="18_m6m72"]
 [ext_resource type="Script" uid="uid://cq2adxglnivie" path="res://Assets/Prefab scenes/sights.gd" id="18_r5ri1"]
+[ext_resource type="PackedScene" uid="uid://dj2p73c28ws8w" path="res://Assets/Prefab scenes/laser_bullet_double.tscn" id="19_guf3m"]
 [ext_resource type="Script" uid="uid://dl7b0pk1wtb5i" path="res://Assets/Scripts/PlayerStateMachine/Air_Boost.gd" id="19_xhmyi"]
 [ext_resource type="Script" uid="uid://breiaj8f72g46" path="res://Assets/Scripts/PlayerStateMachine/Rolling.gd" id="21_de37j"]
 [ext_resource type="Shape3D" uid="uid://btgbiv1gnombj" path="res://Assets/Prefab scenes/large_cone_concave_poly.tres" id="21_txwvw"]
@@ -35,9 +36,6 @@
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_0v85l"]
 height = 1.31981
 radius = 1.91406
-
-[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_cgw0f"]
-length = 2.709
 
 [sub_resource type="Curve" id="Curve_6g8w3"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.247126, 0.484711), 0.0, 0.0, 0, 0, Vector2(0.744253, 0.492073), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -102,6 +100,9 @@ _limits = [0.0, 1.0, 0.0, 2.5]
 _data = [Vector2(0.0819672, 0.115938), 0.0, 0.510407, 0, 0, Vector2(1.87705, 1), 0.0625179, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_cgw0f"]
+length = 2.709
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_svb41"]
 radius = 2.0
 
@@ -150,11 +151,6 @@ transform = Transform3D(0.62, 0, 0, 0, 0.62, 0, 0, 0, 0.62, 0, 0, 0)
 shape = SubResource("CylinderShape3D_0v85l")
 disabled = true
 debug_color = Color(0, 0.595, 0.7, 0.858824)
-
-[node name="GroundedRayCollider" type="CollisionShape3D" parent="Player"]
-transform = Transform3D(0.62, 0, 0, 0, -2.71011e-08, -0.62, 0, 0.62, -2.71011e-08, 0, 0, 0)
-shape = SubResource("SeparationRayShape3D_cgw0f")
-disabled = true
 
 [node name="CameraManager" type="Node3D" parent="Player"]
 unique_name_in_owner = true
@@ -340,11 +336,12 @@ script = ExtResource("18_guf3m")
 spawn_point = NodePath("laser_spawn_point")
 burst_interval = 0.08
 cooldown = 0.4
+bullet = ExtResource("19_guf3m")
 
 [node name="laser_spawn_point" type="Node3D" parent="Player/weapons/burst_laser"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.23497)
 
-[node name="missile" type="Node" parent="Player/weapons"]
+[node name="missile" type="Node3D" parent="Player/weapons"]
 unique_name_in_owner = true
 
 [node name="sights" type="Node3D" parent="Player/weapons" node_paths=PackedStringArray("sight_one", "sight_two", "sight_raycast")]
@@ -355,11 +352,11 @@ sight_two = NodePath("sight_far")
 sight_raycast = NodePath("sight_raycast")
 max_lock_angle = 62.0
 reticle_move_speed = 100.0
+los_block_timout = 0.8
 
 [node name="sight_far" type="MeshInstance3D" parent="Player/weapons/sights"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -200)
-visible = false
 mesh = SubResource("PlaneMesh_m6m72")
 surface_material_override/0 = SubResource("StandardMaterial3D_vwhge")
 

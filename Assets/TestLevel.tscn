@@ -1,11 +1,8 @@
-[gd_scene load_steps=60 format=4 uid="uid://ookdxcwivpy7"]
+[gd_scene load_steps=59 format=4 uid="uid://ookdxcwivpy7"]
 
 [ext_resource type="Script" uid="uid://wb6qs4vv7kcw" path="res://Assets/LevelScene.gd" id="1_ilnvi"]
 [ext_resource type="Texture2D" uid="uid://b6h2gia3nla80" path="res://Assets/Materials/palettes/apollo-resaturated-1x.png" id="2_v0fjc"]
-[ext_resource type="PackedScene" uid="uid://bltl2svpjipy2" path="res://Assets/Meshes/simple_laser.glb" id="5_ojc0g"]
-[ext_resource type="Material" uid="uid://re2lopsjq1c0" path="res://Assets/Materials/laser_bullet_mat.tres" id="6_e24ns"]
 [ext_resource type="PackedScene" uid="uid://be6nrf0b8j4l0" path="res://Assets/Terrain3DModels/RockA.tscn" id="7_qda7k"]
-[ext_resource type="ArrayMesh" uid="uid://bhb68utujdrpc" path="res://Assets/Meshes/simple_laser.obj" id="7_rxeps"]
 [ext_resource type="PackedScene" uid="uid://bwvtgwartxt0g" path="res://Assets/Terrain3DModels/RockB.tscn" id="8_64n0d"]
 [ext_resource type="PackedScene" uid="uid://lsvs8a7urkca" path="res://Assets/Terrain3DModels/RockC.tscn" id="9_dc56b"]
 [ext_resource type="PackedScene" uid="uid://vvayjv3rbx1d" path="res://Assets/Terrain3DModels/Tunnel.tscn" id="10_0ct1x"]
@@ -16,6 +13,7 @@
 [ext_resource type="ArrayMesh" uid="uid://c27o2arf8nixo" path="res://Assets/Meshes/Prototype_Ship.obj" id="15_wis17"]
 [ext_resource type="Material" uid="uid://cin7ypj6dci8d" path="res://Assets/Materials/BasicAsphalt.tres" id="16_fetrj"]
 [ext_resource type="PackedScene" uid="uid://bn5nf4esciwex" path="res://Assets/Terrain3DModels/LODExample.tscn" id="21_bmwnq"]
+[ext_resource type="PackedScene" uid="uid://b63llvy5rhjkb" path="res://Assets/Blend files/TubeTest.blend" id="21_e24ns"]
 [ext_resource type="Texture2D" uid="uid://ddprscrpsofah" path="res://Assets/Materials/textures/ground037_alb_ht.png" id="22_j3niq"]
 [ext_resource type="Texture2D" uid="uid://c1ots7w6i0i1q" path="res://Assets/Materials/textures/ground037_nrm_rgh.png" id="23_5cgps"]
 [ext_resource type="Texture2D" uid="uid://c88j3oj0lf6om" path="res://Assets/Materials/textures/rock023_alb_ht.png" id="24_r352l"]
@@ -102,7 +100,7 @@ ambient_light_sky_contribution = 0.3
 tonemap_mode = 3
 sdfgi_bounce_feedback = 1.5
 sdfgi_min_cell_size = 1.17188
-sdfgi_cascade0_distance = 75.0003
+sdfgi_cascade0_distance = 75.0006
 sdfgi_max_distance = 1200.01
 glow_blend_mode = 4
 fog_enabled = true
@@ -118,36 +116,7 @@ adjustment_color_correction = ExtResource("2_v0fjc")
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_0gcl0"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_kd0w4"]
-size = Vector3(0.085, 0.06, 1)
-
-[sub_resource type="Curve" id="Curve_hyjkc"]
-_data = [Vector2(0, 1), 0.0, -3.15778e-07, 0, 0, Vector2(1, 0), -1.0, 0.0, 1, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_vfcn3"]
-curve = SubResource("Curve_hyjkc")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_y3n4e"]
-particle_flag_rotate_y = true
-emission_shape = 1
-emission_sphere_radius = 0.2
-angle_min = -228.6
-angle_max = 35.4
-inherit_velocity_ratio = 0.151
-direction = Vector3(0, 1, 0)
-spread = 180.0
-initial_velocity_min = 20.0
-initial_velocity_max = 30.0
-radial_velocity_min = 0.999978
-radial_velocity_max = 4.99998
-gravity = Vector3(0, -5, 0)
-damping_min = 1.653
-damping_max = 4.098
-scale_curve = SubResource("CurveTexture_vfcn3")
-
-[sub_resource type="PrismMesh" id="PrismMesh_ovpf1"]
-material = ExtResource("6_e24ns")
+[sub_resource type="Compositor" id="Compositor_ogq3h"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_s0c8u"]
 size = Vector3(5950, 1197, 1)
@@ -356,6 +325,21 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_ivw8t")
 
+[sub_resource type="BoxMesh" id="BoxMesh_l0jcy"]
+size = Vector3(10, 30, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q4feb"]
+albedo_color = Color(0.572988, 0.572988, 0.572988, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ojc0g"]
+size = Vector3(10.1, 30, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_q4feb"]
+size = Vector3(60, 30, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e24ns"]
+size = Vector3(60, 30, 10)
+
 [node name="World" type="Node3D" groups=["terrain"]]
 script = ExtResource("1_ilnvi")
 
@@ -395,6 +379,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -625.533, 0, 1639.56)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
 environment = SubResource("Environment_l0jcy")
 camera_attributes = SubResource("CameraAttributesPractical_0gcl0")
+compositor = SubResource("Compositor_ogq3h")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
 transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -403,52 +388,6 @@ shadow_enabled = true
 shadow_opacity = 0.95
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 1000.0
-
-[node name="laser_bullet" type="CharacterBody3D" parent="Environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2401.53, 5, -662.56)
-collision_layer = 16
-collision_mask = 7
-motion_mode = 1
-
-[node name="simple_laser" parent="Environment/laser_bullet" instance=ExtResource("5_ojc0g")]
-
-[node name="Laser" parent="Environment/laser_bullet/simple_laser" index="0"]
-cast_shadow = 0
-gi_mode = 2
-surface_material_override/0 = ExtResource("6_e24ns")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/laser_bullet"]
-shape = SubResource("BoxShape3D_kd0w4")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/laser_bullet"]
-visible = false
-mesh = ExtResource("7_rxeps")
-surface_material_override/0 = ExtResource("6_e24ns")
-
-[node name="GPUParticles3D" type="GPUParticles3D" parent="Environment/laser_bullet"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.75837)
-material_override = ExtResource("6_e24ns")
-emitting = false
-amount = 50
-lifetime = 0.5
-one_shot = true
-explosiveness = 1.0
-transform_align = 2
-process_material = SubResource("ParticleProcessMaterial_y3n4e")
-draw_pass_1 = SubResource("PrismMesh_ovpf1")
-
-[node name="RayCast3D" type="RayCast3D" parent="Environment/laser_bullet"]
-target_position = Vector3(0, 0, -13)
-collision_mask = 5
-hit_from_inside = true
-
-[node name="OmniLight3D" type="OmniLight3D" parent="Environment/laser_bullet"]
-light_color = Color(1, 3.315, 4.972, 1)
-light_energy = 0.174
-light_specular = 3.0
-shadow_enabled = true
-omni_range = 51.078
-omni_attenuation = 0.866
 
 [node name="Borders" type="StaticBody3D" parent="." groups=["terrain"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 512, -3, 512)
@@ -808,7 +747,7 @@ metadata/_edit_lock_ = true
 
 [node name="SpawnPoint" type="Node3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -637.069, 3, -206.94)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -762.069, 3, -407.94)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SpawnPoint"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.963069, 0)
@@ -824,7 +763,10 @@ mesh = SubResource("CylinderMesh_l0jcy")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -91.3, 20.8, -23.7)
 curve = SubResource("Curve3D_ilnvi")
 
-[node name="halfpipe" type="CSGPolygon3D" parent="Path3D"]
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Path3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -627.7, 15.2, -302.3)
+
+[node name="halfpipe" type="CSGPolygon3D" parent="Path3D" groups=["terrain"]]
 use_collision = true
 collision_mask = 3
 polygon = PackedVector2Array(-30, 0, -32, 11, -32, 20, -29, 20, -28, 11, -21, 6, -11, 2, 0, 1, 11, 2, 22, 6, 28, 11, 29, 20, 32, 20, 32, 11, 30, 0)
@@ -842,7 +784,7 @@ path_joined = false
 material = ExtResource("16_fetrj")
 
 [node name="test_target" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -636, 2, -243)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -678, 2, -536)
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="test_target"]
 collision_layer = 4
@@ -859,8 +801,95 @@ mesh = SubResource("ArrayMesh_q4feb")
 skeleton = NodePath("../..")
 
 [node name="Node3D2" type="Node3D" parent="."]
+visible = false
 
-[editable path="Environment/laser_bullet/simple_laser"]
+[node name="TubeTest" parent="." instance=ExtResource("21_e24ns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -719, 49, -326)
+visible = false
+
+[node name="Cylinder" parent="TubeTest" index="0"]
+surface_material_override/0 = ExtResource("16_fetrj")
+
+[node name="CollisionShape3D" parent="TubeTest/Cylinder/StaticBody3D" index="0"]
+disabled = true
+
+[node name="TestWall" type="StaticBody3D" parent="." groups=["terrain"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -675.2, 15, -578.273)
+collision_mask = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall"]
+mesh = SubResource("BoxMesh_l0jcy")
+surface_material_override/0 = SubResource("StandardMaterial3D_q4feb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall"]
+shape = SubResource("BoxShape3D_ojc0g")
+
+[node name="TestWall6" type="StaticBody3D" parent="." groups=["terrain"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -677.2, 15, -500.273)
+collision_mask = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall6"]
+mesh = SubResource("BoxMesh_q4feb")
+surface_material_override/0 = SubResource("StandardMaterial3D_q4feb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall6"]
+shape = SubResource("BoxShape3D_e24ns")
+
+[node name="TestWall7" type="StaticBody3D" parent="." groups=["terrain"]]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -578.2, 15, 36.7269)
+collision_mask = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall7"]
+mesh = SubResource("BoxMesh_q4feb")
+surface_material_override/0 = SubResource("StandardMaterial3D_q4feb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall7"]
+shape = SubResource("BoxShape3D_e24ns")
+
+[node name="TestWall2" type="StaticBody3D" parent="." groups=["terrain"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -699.2, 15, -566.273)
+collision_mask = 10
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall2"]
+mesh = SubResource("BoxMesh_l0jcy")
+surface_material_override/0 = SubResource("StandardMaterial3D_q4feb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall2"]
+shape = SubResource("BoxShape3D_ojc0g")
+
+[node name="TestWall3" type="StaticBody3D" parent="." groups=["terrain"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -653.2, 15, -566.273)
+collision_mask = 10
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall3"]
+mesh = SubResource("BoxMesh_l0jcy")
+surface_material_override/0 = SubResource("StandardMaterial3D_q4feb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall3"]
+shape = SubResource("BoxShape3D_ojc0g")
+
+[node name="TestWall4" type="StaticBody3D" parent="." groups=["terrain"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -641.2, 15, -539.273)
+collision_mask = 10
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall4"]
+mesh = SubResource("BoxMesh_l0jcy")
+surface_material_override/0 = SubResource("StandardMaterial3D_q4feb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall4"]
+shape = SubResource("BoxShape3D_ojc0g")
+
+[node name="TestWall5" type="StaticBody3D" parent="." groups=["terrain"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -715.2, 15, -539.273)
+collision_mask = 10
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestWall5"]
+mesh = SubResource("BoxMesh_l0jcy")
+surface_material_override/0 = SubResource("StandardMaterial3D_q4feb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall5"]
+shape = SubResource("BoxShape3D_ojc0g")
+
 [editable path="Tunnel/EntranceL/RockA1"]
 [editable path="Tunnel/TunnelMesh"]
 [editable path="Tunnel/CrystalGroup1/CrystalC"]
@@ -879,3 +908,4 @@ skeleton = NodePath("../..")
 [editable path="Tunnel2/CrystalGroup3/CrystalC"]
 [editable path="Tunnel2/CrystalGroup3/CrystalC3"]
 [editable path="Tunnel2/CrystalGroup3/CrystalC2"]
+[editable path="TubeTest"]

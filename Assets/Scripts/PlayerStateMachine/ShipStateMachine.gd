@@ -13,7 +13,7 @@ signal phantom_camera_shift()
 
 func _process(delta: float) -> void:
 	if currentState:
-		SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed)
+		SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed, currentState.accel_input)
 	super(delta)
 
 func _physics_process(delta: float) -> void:	
