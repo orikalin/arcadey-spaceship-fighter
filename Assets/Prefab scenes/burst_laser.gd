@@ -4,12 +4,13 @@ extends Node3D
 @export var burst_interval:float = 0.15
 @export var cooldown:float = 0.8
 @export var bullet:PackedScene
+@export var burst_count:int = 3
 var cooldown_timer:float = 0.0
 
 
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("fire1") and cooldown_timer <= 0.0:
-		x_round_burst(3)
+		x_round_burst(burst_count)
 		cooldown_timer = cooldown
 
 	if cooldown_timer > 0.0:

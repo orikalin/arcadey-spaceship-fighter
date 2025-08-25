@@ -2,8 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dtcoq5voyhyt6" path="res://Assets/Scripts/Core/laser_bullet.gd" id="1_nflv7"]
 [ext_resource type="PackedScene" uid="uid://bltl2svpjipy2" path="res://Assets/Meshes/simple_laser.glb" id="2_8x8s1"]
-[ext_resource type="Material" uid="uid://re2lopsjq1c0" path="res://Assets/Materials/laser_bullet_mat.tres" id="3_762f3"]
-[ext_resource type="ArrayMesh" uid="uid://bhb68utujdrpc" path="res://Assets/Meshes/simple_laser.obj" id="4_7rlwx"]
+[ext_resource type="Material" uid="uid://re2lopsjq1c0" path="res://Assets/Materials/Ships/laser_bullet_mat.tres" id="3_762f3"]
+
+[sub_resource type="Curve" id="Curve_paguq"]
+_data = [Vector2(0, 0.615709), 0.0, 3.98076, 0, 0, Vector2(0.258964, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kd0w4"]
 size = Vector3(0.085, 0.06, 1)
@@ -41,32 +44,12 @@ collision_layer = 16
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_nflv7")
-speed = 300.0
+speed = 500.0
 lifetime = 1.4
-
-[node name="simple_laser" parent="." instance=ExtResource("2_8x8s1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66, 0, 0)
-
-[node name="Laser" parent="simple_laser" index="0"]
-cast_shadow = 0
-gi_mode = 2
-surface_material_override/0 = ExtResource("3_762f3")
-
-[node name="simple_laser2" parent="." instance=ExtResource("2_8x8s1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.659536, 0, 0)
-
-[node name="Laser" parent="simple_laser2" index="0"]
-cast_shadow = 0
-gi_mode = 2
-surface_material_override/0 = ExtResource("3_762f3")
+light_diss_curve = SubResource("Curve_paguq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_kd0w4")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-visible = false
-mesh = ExtResource("4_7rlwx")
-surface_material_override/0 = ExtResource("3_762f3")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.75837)
@@ -81,7 +64,8 @@ process_material = SubResource("ParticleProcessMaterial_y3n4e")
 draw_pass_1 = SubResource("PrismMesh_ovpf1")
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
-target_position = Vector3(0, 0, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+target_position = Vector3(0, 0, -23)
 collision_mask = 5
 hit_from_inside = true
 
@@ -93,5 +77,23 @@ light_bake_mode = 0
 omni_range = 51.078
 omni_attenuation = 0.866
 
-[editable path="simple_laser"]
-[editable path="simple_laser2"]
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="simple_laser" parent="Meshes" instance=ExtResource("2_8x8s1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66, 0, 0)
+
+[node name="Laser" parent="Meshes/simple_laser" index="0"]
+cast_shadow = 0
+gi_mode = 2
+surface_material_override/0 = ExtResource("3_762f3")
+
+[node name="simple_laser2" parent="Meshes" instance=ExtResource("2_8x8s1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.659536, 0, 0)
+
+[node name="Laser" parent="Meshes/simple_laser2" index="0"]
+cast_shadow = 0
+gi_mode = 2
+surface_material_override/0 = ExtResource("3_762f3")
+
+[editable path="Meshes/simple_laser"]
+[editable path="Meshes/simple_laser2"]

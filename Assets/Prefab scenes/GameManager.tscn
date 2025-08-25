@@ -1,34 +1,29 @@
-[gd_scene load_steps=15 format=3 uid="uid://sp83v0khro86"]
+[gd_scene load_steps=12 format=3 uid="uid://sp83v0khro86"]
 
 [ext_resource type="Script" uid="uid://xlfwqbq88n81" path="res://Assets/Scripts/Core/SceneManager.gd" id="1_tma8b"]
 [ext_resource type="PackedScene" uid="uid://c5lc6ckxyun1x" path="res://Assets/Prefab scenes/PlayerManager.tscn" id="2_6xw86"]
-[ext_resource type="Texture2D" uid="uid://b6h2gia3nla80" path="res://Assets/Materials/palettes/apollo-resaturated-1x.png" id="3_yak2d"]
-[ext_resource type="Shader" uid="uid://cb7d3ktebu8u3" path="res://Assets/Scripts/Shaders/palette_limiter.gdshader" id="4_vvyv8"]
 [ext_resource type="PackedScene" uid="uid://c7oosc8adu1fp" path="res://Assets/Prefab scenes/TitleBackground.tscn" id="5_hegpx"]
 [ext_resource type="Shader" uid="uid://b53d43pathm8p" path="res://Assets/Scripts/Shaders/edge_detection.gdshader" id="6_78mvm"]
-[ext_resource type="Script" path="res://Assets/Scripts/ShowOnReady.gd" id="7_biprf"]
 [ext_resource type="PackedScene" uid="uid://b6m02vqobxc2d" path="res://Assets/Prefab scenes/Titlescreen.tscn" id="7_iic1y"]
 [ext_resource type="Script" uid="uid://cpe086b3prq0k" path="res://Assets/Prefab scenes/full_screen_fade.gd" id="9_yak2d"]
 [ext_resource type="PackedScene" uid="uid://7iywtxxqygke" path="res://multiplayer/network_popup.tscn" id="14_m0te2"]
 [ext_resource type="PackedScene" uid="uid://b6s2sr3a1tpk0" path="res://multiplayer/player_list.tscn" id="15_6rp13"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jkl3n"]
-shader = ExtResource("4_vvyv8")
-shader_parameter/num_colors = 128
-shader_parameter/PALETTE_TEXTURE = ExtResource("3_yak2d")
 
 [sub_resource type="QuadMesh" id="QuadMesh_g4sx0"]
+lightmap_size_hint = Vector2i(12, 12)
 flip_faces = true
 size = Vector2(2, 2)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h6xfe"]
 render_priority = 0
 shader = ExtResource("6_78mvm")
-shader_parameter/lightIntensity = 0.5
-shader_parameter/lineAlpha = 0.475
+shader_parameter/lightIntensity = 0.335
+shader_parameter/lineAlpha = 0.525
 shader_parameter/useLighting = true
-shader_parameter/lineHighlight = 0.2
-shader_parameter/lineShadow = 0.55
+shader_parameter/lineHighlight = -0.09
+shader_parameter/lineShadow = 0.645
 
 [node name="GameManager" type="Node"]
 
@@ -65,11 +60,12 @@ render_target_update_mode = 4
 
 [node name="PixelEdgeHighliter" type="MeshInstance3D" parent="World3D/SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.978538, 0.0870875, -0.18676, 0, 0.906308, 0.422617, 0.206067, 0.413547, -0.886857, 667.957, 1.97913, 169.452)
+visible = false
+layers = 2
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_g4sx0")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("ShaderMaterial_h6xfe")
-script = ExtResource("7_biprf")
 
 [node name="World2D" type="Node2D" parent="."]
 
@@ -105,5 +101,7 @@ visible = false
 [node name="PlayerList" parent="." instance=ExtResource("15_6rp13")]
 visible = false
 
+[editable path="World3D/SubViewportContainer/SubViewport/PlayerManager"]
+[editable path="World3D/SubViewportContainer/SubViewport/WorldScenes/TitleBackground"]
 [editable path="NetworkPopup"]
 [editable path="PlayerList"]

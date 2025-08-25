@@ -6,5 +6,5 @@ diffuse_mode = 1
 specular_mode = 2
 disable_ambient_light = true
 disable_fog = true
-albedo_color = Color(0.454902, 0.803922, 1, 1)
+albedo_color = Color(0.187619, 0.740332, 0.999999, 1)
 disable_receive_shadows = true

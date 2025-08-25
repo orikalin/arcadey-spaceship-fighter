@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dltexcxkve7kl"]
 
-[ext_resource type="TubeTrailMesh" uid="uid://cwrrdycqgiivo" path="res://Assets/Materials/TrailMesh.tres" id="1_ldow0"]
+[ext_resource type="TubeTrailMesh" uid="uid://cwrrdycqgiivo" path="res://Assets/Materials/Ships/TrailMesh.tres" id="1_ldow0"]
 [ext_resource type="Curve" uid="uid://ds8st4sx4ftrj" path="res://Assets/Curves/dampingCurve.tres" id="2_6e7m3"]
 [ext_resource type="Curve" uid="uid://b4kq1ut5oqcmq" path="res://Assets/Curves/EngineTrailScaleCurve.tres" id="3_0htt4"]
 

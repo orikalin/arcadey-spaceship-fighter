@@ -91,6 +91,7 @@ unique_name_in_owner = true
 transform = Transform3D(0.999996, 0, 0, 0, 0.99993, 0, 0, 0, 0.999969, 0.000976519, 2.10843, 2.96243)
 cull_mask = 524287
 current = true
+far = 8000.0
 
 [node name="PhantomCameraHost" type="Node" parent="PhantomCameras/MainCamera"]
 process_priority = 300

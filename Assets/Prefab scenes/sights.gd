@@ -49,7 +49,7 @@ func _physics_process(delta: float) -> void:
 		sight_two.transform.origin = target_rest_pos
 		var _sight_raycast_target = sight_raycast.get_collider() as Node3D
 		if _sight_raycast_target:
-			if not _sight_raycast_target.is_in_group("terrain"):
+			if _sight_raycast_target.is_in_group("targetable"):
 				lock_on_target(_sight_raycast_target)		
 		else:
 			return
@@ -94,7 +94,8 @@ func get_input() -> void:
 # eventually, add a bool to all valid target classes for is_targetable
 func _on_sight_soft_locker_body_entered(body:Node3D) -> void:
 	if !locked_on:
-		lock_on_target(body)
+		if body.is_in_group("targetable"):
+			lock_on_target(body)
 		
 
 func lock_on_target(body:Node3D) -> void:
@@ -115,13 +116,14 @@ func is_line_of_sight_blocked(body:Node3D) -> bool:
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.new()
 	query.collide_with_bodies = true
+	query.collision_mask = 1
 	query.from = %Player.global_position
 	query.to = body.global_position
 	# print_debug("testing")
 
 	var result = space_state.intersect_ray(query)
 	if result:
-		if result.collider.is_in_group("terrain"):
+		if not result.collider.is_in_group("targetable"):
 			# print_debug("ray hit " + result.collider.name)
 			return true # ray hit terrain
 		else:

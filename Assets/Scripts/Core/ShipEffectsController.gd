@@ -48,7 +48,7 @@ func _ready():
 	# Particles = $Particles.get_children()
 	Trails = $Trails.get_children()
 	EngineCones = $EngineCones.get_children()
-	var engine_cone_mesh:CylinderMesh = load("res://Assets/Materials/EngineConeMesh.tres").duplicate()
+	var engine_cone_mesh:CylinderMesh = load("res://Assets/Materials/Ships/EngineConeMesh.tres").duplicate()
 	for particles:CPUParticles3D in EngineCones:
 		particles.mesh = engine_cone_mesh
 
@@ -77,7 +77,7 @@ func _process(delta:float):
 			particles.mesh.top_radius = owner.engine_cone_top_rad
 			particles.mesh.height = owner.engine_cone_height
 		for spot_lights:SpotLight3D in EngineLights:
-			spot_lights.spot_attenuation = owner.light_attenuation
+			# spot_lights.spot_attenuation = owner.light_attenuation
 			spot_lights.light_energy = owner.light_energy_spot
 		for omni_lights:OmniLight3D in OmniLights:
 			omni_lights.light_energy = owner.light_energy_omni
@@ -98,13 +98,13 @@ func _process(delta:float):
 			target_light_power = lerp(target_light_power, accel_input, delta * cone_flare_speed * cone_flare_power)
 			var _EngineCurveSample:float = EngineLightCurve.sample(target_light_power)
 			var _light_attenuation:float = lerp(1.0, EngineLightIntensity, _EngineCurveSample)
-			var _light_energy_spot:float = lerp(1.0, EngineLightEnergy, _EngineCurveSample)
+			var _light_energy_spot:float = lerp(0.8, EngineLightEnergy, _EngineCurveSample)
 			var _light_energy_omni:float = lerp(0.2, 2.0, _EngineCurveSample) 
 			owner.light_attenuation = _light_attenuation
 			owner.light_energy_spot = _light_energy_spot
 			owner.light_energy_omni = _light_energy_omni
 			for light:SpotLight3D in EngineLights:
-				light.spot_attenuation = _light_attenuation
+				# light.spot_attenuation = _light_attenuation
 				light.light_energy = _light_energy_spot 
 			for omni_light:OmniLight3D in OmniLights:
 				omni_light.light_energy = _light_energy_omni

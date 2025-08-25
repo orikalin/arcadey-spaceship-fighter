@@ -1,27 +1,20 @@
 extends State
 
-@onready var ground_raycasts:Array = %ground_check_rays.get_children()
 
 @export var player:CharacterBody3D
 @export var proxy_xform:CharacterBody3D
 @export var proxy_orb:RigidBody3D
 @export var ShipContainer:MeshInstance3D
 @export var physics_material:PhysicsMaterial
-
-# duration of a mid air leveling manuver, eased by a curve
 @export var level_duration:float = 3.0
+
 var elapsed_time:float = 0.0
 var duration:float = 1.0
 var eased_t:float = 0.0
 var ungrounded_time:float = 0.0
-# Current speed
 var forward_speed:float = 0.0
-# Throttle input speed
 var accel_input:float = 0.0
-# turn strength in radians
 var turn_input:float = 0.0
-
-
 var ship_statemachine:StateMachine
 var ship_stats:ShipResource
 var is_grounded:bool = false
@@ -31,6 +24,8 @@ var boost_duration:float = 0.0
 var ship_mesh_tween:Tween
 
 signal camera_Y_offset
+
+@onready var ground_raycasts:Array = %ground_check_rays.get_children()
 
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -194,16 +189,15 @@ func get_input():
 	turn_input += Input.get_action_strength("roll_left")
 	turn_input *= deg_to_rad(ship_stats.boost_turn_force)
 
-	# Brake/Accelerate input
+	# Boosting inputs
+	## Add inputs for handling a hover slide boost: this occurs when you start drifting. I'm not sure how I want this to work yet, here are the two ideas:
+	## 1. Entering a drift starts charging up the slide boost, upon releasing the drift, IF the player is holding boost, switch to the boost state and do a boost with very high acceleration
+	## 2. Entering a drift starts charging up the slide boost. Upon pressing the boost button, drift state will be exited, and a high accel boost will be performed.
+	## 3. The guage will only charge up if the player is holding boost while drifting. If drift is released, the boost gauge will diminish over time. The high accel boost will only happen if the player is holding boost upon drift release.
+	## in all of these cases, the acceleration increase will be a multiplier based on the boost gauge, starting at 1.0 and going up to 4.0? at max
+	## this the additional resulting acceleration will temporarily raise the max speed of the boost state, which will return to its base max over a short time.
+	## consider applying the high acceleration bonus to hover mode in matching situations, whatever version is chosen.
 	accel_input = 1.0
-	# if  gamepad:
-	# 	if Input.is_action_pressed("throttle_up"):
-	# 		accel_input += 1
-	# 	elif gamepad and Input.is_action_pressed("throttle_down"):
-	# 		accel_input -= 0.4
-	# else:
-	# 	accel_input += Input.get_action_strength("pitch_down")
-	# 	accel_input -= Input.get_action_strength("pitch_up") * 0.4
 
 	if not Input.is_action_pressed("boost") and boost_duration > ship_stats.boost_min_duration:
 		var flags:Dictionary = {

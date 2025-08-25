@@ -102,7 +102,7 @@ void light (){
 
 		// Calculate light direction
 		float dotNL = dot(normal.rgb, LIGHT);
-		dotNL = pow(dotNL, 2.5);
+		dotNL = pow(dotNL, 5.0);
 		dotNL = clamp(dotNL, 0.0, 1.0);
 
 		if(LIGHT_IS_DIRECTIONAL)

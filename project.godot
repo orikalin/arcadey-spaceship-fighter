@@ -95,6 +95,7 @@ enabled=PackedStringArray("res://addons/area_lights/plugin.cfg", "res://addons/g
 [global_group]
 
 terrain=""
+targetable=""
 
 [input]
 

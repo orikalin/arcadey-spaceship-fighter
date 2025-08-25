@@ -1,17 +1,16 @@
 [gd_scene load_steps=59 format=4 uid="uid://ookdxcwivpy7"]
 
 [ext_resource type="Script" uid="uid://wb6qs4vv7kcw" path="res://Assets/LevelScene.gd" id="1_ilnvi"]
-[ext_resource type="Texture2D" uid="uid://b6h2gia3nla80" path="res://Assets/Materials/palettes/apollo-resaturated-1x.png" id="2_v0fjc"]
 [ext_resource type="PackedScene" uid="uid://be6nrf0b8j4l0" path="res://Assets/Terrain3DModels/RockA.tscn" id="7_qda7k"]
 [ext_resource type="PackedScene" uid="uid://bwvtgwartxt0g" path="res://Assets/Terrain3DModels/RockB.tscn" id="8_64n0d"]
 [ext_resource type="PackedScene" uid="uid://lsvs8a7urkca" path="res://Assets/Terrain3DModels/RockC.tscn" id="9_dc56b"]
 [ext_resource type="PackedScene" uid="uid://vvayjv3rbx1d" path="res://Assets/Terrain3DModels/Tunnel.tscn" id="10_0ct1x"]
 [ext_resource type="PackedScene" uid="uid://cribhhvg03u8g" path="res://Assets/Terrain3DModels/CrystalC.tscn" id="11_0400b"]
-[ext_resource type="Material" uid="uid://cso4f2iyuxpmc" path="res://Assets/Materials/M_crystal_purple.tres" id="12_jybm5"]
-[ext_resource type="Material" uid="uid://ickkffutwcvo" path="res://Assets/Materials/M_crystal_red.tres" id="13_dmca1"]
+[ext_resource type="Material" uid="uid://cso4f2iyuxpmc" path="res://Assets/Materials/terrain/M_crystal_purple.tres" id="12_jybm5"]
+[ext_resource type="Material" uid="uid://ickkffutwcvo" path="res://Assets/Materials/terrain/M_crystal_red.tres" id="13_dmca1"]
 [ext_resource type="Script" uid="uid://c444j1ucmv5ti" path="res://Assets/Scripts/CaveEntrance.gd" id="14_ocbd7"]
 [ext_resource type="ArrayMesh" uid="uid://c27o2arf8nixo" path="res://Assets/Meshes/Prototype_Ship.obj" id="15_wis17"]
-[ext_resource type="Material" uid="uid://cin7ypj6dci8d" path="res://Assets/Materials/BasicAsphalt.tres" id="16_fetrj"]
+[ext_resource type="Material" uid="uid://cin7ypj6dci8d" path="res://Assets/Materials/terrain/BasicAsphalt.tres" id="16_fetrj"]
 [ext_resource type="PackedScene" uid="uid://bn5nf4esciwex" path="res://Assets/Terrain3DModels/LODExample.tscn" id="21_bmwnq"]
 [ext_resource type="PackedScene" uid="uid://b63llvy5rhjkb" path="res://Assets/Blend files/TubeTest.blend" id="21_e24ns"]
 [ext_resource type="Texture2D" uid="uid://ddprscrpsofah" path="res://Assets/Materials/textures/ground037_alb_ht.png" id="22_j3niq"]
@@ -86,6 +85,7 @@ sky_horizon_color = Color(0.486275, 0.776471, 0.894118, 1)
 ground_bottom_color = Color(0.101961, 0.0941176, 0.137255, 1)
 ground_horizon_color = Color(0.486275, 0.776471, 0.894118, 1)
 ground_curve = 0.13
+ground_energy_multiplier = 0.0
 
 [sub_resource type="Sky" id="Sky_a3n1l"]
 sky_material = SubResource("ProceduralSkyMaterial_vibap")
@@ -94,10 +94,10 @@ sky_material = SubResource("ProceduralSkyMaterial_vibap")
 background_mode = 2
 background_color = Color(1, 1, 1, 1)
 sky = SubResource("Sky_a3n1l")
-ambient_light_source = 2
-ambient_light_color = Color(0.5, 0.5, 0.5, 1)
-ambient_light_sky_contribution = 0.3
+ambient_light_color = Color(0.396889, 0.396889, 0.396889, 1)
+ambient_light_sky_contribution = 0.11
 tonemap_mode = 3
+tonemap_exposure = 1.38
 sdfgi_bounce_feedback = 1.5
 sdfgi_min_cell_size = 1.17188
 sdfgi_cascade0_distance = 75.0006
@@ -105,16 +105,22 @@ sdfgi_max_distance = 1200.01
 glow_blend_mode = 4
 fog_enabled = true
 fog_mode = 1
-fog_light_color = Color(0.35008, 0.380495, 0.428304, 1)
-fog_density = 0.5
+fog_light_color = Color(0.328559, 0.35778, 0.403711, 1)
+fog_light_energy = 0.87
+fog_density = 0.75
+fog_aerial_perspective = 0.183
 fog_sky_affect = 0.0
-fog_depth_curve = 2.63898
-fog_depth_begin = 2000.0
+fog_depth_curve = 1.56915
+fog_depth_begin = 3000.0
 fog_depth_end = 4000.0
 volumetric_fog_density = 0.0033
-adjustment_color_correction = ExtResource("2_v0fjc")
+adjustment_enabled = true
+adjustment_contrast = 1.07
+adjustment_saturation = 1.13
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_0gcl0"]
+dof_blur_far_distance = 268.58
+dof_blur_amount = 0.01
 
 [sub_resource type="Compositor" id="Compositor_ogq3h"]
 
@@ -325,6 +331,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_ivw8t")
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_v0fjc"]
+friction = 0.0
+
 [sub_resource type="BoxMesh" id="BoxMesh_l0jcy"]
 size = Vector3(10, 30, 10)
 
@@ -343,7 +352,7 @@ size = Vector3(60, 30, 10)
 [node name="World" type="Node3D" groups=["terrain"]]
 script = ExtResource("1_ilnvi")
 
-[node name="CrystalC4" type="StaticBody3D" parent="."]
+[node name="CrystalC4" type="StaticBody3D" parent="." groups=["targetable"]]
 transform = Transform3D(0.194145, -0.325044, 1.73539, 0.177317, -1.73343, -0.344516, 1.75664, 0.210902, -0.15702, -557.329, 1.51321, 15.9222)
 collision_layer = 5
 collision_mask = 11
@@ -360,7 +369,7 @@ shape = SubResource("BoxShape3D_v0fjc")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CrystalC4"]
 shape = SubResource("ConcavePolygonShape3D_ycsjC")
 
-[node name="CrystalC5" type="AnimatableBody3D" parent="."]
+[node name="CrystalC5" type="AnimatableBody3D" parent="." groups=["targetable"]]
 transform = Transform3D(0.194145, -0.325044, 1.73539, 0.177317, -1.73343, -0.344516, 1.75664, 0.210902, -0.15702, -625.329, 17.5132, 15.9222)
 collision_layer = 5
 collision_mask = 11
@@ -381,13 +390,28 @@ environment = SubResource("Environment_l0jcy")
 camera_attributes = SubResource("CameraAttributesPractical_0gcl0")
 compositor = SubResource("Compositor_ogq3h")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
-transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+[node name="GI_light_down" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, -0.5, 0.866025, 0, -0.866025, -0.5, 0, 0, 0)
+light_color = Color(0.852067, 0.93643, 0.987907, 1)
 light_specular = 0.0
 shadow_enabled = true
-shadow_opacity = 0.95
+shadow_opacity = 0.5
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 1000.0
+
+[node name="GI_light_up" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(-1, 8.74228e-08, 0, -4.37114e-08, -0.5, -0.866025, -7.57104e-08, -0.866026, 0.5, 0, 0, 0)
+light_color = Color(0.85098, 0.937255, 0.988235, 1)
+light_energy = 0.4
+light_specular = 0.0
+light_cull_mask = 4294967293
+shadow_enabled = true
+shadow_bias = 0.0
+shadow_reverse_cull_face = true
+shadow_opacity = 0.5
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 1000.0
+sky_mode = 1
 
 [node name="Borders" type="StaticBody3D" parent="." groups=["terrain"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 512, -3, 512)
@@ -412,71 +436,71 @@ shape = SubResource("BoxShape3D_pyqb2")
 [node name="Tunnel" type="Node3D" parent="." groups=["terrain"]]
 transform = Transform3D(1.26661, 0, 0.820252, 0, 1.50901, 0, -0.820252, 0, 1.26661, -374.527, -160.501, 334.549)
 
-[node name="EntranceL" type="Node3D" parent="Tunnel"]
+[node name="EntranceL" type="Node3D" parent="Tunnel" groups=["terrain"]]
 
-[node name="RockA1" parent="Tunnel/EntranceL" instance=ExtResource("7_qda7k")]
+[node name="RockA1" parent="Tunnel/EntranceL" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(5.82988, -5.4374, -4.00004, 6.04396, 6.55839, -0.106264, 3.00604, -2.64109, 7.9713, 807.937, 137.298, 467.411)
 
-[node name="RockA2" parent="Tunnel/EntranceL" instance=ExtResource("7_qda7k")]
+[node name="RockA2" parent="Tunnel/EntranceL" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(4.67905, 4.22076, -5.5926, 6.98724, -3.31022, 3.34764, -0.52024, -6.49718, -5.3387, 766.019, 104.95, 452.605)
 
-[node name="RockA3" parent="Tunnel/EntranceL" instance=ExtResource("7_qda7k")]
+[node name="RockA3" parent="Tunnel/EntranceL" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(1.19782, 11.0889, 4.42738, -11.9291, 0.921057, 0.9205, 0.510788, -4.49312, 11.1153, 793.166, 76.9378, 454.834)
 
-[node name="RockB1" parent="Tunnel/EntranceL" instance=ExtResource("8_64n0d")]
+[node name="RockB1" parent="Tunnel/EntranceL" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(-2.10522, -4.25988, 3.15298, 3.05166, -3.74811, -3.02637, 4.33304, 0.570028, 3.66329, 824.574, 112.54, 446.946)
 
-[node name="RockB3" parent="Tunnel/EntranceL" instance=ExtResource("8_64n0d")]
+[node name="RockB3" parent="Tunnel/EntranceL" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(4.29222, 4.57142, 1.24961, -2.49948, 3.61605, -4.6432, -4.02641, 2.62846, 4.21447, 773.937, 140.911, 469.972)
 
-[node name="RockC1" parent="Tunnel/EntranceL" instance=ExtResource("9_dc56b")]
+[node name="RockC1" parent="Tunnel/EntranceL" groups=["terrain"] instance=ExtResource("9_dc56b")]
 transform = Transform3D(-1.86839, -3.85072, -1.99813, -0.0474326, -2.1573, 4.20181, -4.33801, 1.6821, 0.814656, 786.081, 135.376, 453.531)
 
-[node name="RockC2" parent="Tunnel/EntranceL" instance=ExtResource("9_dc56b")]
+[node name="RockC2" parent="Tunnel/EntranceL" groups=["terrain"] instance=ExtResource("9_dc56b")]
 transform = Transform3D(-3.90856, -4.56077, 3.35866, 3.81036, 0.902037, 5.65911, -4.19074, 5.07383, 2.01294, 791.859, 164.408, 508.107)
 
-[node name="EntranceR" type="Node3D" parent="Tunnel"]
+[node name="EntranceR" type="Node3D" parent="Tunnel" groups=["terrain"]]
 
-[node name="RockA1" parent="Tunnel/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA1" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(-0.271255, 1.28607, -2.97471, -1.25761, 2.70942, 1.28605, 2.98685, 1.25759, 0.271335, 299.644, 127.203, 424.309)
 
-[node name="RockA2" parent="Tunnel/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA2" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(2.29164, -2.44454, 3.0731, 3.84134, 0.657286, -2.34167, 0.814771, 3.77671, 2.39666, 318.179, 95.8599, 421.731)
 
-[node name="RockA5" parent="Tunnel/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA5" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(1.09929, -4.37397, 0.575562, 3.84134, 0.657286, -2.34167, 2.16957, 1.05247, 3.85443, 321.814, 95.8599, 436.931)
 
-[node name="RockA3" parent="Tunnel/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA3" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(3.70822, 1.86229, 1.85804, 2.19079, -0.408409, -3.96295, -1.45634, 4.12752, -1.23046, 338.177, 116.66, 430.367)
 
-[node name="RockA4" parent="Tunnel/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA4" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(1.9779, 0.270409, 4.08487, -4.00125, 1.0869, 1.86547, -0.865577, -4.40646, 0.710812, 320.977, 134.583, 441.012)
 
-[node name="RockB1" parent="Tunnel/EntranceR" instance=ExtResource("8_64n0d")]
+[node name="RockB1" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(-1.64956, -1.63286, 1.75857, 0.196316, 2.03499, 2.07367, -2.39171, 1.29322, -1.04267, 295.848, 109.828, 419.45)
 
-[node name="RockB3" parent="Tunnel/EntranceR" instance=ExtResource("8_64n0d")]
+[node name="RockB3" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(-2.03718, 1.29729, 2.88404, -2.82928, 0.784888, -2.35156, -1.41272, -3.44263, 0.550663, 306.288, 128.712, 434.042)
 
-[node name="RockB4" parent="Tunnel/EntranceR" instance=ExtResource("8_64n0d")]
+[node name="RockB4" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(1.97436, 2.87133, -1.41708, -2.82928, 0.784888, -2.35156, -1.49926, 2.30004, 2.57153, 328.686, 129.709, 427.63)
 
-[node name="RockB2" parent="Tunnel/EntranceR" instance=ExtResource("8_64n0d")]
+[node name="RockB2" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(-2.17746, 0.476253, -1.87396, -1.61495, 1.104, 2.15708, 1.06324, 2.65221, -0.561397, 303.461, 107.797, 428.826)
 
-[node name="RockC1" parent="Tunnel/EntranceR" instance=ExtResource("9_dc56b")]
+[node name="RockC1" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("9_dc56b")]
 transform = Transform3D(-4.35426e-08, 0.190008, -16.0848, 3.74545, 1.08412e-06, -1.81978e-07, 1.57822e-07, -25.676, -0.119032, 348.901, 153.874, 208.087)
 
-[node name="RockC2" parent="Tunnel/EntranceR" instance=ExtResource("9_dc56b")]
+[node name="RockC2" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("9_dc56b")]
 transform = Transform3D(-1.29621e-07, -7.41645, 0, 2.96539, -3.24183e-07, 0, 0, 0, 42.6371, 329.982, 151.835, 387.116)
 
-[node name="RockC3" parent="Tunnel/EntranceR" instance=ExtResource("9_dc56b")]
+[node name="RockC3" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("9_dc56b")]
 transform = Transform3D(-1.31015e-07, -7.41676, -24.2438, 2.99728, -3.24197e-07, -1.05973e-06, 5.74316e-15, -3.52777, 50.9701, 489.595, 151.29, 290.166)
 
-[node name="RockC4" parent="Tunnel/EntranceR" instance=ExtResource("9_dc56b")]
+[node name="RockC4" parent="Tunnel/EntranceR" groups=["terrain"] instance=ExtResource("9_dc56b")]
 transform = Transform3D(-1.31015e-07, -5.78561, -45.9716, 2.99728, -2.52897e-07, -2.00948e-06, 3.70991e-15, -8.12222, 32.7464, 575.442, 151.29, 352.492)
 
-[node name="TunnelMesh" parent="Tunnel" instance=ExtResource("10_0ct1x")]
+[node name="TunnelMesh" parent="Tunnel" groups=["terrain"] instance=ExtResource("10_0ct1x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 546.733, 112.043, 468.686)
 
 [node name="CrystalGroup1" type="Node3D" parent="Tunnel"]
@@ -563,66 +587,79 @@ script = ExtResource("14_ocbd7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Tunnel/CaveArea3D"]
 transform = Transform3D(0.998441, 0, -0.0558215, 0, 1, 0, 0.0558215, 0, 0.998441, -8.36676, 3.78637, 30.7709)
+visible = false
 shape = SubResource("BoxShape3D_goiy4")
+
+[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="Tunnel/CaveArea3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 3.86069, 2.7816, 7.47113)
+depth = 34.285
+polygon = PackedVector2Array(215, -100, 286.797, -95.6523, 226.137, 15.955, 198.725, 56.1876, 138.144, 107.644, 26.2173, 141.482, -124.467, 125.119, -225.133, 27.9948, -281.324, -63.4274, -294.42, -172.148, -281.318, -317.417, -270.826, -421.82, -228.001, -479.26, -186.277, -474.668, -167.812, -345.464, -192.039, -205.673, -155, -24)
+
+[node name="CollisionPolygon3D2" type="CollisionPolygon3D" parent="Tunnel/CaveArea3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 3.86069, 12.0592, 7.47113)
+depth = 52.63
+polygon = PackedVector2Array(-32, -385, -91, -318, -130, -258, -141, -200, -121, -147, -66, -93, 13.9877, -89.0576, 89.5401, -135.749, 135.258, -208.233, 143, -249, 116, -305, 52, -315, 6, -357)
 
 [node name="Tunnel2" type="Node3D" parent="." groups=["terrain"]]
 transform = Transform3D(2.41405, 0, 1.56333, 0, 2.87604, 0, -1.56333, 0, 2.41405, -877.251, -298.881, 761.351)
 
-[node name="EntranceL" type="Node3D" parent="Tunnel2"]
+[node name="EntranceL" type="Node3D" parent="Tunnel2" groups=["terrain"]]
 
-[node name="RockA1" parent="Tunnel2/EntranceL" instance=ExtResource("7_qda7k")]
+[node name="RockA1" parent="Tunnel2/EntranceL" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(5.82988, -5.4374, -4.00004, 6.04396, 6.55839, -0.106264, 3.00604, -2.64109, 7.9713, 807.937, 137.298, 467.411)
 
-[node name="RockA2" parent="Tunnel2/EntranceL" instance=ExtResource("7_qda7k")]
+[node name="RockA2" parent="Tunnel2/EntranceL" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(4.67905, 4.22076, -5.5926, 6.98724, -3.31022, 3.34764, -0.52024, -6.49718, -5.3387, 766.019, 104.95, 452.605)
 
-[node name="RockA3" parent="Tunnel2/EntranceL" instance=ExtResource("7_qda7k")]
+[node name="RockA3" parent="Tunnel2/EntranceL" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(1.19782, 11.0889, 4.42738, -11.9291, 0.921057, 0.9205, 0.510788, -4.49312, 11.1153, 793.166, 76.9378, 454.834)
 
-[node name="RockB1" parent="Tunnel2/EntranceL" instance=ExtResource("8_64n0d")]
+[node name="RockB1" parent="Tunnel2/EntranceL" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(-2.10522, -4.25988, 3.15298, 3.05166, -3.74811, -3.02637, 4.33304, 0.570028, 3.66329, 824.574, 112.54, 446.946)
 
-[node name="RockB3" parent="Tunnel2/EntranceL" instance=ExtResource("8_64n0d")]
+[node name="RockB3" parent="Tunnel2/EntranceL" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(4.29222, 4.57142, 1.24961, -2.49948, 3.61605, -4.6432, -4.02641, 2.62846, 4.21447, 773.937, 140.911, 469.972)
 
-[node name="RockC1" parent="Tunnel2/EntranceL" instance=ExtResource("9_dc56b")]
+[node name="RockC1" parent="Tunnel2/EntranceL" groups=["terrain"] instance=ExtResource("9_dc56b")]
 transform = Transform3D(-1.86839, -3.85072, -1.99813, -0.0474326, -2.1573, 4.20181, -4.33801, 1.6821, 0.814656, 786.081, 135.376, 453.531)
 
-[node name="RockC2" parent="Tunnel2/EntranceL" instance=ExtResource("9_dc56b")]
+[node name="RockC2" parent="Tunnel2/EntranceL" groups=["terrain"] instance=ExtResource("9_dc56b")]
 transform = Transform3D(-3.90856, -4.56077, 3.35866, 3.81036, 0.902037, 5.65911, -4.19074, 5.07383, 2.01294, 791.859, 164.408, 508.107)
 
 [node name="EntranceR" type="Node3D" parent="Tunnel2"]
 
-[node name="RockA1" parent="Tunnel2/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA1" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(-0.271255, 1.28607, -2.97471, -1.25761, 2.70942, 1.28605, 2.98685, 1.25759, 0.271335, 299.644, 127.203, 424.309)
 
-[node name="RockA2" parent="Tunnel2/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA2" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(2.29164, -2.44454, 3.0731, 3.84134, 0.657286, -2.34167, 0.814771, 3.77671, 2.39666, 318.179, 95.8599, 421.731)
 
-[node name="RockA5" parent="Tunnel2/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA5" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(1.09929, -4.37397, 0.575562, 3.84134, 0.657286, -2.34167, 2.16957, 1.05247, 3.85443, 321.814, 95.8599, 436.931)
 
-[node name="RockA3" parent="Tunnel2/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA3" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(3.70822, 1.86229, 1.85804, 2.19079, -0.408409, -3.96295, -1.45634, 4.12752, -1.23046, 338.177, 116.66, 430.367)
 
-[node name="RockA4" parent="Tunnel2/EntranceR" instance=ExtResource("7_qda7k")]
+[node name="RockA4" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("7_qda7k")]
 transform = Transform3D(1.9779, 0.270409, 4.08487, -4.00125, 1.0869, 1.86547, -0.865577, -4.40646, 0.710812, 320.977, 134.583, 441.012)
 
-[node name="RockB1" parent="Tunnel2/EntranceR" instance=ExtResource("8_64n0d")]
+[node name="RockB1" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(-1.64956, -1.63286, 1.75857, 0.196316, 2.03499, 2.07367, -2.39171, 1.29322, -1.04267, 295.848, 109.828, 419.45)
 
-[node name="RockB3" parent="Tunnel2/EntranceR" instance=ExtResource("8_64n0d")]
+[node name="RockB3" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(-2.03718, 1.29729, 2.88404, -2.82928, 0.784888, -2.35156, -1.41272, -3.44263, 0.550663, 306.288, 128.712, 434.042)
 
-[node name="RockB4" parent="Tunnel2/EntranceR" instance=ExtResource("8_64n0d")]
+[node name="RockB4" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(1.97436, 2.87133, -1.41708, -2.82928, 0.784888, -2.35156, -1.49926, 2.30004, 2.57153, 328.686, 129.709, 427.63)
 
-[node name="RockB2" parent="Tunnel2/EntranceR" instance=ExtResource("8_64n0d")]
+[node name="RockB2" parent="Tunnel2/EntranceR" groups=["terrain"] instance=ExtResource("8_64n0d")]
 transform = Transform3D(-2.17746, 0.476253, -1.87396, -1.61495, 1.104, 2.15708, 1.06324, 2.65221, -0.561397, 303.461, 107.797, 428.826)
 
-[node name="TunnelMesh" parent="Tunnel2" instance=ExtResource("10_0ct1x")]
+[node name="TunnelMesh" parent="Tunnel2" groups=["terrain"] instance=ExtResource("10_0ct1x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 546.733, 112.043, 468.686)
-collision_layer = 5
+
+[node name="Tunnel2" parent="Tunnel2/TunnelMesh" index="0"]
+layers = 2
 
 [node name="CrystalGroup1" type="Node3D" parent="Tunnel2"]
 transform = Transform3D(0.567756, 0.0788585, -0.00345403, 0.0729824, -0.514888, 0.241124, 0.0300693, -0.239266, -0.520024, 415.722, 122.719, 611.385)
@@ -734,7 +771,13 @@ script = ExtResource("14_ocbd7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Tunnel2/CaveArea3D"]
 transform = Transform3D(0.998441, 0, -0.0558215, 0, 1, 0, 0.0558215, 0, 0.998441, -8.36676, 3.78637, 30.7709)
+visible = false
 shape = SubResource("BoxShape3D_goiy4")
+
+[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="Tunnel2/CaveArea3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 3.86069, 2.7816, 7.47113)
+depth = 34.285
+polygon = PackedVector2Array(-43, 137, -148, 93, -231, 23, -256, -37, -259, -119, -213, -119, -196, -52, -149, 18, -37, 78, 81, 65, 166, 2, 222, -107, 276, -99, 210, 44, 101, 122)
 
 [node name="Terrain3D" type="Terrain3D" parent="." groups=["terrain"]]
 data_directory = "res://TestScene/TestSceneTerrain"
@@ -761,6 +804,7 @@ mesh = SubResource("CylinderMesh_l0jcy")
 
 [node name="Path3D" type="Path3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -91.3, 20.8, -23.7)
+visible = false
 curve = SubResource("Curve3D_ilnvi")
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Path3D"]
@@ -771,7 +815,7 @@ use_collision = true
 collision_mask = 3
 polygon = PackedVector2Array(-30, 0, -32, 11, -32, 20, -29, 20, -28, 11, -21, 6, -11, 2, 0, 1, 11, 2, 22, 6, 28, 11, 29, 20, 32, 20, 32, 11, 30, 0)
 mode = 2
-path_node = NodePath("..")
+path_node = NodePath("")
 path_interval_type = 0
 path_interval = 1.0
 path_simplify_angle = 0.0
@@ -786,7 +830,7 @@ material = ExtResource("16_fetrj")
 [node name="test_target" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -678, 2, -536)
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="test_target"]
+[node name="CharacterBody3D" type="CharacterBody3D" parent="test_target" groups=["targetable"]]
 collision_layer = 4
 collision_mask = 31
 motion_mode = 1
@@ -804,14 +848,13 @@ skeleton = NodePath("../..")
 visible = false
 
 [node name="TubeTest" parent="." instance=ExtResource("21_e24ns")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -719, 49, -326)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -719, 172, -326)
 
-[node name="Cylinder" parent="TubeTest" index="0"]
+[node name="BézierCurve" parent="TubeTest" index="0"]
 surface_material_override/0 = ExtResource("16_fetrj")
 
-[node name="CollisionShape3D" parent="TubeTest/Cylinder/StaticBody3D" index="0"]
-disabled = true
+[node name="StaticBody3D" parent="TubeTest/BézierCurve" index="0"]
+physics_material_override = SubResource("PhysicsMaterial_v0fjc")
 
 [node name="TestWall" type="StaticBody3D" parent="." groups=["terrain"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -675.2, 15, -578.273)

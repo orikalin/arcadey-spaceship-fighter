@@ -9,7 +9,7 @@ point_count = 2
 
 [resource]
 script = ExtResource("1_l5f2q")
-rolling_max_speed = 100.0
+rolling_max_speed = 120.0
 rolling_turn_force = 8.0
 accel_force = 150.0
 turn_stop_limit = 0.0

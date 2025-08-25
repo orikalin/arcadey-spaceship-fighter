@@ -7,28 +7,18 @@ extends State
 @export var proxy_orb:RigidBody3D
 @export var ShipContainer:MeshInstance3D
 @export var physics_material:PhysicsMaterial
-
-var ungrounded_time:float = 0.0
-
 # duration of a mid air leveling manuver, eased by a curve
+@export var slide_boost_charge_speed:float = 4.0
+@export var slide_boost_power_max:float = 4.0
 @export var level_duration:float = 1.0
+
 var elapsed_time:float = 0.0
 var duration:float = 1.0
 var eased_t:float = 0.0
-
-# Current speed
 var forward_speed:float = 0.0
-
-# Throttle input speed
 var accel_input:float = 0.0
-
-# deprecated
-var target_speed:float = 0.0
-
-# turn strength in radians
 var turn_input:float = 0.0
-
-
+var ungrounded_time:float = 0.0
 var ship_statemachine:StateMachine
 var ship_stats:ShipResource
 var is_grounded:bool = false
@@ -37,6 +27,7 @@ var gamepad:bool = false
 var ship_mesh_tween:Tween
 var state_max_speed_tween:Tween
 var end_drift:bool = false
+var slide_boost_power:float = 0.0
 
 signal camera_Y_offset
 
@@ -91,6 +82,7 @@ func exit(newState:String):
 	SignalHub.reset_Z_offset.emit()		
 	proxy_xform.global_transform = player.global_transform
 	proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
+	slide_boost_power = 0.0
 
 func update(delta:float):
 	if ungrounded_time > 0.0:
@@ -102,7 +94,7 @@ func update(delta:float):
 		eased_t = ship_stats.easeInOut.sample(t)		
 
 func physicsUpdate(delta:float):
-	get_input()
+	get_input(delta)
 	# turn ship
 	if proxy_orb.linear_velocity.length() > ship_stats.turn_stop_limit:		
 		var new_basis = player.global_transform.basis.rotated(player.global_basis.y, turn_input)
@@ -111,7 +103,7 @@ func physicsUpdate(delta:float):
 
 	# access the physics server directly for detailed rigidbody information, and prepare some variables
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
-	var contact_count = physics_state.get_contact_count()
+	# var contact_count = physics_state.get_contact_count()
 	forward_speed = physics_state.linear_velocity.length()
 	var _normalized_forward_speed := forward_speed / ship_stats.state_max_speed
 
@@ -174,8 +166,6 @@ func physicsUpdate(delta:float):
 		proxy_orb.apply_central_force(-proxy_xform.basis.z * ship_stats.accel_force * accel_input)		
 
 	# # clamps max speed
-	# if physics_state.linear_velocity.length() > ship_stats.state_max_speed: 
-	# 	physics_state.linear_velocity = physics_state.linear_velocity.normalized() * ship_stats.state_max_speed
 	_integrate_forces(physics_state)
 
 	# update player to orb position
@@ -204,12 +194,23 @@ func align_with_y(xform, new_y):
 	return xform
 
 
-func get_input():
+func get_input(delta:float):
 	# turning input
 	turn_input = 0.0
 	turn_input -= Input.get_action_strength("roll_right")
 	turn_input += Input.get_action_strength("roll_left")
 	turn_input *= deg_to_rad(ship_stats.drift_turn_force)
+
+	# slide boost charge
+	if Input.is_action_pressed("boost"):
+		if slide_boost_power < slide_boost_power_max:
+			slide_boost_power += delta * slide_boost_charge_speed
+		else:
+			slide_boost_power = slide_boost_power_max
+	elif slide_boost_power > 0:
+		slide_boost_power -= delta
+	elif slide_boost_power < 0:
+		slide_boost_power = 0
 
 	# Brake/Accelerate input
 	# accel_input = 1.0
@@ -225,12 +226,13 @@ func get_input():
 
 	end_drift_state()
 	
+	
 func end_drift_state():
 	if not Input.is_action_pressed("drift") or end_drift:
 		var flags:Dictionary = {
-		"is_grounded":is_grounded
+		"is_grounded":is_grounded,
+		"slide_boost_power":slide_boost_power
 		}
-		
 		if Input.is_action_pressed("boost"):
 			finished.emit("boost", flags)
 		else:	
@@ -247,13 +249,6 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventJoypadMotion or event is InputEventJoypadButton:
 		gamepad = true
 
-func _integrate_forces(state):
-	var _current_velocity = state.linear_velocity
-	var _speed = _current_velocity.length()
-
-	if _speed > ship_stats.state_max_speed:
-		state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed
-
 
 func do_max_speed_tween():
 	if state_max_speed_tween:
@@ -262,3 +257,11 @@ func do_max_speed_tween():
 	state_max_speed_tween.set_trans(Tween.TRANS_QUAD)
 	state_max_speed_tween.set_ease(Tween.EASE_IN)
 	state_max_speed_tween.tween_property(ship_stats, "state_max_speed", ship_stats.rolling_max_speed, ship_stats.drift_speed_decay_duration)
+
+
+func _integrate_forces(state):
+	var _current_velocity = state.linear_velocity
+	var _speed = _current_velocity.length()
+
+	if _speed > ship_stats.state_max_speed:
+		state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed

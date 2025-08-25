@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dtcoq5voyhyt6" path="res://Assets/Scripts/Core/laser_bullet.gd" id="1_l3daa"]
 [ext_resource type="ArrayMesh" uid="uid://bhb68utujdrpc" path="res://Assets/Meshes/simple_laser.obj" id="2_hyjkc"]
-[ext_resource type="Material" uid="uid://re2lopsjq1c0" path="res://Assets/Materials/laser_bullet_mat.tres" id="2_kd0w4"]
+[ext_resource type="Material" uid="uid://re2lopsjq1c0" path="res://Assets/Materials/Ships/laser_bullet_mat.tres" id="2_kd0w4"]
 [ext_resource type="PackedScene" uid="uid://bltl2svpjipy2" path="res://Assets/Meshes/simple_laser.glb" id="2_vfcn3"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kd0w4"]

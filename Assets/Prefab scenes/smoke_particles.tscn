@@ -1,0 +1,60 @@
+[gd_scene load_steps=12 format=3 uid="uid://d045kmvcd8ibm"]
+
+[ext_resource type="Shader" uid="uid://5pqxlxer5g5j" path="res://Assets/Materials/shaders/smoke_Shader.tres" id="1_4bn85"]
+[ext_resource type="ArrayMesh" uid="uid://cyrngm86cwcxl" path="res://Assets/Meshes/cloud.obj" id="2_bjthc"]
+[ext_resource type="Texture2D" uid="uid://dowv1482wisvu" path="res://Assets/Materials/Stylized Smokes/T_Noise_001R.png" id="2_ldpxe"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ldpxe"]
+render_priority = 0
+shader = ExtResource("1_4bn85")
+shader_parameter/texture_scale = Vector2(0.5, 0.5)
+shader_parameter/dissolver_texture = ExtResource("2_ldpxe")
+
+[sub_resource type="Curve" id="Curve_dcqb0"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 2.22022, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_s75jr"]
+curve = SubResource("Curve_dcqb0")
+
+[sub_resource type="Gradient" id="Gradient_mcft5"]
+offsets = PackedFloat32Array(0, 0.227723, 0.361386, 0.876238)
+colors = PackedColorArray(0.936716, 0.285362, 0, 1, 0.767074, 0.670912, 0.604092, 1, 0.775063, 0.775063, 0.775063, 1, 0.190762, 0.190762, 0.190762, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6u07c"]
+gradient = SubResource("Gradient_mcft5")
+
+[sub_resource type="Curve" id="Curve_b1iuy"]
+_data = [Vector2(0, 0.478669), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_dcqb0"]
+curve = SubResource("Curve_b1iuy")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_s75jr"]
+particle_flag_rotate_y = true
+emission_shape = 1
+emission_sphere_radius = 0.25
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 0.0
+initial_velocity_min = 3.0
+initial_velocity_max = 4.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.23517e-06
+linear_accel_max = -2.23517e-06
+scale_min = 0.3
+scale_max = 0.8
+scale_curve = SubResource("CurveTexture_dcqb0")
+color_ramp = SubResource("GradientTexture1D_6u07c")
+alpha_curve = SubResource("CurveTexture_s75jr")
+turbulence_noise_strength = 9.95
+turbulence_noise_scale = 10.0
+
+[node name="stylized_smoke_trail" type="GPUParticles3D"]
+material_override = SubResource("ShaderMaterial_ldpxe")
+amount = 60
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_s75jr")
+draw_pass_1 = ExtResource("2_bjthc")
