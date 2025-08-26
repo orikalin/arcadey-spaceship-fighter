@@ -226,9 +226,15 @@ tips/show_jitter_tips=false
 
 [physics]
 
+common/max_physics_steps_per_frame=12
 3d/physics_engine="Jolt Physics"
+jolt_physics_3d/simulation/velocity_steps=12
+jolt_physics_3d/simulation/position_steps=12
 jolt_physics_3d/simulation/areas_detect_static_bodies=true
+jolt_physics_3d/simulation/penetration_slop=0.001
 jolt_physics_3d/simulation/speculative_contact_distance=0.1
+jolt_physics_3d/motion_queries/recovery_iterations=6
+jolt_physics_3d/motion_queries/recovery_amount=0.3
 3d/solver/solver_iterations=24
 
 [rendering]

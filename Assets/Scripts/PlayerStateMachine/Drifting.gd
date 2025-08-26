@@ -233,7 +233,9 @@ func end_drift_state():
 		"is_grounded":is_grounded,
 		"slide_boost_power":slide_boost_power
 		}
-		if Input.is_action_pressed("boost"):
+		if slide_boost_power > slide_boost_power_max * 0.2 and Input.is_action_pressed("boost"):
+			finished.emit("charged_boost", flags)
+		elif Input.is_action_pressed("boost"):
 			finished.emit("boost", flags)
 		else:	
 			finished.emit("hover", flags)

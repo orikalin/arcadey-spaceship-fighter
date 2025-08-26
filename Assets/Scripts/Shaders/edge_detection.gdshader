@@ -102,12 +102,12 @@ void light (){
 
 		// Calculate light direction
 		float dotNL = dot(normal.rgb, LIGHT);
-		dotNL = pow(dotNL, 5.0);
+		dotNL = pow(dotNL, 2.5);
 		dotNL = clamp(dotNL, 0.0, 1.0);
 
 		if(LIGHT_IS_DIRECTIONAL)
 			DIFFUSE_LIGHT += mix(vec3(1.0), dotNL * LIGHT_COLOR * lightIntensity, lineMask);
 	}
 	else
-		DIFFUSE_LIGHT = vec3(1.0);
+		DIFFUSE_LIGHT = vec3(0.5);
 }

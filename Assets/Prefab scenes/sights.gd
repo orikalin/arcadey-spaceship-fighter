@@ -78,7 +78,6 @@ func _physics_process(delta: float) -> void:
 		if is_line_of_sight_blocked(target_body):
 			if los_timer < los_block_timout:
 				los_timer += delta
-				print_debug(los_timer)
 			else:
 				lock_on_break()
 		else:
@@ -119,12 +118,10 @@ func is_line_of_sight_blocked(body:Node3D) -> bool:
 	query.collision_mask = 1
 	query.from = %Player.global_position
 	query.to = body.global_position
-	# print_debug("testing")
 
 	var result = space_state.intersect_ray(query)
 	if result:
 		if not result.collider.is_in_group("targetable"):
-			# print_debug("ray hit " + result.collider.name)
 			return true # ray hit terrain
 		else:
 			return false

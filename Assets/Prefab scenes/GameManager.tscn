@@ -19,11 +19,11 @@ size = Vector2(2, 2)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h6xfe"]
 render_priority = 0
 shader = ExtResource("6_78mvm")
-shader_parameter/lightIntensity = 0.335
-shader_parameter/lineAlpha = 0.525
-shader_parameter/useLighting = true
-shader_parameter/lineHighlight = -0.09
-shader_parameter/lineShadow = 0.645
+shader_parameter/lightIntensity = 0.815
+shader_parameter/lineAlpha = 0.4
+shader_parameter/useLighting = false
+shader_parameter/lineHighlight = -0.005
+shader_parameter/lineShadow = 0.0
 
 [node name="GameManager" type="Node"]
 

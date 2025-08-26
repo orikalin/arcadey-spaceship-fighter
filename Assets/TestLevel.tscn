@@ -85,7 +85,6 @@ sky_horizon_color = Color(0.486275, 0.776471, 0.894118, 1)
 ground_bottom_color = Color(0.101961, 0.0941176, 0.137255, 1)
 ground_horizon_color = Color(0.486275, 0.776471, 0.894118, 1)
 ground_curve = 0.13
-ground_energy_multiplier = 0.0
 
 [sub_resource type="Sky" id="Sky_a3n1l"]
 sky_material = SubResource("ProceduralSkyMaterial_vibap")
@@ -97,7 +96,7 @@ sky = SubResource("Sky_a3n1l")
 ambient_light_color = Color(0.396889, 0.396889, 0.396889, 1)
 ambient_light_sky_contribution = 0.11
 tonemap_mode = 3
-tonemap_exposure = 1.38
+tonemap_exposure = 1.3
 sdfgi_bounce_feedback = 1.5
 sdfgi_min_cell_size = 1.17188
 sdfgi_cascade0_distance = 75.0006
@@ -183,17 +182,9 @@ _shader_parameters = {
 &"projection_angular_division": 2.0,
 &"projection_threshold": 0.8,
 &"tri_scale_reduction": 0.021,
-&"world_noise_fragment_normals": false,
-&"world_noise_height": 45.5,
-&"world_noise_lod_distance": 7500.0,
-&"world_noise_max_octaves": 4,
-&"world_noise_min_octaves": 2,
-&"world_noise_offset": Vector3(-1.55, 0, -0.47),
-&"world_noise_region_blend": 0.17,
-&"world_noise_scale": 4.32,
 &"world_space_normal_blend": true
 }
-world_background = 2
+world_background = 0
 auto_shader = true
 dual_scaling = true
 
@@ -848,7 +839,7 @@ skeleton = NodePath("../..")
 visible = false
 
 [node name="TubeTest" parent="." instance=ExtResource("21_e24ns")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -719, 172, -326)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -719, 172, -229)
 
 [node name="BézierCurve" parent="TubeTest" index="0"]
 surface_material_override/0 = ExtResource("16_fetrj")

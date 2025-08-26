@@ -7,7 +7,9 @@ extends State
 @export var ShipContainer:MeshInstance3D
 @export var physics_material:PhysicsMaterial
 @export var level_duration:float = 3.0
-@export var charge_boost_decay:Curve
+@export var charge_boost_max_multiplier:float = 2.0
+var state_boosted_speed:float
+var slide_boost_power:float
 
 var elapsed_time:float = 0.0
 var duration:float = 1.0
@@ -23,7 +25,7 @@ var average_terrain_normal:Vector3
 var gamepad:bool = false
 var boost_duration:float = 0.0
 var ship_mesh_tween:Tween
-var boosted_max_speed:float
+var boosted_speed_tween:Tween
 
 signal camera_Y_offset
 
@@ -39,13 +41,14 @@ func enter(oldState:String, flags:Dictionary = {}):
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.linear_damp
 	boost_duration = 0.0
-	SignalHub.tune_engine_cone_minmax.emit(1.0, 1.5)
+	SignalHub.tune_engine_cone_minmax.emit(1.0, 3.0)
 	SignalHub.camera_FOV_control.emit(105.0, 5.0)
-	print_debug("boost state entered")
 	if %hover.state_max_speed_tween:
 		%hover.state_max_speed_tween.kill()
 	if oldState == "drift":
-		ship_stats.state_max_speed = ship_stats.boost_max_speed
+		slide_boost_power = flags.get("slide_boost_power")
+		state_boosted_speed = ship_stats.boost_max_speed * remap(slide_boost_power, 0.0, 8.0, 1.0, charge_boost_max_multiplier)
+		ship_stats.state_max_speed = state_boosted_speed
 		is_grounded = flags.get("is_grounded")
 		if ship_mesh_tween:
 			ship_mesh_tween.kill()
@@ -53,12 +56,7 @@ func enter(oldState:String, flags:Dictionary = {}):
 		ship_mesh_tween.set_trans(Tween.TRANS_QUAD)
 		ship_mesh_tween.set_ease(Tween.EASE_OUT)
 		ship_mesh_tween.tween_property(ShipContainer, "position", Vector3.ZERO, 1.0)
-	elif oldState == "charged_boost":
-		ship_stats.state_max_speed = flags.get("state_boosted_speed")
-		boosted_max_speed = ship_stats.state_max_speed
-		print_debug(ship_stats.state_max_speed)
-	else:
-		ship_stats.state_max_speed = ship_stats.boost_max_speed
+	
 	# if oldState == "hover":
 	# 	forward_speed = flags.get("forward_speed")
 	# elif oldState == "Flying":
@@ -67,19 +65,25 @@ func enter(oldState:String, flags:Dictionary = {}):
 	# 	proxy_xform.transform = player.transform
 	# 	proxy_orb.transform = player.transform
 
+# func exit(newState:String):
+# 	if boosted_speed_tween:
+# 		boosted_speed_tween.kill()
+
 func update(delta:float):
-	if ship_stats.state_max_speed > ship_stats.boost_max_speed:
-		var _sample = charge_boost_decay.sample(boost_duration*0.5)
-		ship_stats.state_max_speed = lerp(boosted_max_speed, ship_stats.boost_max_speed, _sample)
-		print_debug(boost_duration)
 	boost_duration += delta
+	# if boosted_speed_tween:
+	# 	pass
+	# elif state_boosted_speed > ship_stats.boost_max_speed:
+	# 	boosted_speed_tween = create_tween()
+	# 	boosted_speed_tween.tween_property(self, "state_boosted_speed", ship_stats.boost_max_speed, 2.0).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+
 	if ungrounded_time > 0.0:
 		return
 
 	if elapsed_time < level_duration:
 		elapsed_time += delta
 		var t = elapsed_time / level_duration
-		eased_t = ship_stats.easeInOut.sample(t)		
+		eased_t = ship_stats.easeInOut.sample(t)
 
 func physicsUpdate(delta:float):
 
@@ -100,7 +104,7 @@ func physicsUpdate(delta:float):
 	# var contact_count = physics_state.get_contact_count()
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
 	forward_speed = physics_state.linear_velocity.length()
-	var _normalized_forward_speed := forward_speed / ship_stats.state_max_speed
+	var _normalized_forward_speed := forward_speed / state_boosted_speed
 
 	# This defines _stick_force based on forward speed. Higher speed = higher downward force applied, to helps cling to surfaces against gravity
 	var _stick_force = _normalized_forward_speed * ship_stats.ground_stick_force
@@ -138,7 +142,7 @@ func physicsUpdate(delta:float):
 		# apply gravity and force
 		proxy_orb.gravity_scale = ship_stats.gravity_grounded
 		proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.boost_accel_force * accel_input)
+		proxy_orb.apply_central_force(-player.basis.z * ship_stats.charge_boost_accel_force * accel_input)
 		ungrounded_time = ship_stats.ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input, ship_stats.cone_flare_mult)
@@ -163,7 +167,7 @@ func physicsUpdate(delta:float):
 		
 		# apply airborne gravity and input forces
 		proxy_orb.gravity_scale = ship_stats.gravity_airborne
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.65)
+		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.8)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
 	# # clamps max speed
@@ -210,18 +214,24 @@ func get_input():
 	## this the additional resulting acceleration will temporarily raise the max speed of the boost state, which will return to its base max over a short time.
 	## consider applying the high acceleration bonus to hover mode in matching situations, whatever version is chosen.
 	accel_input = 1.0
-
-	if not Input.is_action_pressed("boost") and boost_duration > ship_stats.boost_min_duration:
-		var flags:Dictionary = {
-		"forward_speed":forward_speed
-		}
-		finished.emit("hover", flags)
-	elif Input.is_action_pressed("drift") and is_grounded:
-		var flags:Dictionary = {
-		"forward_speed":forward_speed,
-		"accel_input":accel_input
-		}
-		finished.emit("drift", flags)
+	if boost_duration > 1.0:
+		if Input.is_action_pressed("boost"):
+			var flags:Dictionary = {
+			"forward_speed":forward_speed,
+			"state_boosted_speed":state_boosted_speed
+			}
+			finished.emit("boost", flags)
+		elif Input.is_action_pressed("drift"):
+			var flags:Dictionary = {
+			"forward_speed":forward_speed,
+			"accel_input":accel_input
+			}
+			finished.emit("drift", flags)
+		else:
+			var flags:Dictionary = {
+			"forward_speed":forward_speed
+			}
+			finished.emit("hover", flags)
 
 
 func toggle_collision_shapes():
@@ -253,5 +263,5 @@ func _integrate_forces(state):
 	var _current_velocity = state.linear_velocity
 	var _speed = _current_velocity.length()
 
-	if _speed > ship_stats.state_max_speed:
-		state.linear_velocity = (_current_velocity.normalized() * ship_stats.state_max_speed)
+	if _speed > state_boosted_speed:
+		state.linear_velocity = _current_velocity.normalized() * state_boosted_speed

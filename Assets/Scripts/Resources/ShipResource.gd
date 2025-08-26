@@ -29,7 +29,7 @@ class_name ShipResource extends Resource
 @export var boost_ground_alignment_speed:float = 12.0
 @export var boost_player_alignment_speed:float = 2.0
 @export var cone_flare_mult:float = 2.0
-
+@export var charge_boost_accel_force:float = 600
 
 @export_category("Drifting Stats")
 @export var drift_turn_force:float = 12.0
