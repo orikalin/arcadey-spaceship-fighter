@@ -54,7 +54,8 @@ func enter(oldState:String, flags:Dictionary = {}):
 		ship_mesh_tween.set_ease(Tween.EASE_OUT)
 		ship_mesh_tween.tween_property(ShipContainer, "position", Vector3.ZERO, 1.0)
 	elif oldState == "charged_boost":
-		ship_stats.state_max_speed = flags.get("state_boosted_speed")
+		if flags.has("state_boosted_speed"):
+			ship_stats.state_max_speed = flags.get("state_boosted_speed")
 		boosted_max_speed = ship_stats.state_max_speed
 		print_debug(ship_stats.state_max_speed)
 	else:
@@ -71,7 +72,6 @@ func update(delta:float):
 	if ship_stats.state_max_speed > ship_stats.boost_max_speed:
 		var _sample = charge_boost_decay.sample(boost_duration*0.5)
 		ship_stats.state_max_speed = lerp(boosted_max_speed, ship_stats.boost_max_speed, _sample)
-		print_debug(boost_duration)
 	boost_duration += delta
 	if ungrounded_time > 0.0:
 		return

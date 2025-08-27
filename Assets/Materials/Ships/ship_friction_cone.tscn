@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dhuu8qw6av10a"]
+
+[ext_resource type="Material" uid="uid://b5ge6nvsc86ki" path="res://Assets/Materials/Ships/ship_friction_cone.tres" id="1_0kheh"]
+[ext_resource type="ArrayMesh" uid="uid://dp2aiqth8377" path="res://Assets/Meshes/ship_friction_cone.obj" id="2_876p6"]
+
+[node name="ShipFrictionCone" type="MeshInstance3D"]
+material_override = ExtResource("1_0kheh")
+mesh = ExtResource("2_876p6")

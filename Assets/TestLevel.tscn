@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=4 uid="uid://ookdxcwivpy7"]
+[gd_scene load_steps=61 format=4 uid="uid://ookdxcwivpy7"]
 
 [ext_resource type="Script" uid="uid://wb6qs4vv7kcw" path="res://Assets/LevelScene.gd" id="1_ilnvi"]
 [ext_resource type="PackedScene" uid="uid://be6nrf0b8j4l0" path="res://Assets/Terrain3DModels/RockA.tscn" id="7_qda7k"]
@@ -11,6 +11,8 @@
 [ext_resource type="Script" uid="uid://c444j1ucmv5ti" path="res://Assets/Scripts/CaveEntrance.gd" id="14_ocbd7"]
 [ext_resource type="ArrayMesh" uid="uid://c27o2arf8nixo" path="res://Assets/Meshes/Prototype_Ship.obj" id="15_wis17"]
 [ext_resource type="Material" uid="uid://cin7ypj6dci8d" path="res://Assets/Materials/terrain/BasicAsphalt.tres" id="16_fetrj"]
+[ext_resource type="PackedScene" uid="uid://tvch4d3rcydo" path="res://Assets/Blend files/HomePlanet.blend" id="18_l0jcy"]
+[ext_resource type="PackedScene" uid="uid://cn6as12ppx156" path="res://Assets/Prefab scenes/track_ring.tscn" id="19_q4feb"]
 [ext_resource type="PackedScene" uid="uid://bn5nf4esciwex" path="res://Assets/Terrain3DModels/LODExample.tscn" id="21_bmwnq"]
 [ext_resource type="PackedScene" uid="uid://b63llvy5rhjkb" path="res://Assets/Blend files/TubeTest.blend" id="21_e24ns"]
 [ext_resource type="Texture2D" uid="uid://ddprscrpsofah" path="res://Assets/Materials/textures/ground037_alb_ht.png" id="22_j3niq"]
@@ -182,9 +184,17 @@ _shader_parameters = {
 &"projection_angular_division": 2.0,
 &"projection_threshold": 0.8,
 &"tri_scale_reduction": 0.021,
+&"world_noise_fragment_normals": false,
+&"world_noise_height": 64.0,
+&"world_noise_lod_distance": 7500.0,
+&"world_noise_max_octaves": 4,
+&"world_noise_min_octaves": 2,
+&"world_noise_offset": Vector3(0, 0, 0),
+&"world_noise_region_blend": 0.33,
+&"world_noise_scale": 5.0,
 &"world_space_normal_blend": true
 }
-world_background = 0
+world_background = 2
 auto_shader = true
 dual_scaling = true
 
@@ -781,7 +791,7 @@ metadata/_edit_lock_ = true
 
 [node name="SpawnPoint" type="Node3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -762.069, 3, -407.94)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1228.07, 3, 290.06)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SpawnPoint"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.963069, 0)
@@ -846,6 +856,13 @@ surface_material_override/0 = ExtResource("16_fetrj")
 
 [node name="StaticBody3D" parent="TubeTest/BézierCurve" index="0"]
 physics_material_override = SubResource("PhysicsMaterial_v0fjc")
+
+[node name="HomePlanet" parent="TubeTest" instance=ExtResource("18_l0jcy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -709, -164, 518)
+
+[node name="space_ramp" parent="TubeTest/HomePlanet" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -9, 0)
+surface_material_override/0 = ExtResource("16_fetrj")
 
 [node name="TestWall" type="StaticBody3D" parent="." groups=["terrain"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -675.2, 15, -578.273)
@@ -924,6 +941,21 @@ surface_material_override/0 = SubResource("StandardMaterial3D_q4feb")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TestWall5"]
 shape = SubResource("BoxShape3D_ojc0g")
 
+[node name="race_ring" parent="." instance=ExtResource("19_q4feb")]
+transform = Transform3D(-4.37114e-07, 10, 4.37114e-07, 0, -4.37114e-07, 10, 10, 4.37114e-07, 1.91069e-14, -1284, 4, 291)
+
+[node name="race_ring2" parent="." instance=ExtResource("19_q4feb")]
+transform = Transform3D(-4.37114e-07, 10, 4.37114e-07, 0, -4.37114e-07, 10, 10, 4.37114e-07, 1.91069e-14, -1315, 4, 291)
+
+[node name="race_ring3" parent="." instance=ExtResource("19_q4feb")]
+transform = Transform3D(-4.37114e-07, 10, 4.37114e-07, 0, -4.37114e-07, 10, 10, 4.37114e-07, 1.91069e-14, -1354, 4, 291)
+
+[node name="race_ring4" parent="." instance=ExtResource("19_q4feb")]
+transform = Transform3D(-4.37114e-07, 10, 4.37114e-07, 0, -4.37114e-07, 10, 10, 4.37114e-07, 1.91069e-14, -1407, 4, 291)
+
+[node name="race_ring5" parent="." instance=ExtResource("19_q4feb")]
+transform = Transform3D(-4.37114e-07, 10, 4.37114e-07, 0, -4.37114e-07, 10, 10, 4.37114e-07, 1.91069e-14, -1464, 4, 291)
+
 [editable path="Tunnel/EntranceL/RockA1"]
 [editable path="Tunnel/TunnelMesh"]
 [editable path="Tunnel/CrystalGroup1/CrystalC"]
@@ -943,3 +975,4 @@ shape = SubResource("BoxShape3D_ojc0g")
 [editable path="Tunnel2/CrystalGroup3/CrystalC3"]
 [editable path="Tunnel2/CrystalGroup3/CrystalC2"]
 [editable path="TubeTest"]
+[editable path="TubeTest/HomePlanet"]

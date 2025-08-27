@@ -1,19 +1,5 @@
 extends MeshInstance3D
 
-var Player:CharacterBody3D
-var currentSpeed:float
-var engine_power:float
-var accel_input:float
-var EngineLights
-var Particles
-var EngineCones
-var OmniLights
-var Trails
-
-@onready var hoveringState = %Hovering
-@onready var flyingState = %Flying
-@onready var ship_statemachine = %ShipStateMachine
-
 @export var ship_stats:ShipResource
 @export var ParticleSizeCurve:Curve
 @export var EngineLightCurve:Curve
@@ -29,10 +15,25 @@ var Trails
 @export var base_cone_drain:float = -0.2
 @export var cone_flare_speed:float = 1
 @export var trail_speed_velocity:float = 1.0
-var target_cone_power:float = 0.2
 @export var target_light_power:float = 2.0
-var cone_flare_power:float
 
+var Player:CharacterBody3D
+var EngineLights
+var Particles
+var EngineCones
+var OmniLights
+var Trails
+var currentSpeed:float
+var engine_power:float
+var accel_input:float
+var target_cone_power:float = 0.2
+var cone_flare_power:float
+var friction_cone_opacity_tween:Tween
+
+@onready var hoveringState := %Hovering
+@onready var flyingState := %Flying
+@onready var ship_statemachine := %ShipStateMachine
+@onready var ship_friction_cone:ShaderMaterial = load("res://Assets/Materials/Ships/ship_friction_cone.tres")
 ## ==================================================================================================
 ##	Rewrite this script to listen for event calls from SignalHub, and rewrite input code in states to 
 ##	emit those events, passing relevant data
@@ -42,6 +43,7 @@ var cone_flare_power:float
 func _ready():
 	SignalHub.tune_engine_effects.connect(tune_engine_effects)
 	SignalHub.tune_engine_cone_minmax.connect(tune_engine_cone_minmax)
+	SignalHub.ship_friction_cone_control.connect(ship_friction_cone_control)
 	Player = get_parent()
 	EngineLights = $EngineLights.get_children()
 	OmniLights = $OmniLights.get_children()
@@ -152,7 +154,19 @@ func _process(delta:float):
 				particles.damping_max = _damping_max
 				particles.initial_velocity_min = _initial_velocity_min
 				particles.initial_velocity_max = _initial_velocity_max
-		
+
+
+func ship_friction_cone_control(_toggle:bool) -> void:
+	if friction_cone_opacity_tween:
+		friction_cone_opacity_tween.kill()
+	if _toggle:
+		ship_friction_cone.set_shader_parameter("max_alpha", 1.0)
+	else:
+		friction_cone_opacity_tween = create_tween()
+		friction_cone_opacity_tween.tween_property(ship_friction_cone, "shader_parameter/max_alpha", 0.0, 2.0).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+
+
+
 		
 
 

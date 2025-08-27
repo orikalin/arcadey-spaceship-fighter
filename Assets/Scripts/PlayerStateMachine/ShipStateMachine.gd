@@ -14,9 +14,9 @@ signal phantom_camera_shift()
 func _process(delta: float) -> void:
 	if currentState:
 		if currentState.name == "drift":
-			SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed, currentState.accel_input, currentState.slide_boost_power)
+			SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed, currentState.accel_input, currentState.slide_boost_power, currentState.name)
 		else:
-			SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed, currentState.accel_input, 0.0)
+			SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed, currentState.accel_input, 0.0, currentState.name)
 	super(delta)
 
 func _physics_process(delta: float) -> void:	

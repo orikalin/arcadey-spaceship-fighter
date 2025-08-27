@@ -17,5 +17,5 @@ emission_energy_multiplier = 0.11
 normal_enabled = true
 normal_scale = 0.86
 normal_texture = SubResource("NoiseTexture2D_fetrj")
-uv1_scale = Vector3(15, 1.32, 1)
+uv1_scale = Vector3(72.415, 1.32, 1)
 texture_filter = 2

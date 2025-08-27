@@ -6,6 +6,8 @@ signal fade_out_in
 signal fade_and_load3d(scene_path:String, delete:bool, keep_running:bool)
 signal tune_engine_effects(normalized_forward_speed, accel_input)
 signal tune_engine_cone_minmax(min:float, max:float)
+signal ship_friction_cone_control
+
 signal update_speed_ui(current_speed:float, state_max_speed:float, accel_input:float, slide_boost_power:float)
 signal camera_FOV_control(fov:float, duration:float)
 

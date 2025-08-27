@@ -1,13 +1,10 @@
 extends State
 
-@onready var ground_raycasts:Array = %ground_check_rays.get_children()
-
 @export var player:CharacterBody3D
 @export var proxy_xform:CharacterBody3D
 @export var proxy_orb:RigidBody3D
 @export var ShipContainer:MeshInstance3D
 @export var physics_material:PhysicsMaterial
-# duration of a mid air leveling manuver, eased by a curve
 @export var slide_boost_charge_speed:float = 4.0
 @export var slide_boost_power_max:float = 4.0
 @export var level_duration:float = 1.0
@@ -31,6 +28,8 @@ var slide_boost_power:float = 0.0
 
 signal camera_Y_offset
 
+@onready var ground_raycasts:Array = %ground_check_rays.get_children()
+@onready var slide_boost_charge_particle:GPUParticles3D = %slide_charge_particles
 
 
 ## new drift state: while drifting, movement damping is reduced to (near) 0
@@ -205,6 +204,8 @@ func get_input(delta:float):
 	if Input.is_action_pressed("boost"):
 		if slide_boost_power < slide_boost_power_max:
 			slide_boost_power += delta * slide_boost_charge_speed
+			# slide_boost_charge_particle.restart()
+			slide_boost_charge_particle.emitting = true
 		else:
 			slide_boost_power = slide_boost_power_max
 	elif slide_boost_power > 0:
@@ -233,7 +234,7 @@ func end_drift_state():
 		"is_grounded":is_grounded,
 		"slide_boost_power":slide_boost_power
 		}
-		if slide_boost_power > slide_boost_power_max * 0.2 and Input.is_action_pressed("boost"):
+		if slide_boost_power > slide_boost_power_max * 0.3 and Input.is_action_pressed("boost"):
 			finished.emit("charged_boost", flags)
 		elif Input.is_action_pressed("boost"):
 			finished.emit("boost", flags)

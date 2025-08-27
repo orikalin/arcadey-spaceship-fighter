@@ -56,6 +56,7 @@ func enter(oldState:String, flags:Dictionary = {}):
 		ship_mesh_tween.set_trans(Tween.TRANS_QUAD)
 		ship_mesh_tween.set_ease(Tween.EASE_OUT)
 		ship_mesh_tween.tween_property(ShipContainer, "position", Vector3.ZERO, 1.0)
+		SignalHub.ship_friction_cone_control.emit(true)
 	
 	# if oldState == "hover":
 	# 	forward_speed = flags.get("forward_speed")
@@ -65,7 +66,8 @@ func enter(oldState:String, flags:Dictionary = {}):
 	# 	proxy_xform.transform = player.transform
 	# 	proxy_orb.transform = player.transform
 
-# func exit(newState:String):
+func exit(newState:String):
+	SignalHub.ship_friction_cone_control.emit(false)
 # 	if boosted_speed_tween:
 # 		boosted_speed_tween.kill()
 
