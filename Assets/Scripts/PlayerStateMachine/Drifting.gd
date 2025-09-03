@@ -30,6 +30,7 @@ signal camera_Y_offset
 
 @onready var ground_raycasts:Array = %ground_check_rays.get_children()
 @onready var slide_boost_charge_particle:GPUParticles3D = %slide_charge_particles
+@onready var slide_boost_star_particle:CPUParticles3D = %slide_charge_star
 
 
 ## new drift state: while drifting, movement damping is reduced to (near) 0
@@ -82,6 +83,7 @@ func exit(newState:String):
 	proxy_xform.global_transform = player.global_transform
 	proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 	slide_boost_power = 0.0
+	slide_boost_star_particle.emitting = false
 
 func update(delta:float):
 	if ungrounded_time > 0.0:
@@ -204,10 +206,15 @@ func get_input(delta:float):
 	if Input.is_action_pressed("boost"):
 		if slide_boost_power < slide_boost_power_max:
 			slide_boost_power += delta * slide_boost_charge_speed
-			# slide_boost_charge_particle.restart()
 			slide_boost_charge_particle.emitting = true
 		else:
 			slide_boost_power = slide_boost_power_max
+		
+		if slide_boost_power > slide_boost_power_max * 0.74:
+			slide_boost_star_particle.emitting = true
+		else:
+			slide_boost_star_particle.emitting = false
+
 	elif slide_boost_power > 0:
 		slide_boost_power -= delta
 	elif slide_boost_power < 0:
@@ -234,9 +241,9 @@ func end_drift_state():
 		"is_grounded":is_grounded,
 		"slide_boost_power":slide_boost_power
 		}
-		if slide_boost_power > slide_boost_power_max * 0.3 and Input.is_action_pressed("boost"):
+		if slide_boost_power > slide_boost_power_max * 0.75 and Input.is_action_pressed("boost"):
 			finished.emit("charged_boost", flags)
-		elif Input.is_action_pressed("boost"):
+		elif Input.is_action_pressed("boost") and ship_stats.boost_fuel_current > 0.001:
 			finished.emit("boost", flags)
 		else:	
 			finished.emit("hover", flags)

@@ -51,7 +51,7 @@ func enter(oldState:String, flags:Dictionary):
 	proxy_orb.linear_damp = ship_stats.linear_damp
 	SignalHub.tune_engine_cone_minmax.emit(0.1, 0.9)
 
-	if oldState == "boost":
+	if oldState == "boost" or oldState == "charged_boost":
 		do_max_speed_tween()
 		SignalHub.camera_FOV_control.emit(75.0, 1.5)
 	elif oldState == "drift":
@@ -216,32 +216,32 @@ func get_input(delta:float):
 
 	# Brake/Accelerate input
 	# accel_input = 0.0
-	if  gamepad:
-		if Input.is_action_pressed("throttle_up"):
-			if accel_input < 1:
-				accel_input += delta * accel_multiplier
-			else:
-				accel_input = 1
-			accel_held = true
+	# if  gamepad:
+	# 	if Input.is_action_pressed("throttle_up"):
+	# 		if accel_input < 1:
+	# 			accel_input += delta * accel_multiplier
+	# 		else:
+	# 			accel_input = 1
+	# 		accel_held = true
 
-		elif Input.is_action_pressed("throttle_down"):
-			accel_input = -0.4
-			accel_held = true
+	# 	elif Input.is_action_pressed("throttle_down"):
+	# 		accel_input = -0.4
+	# 		accel_held = true
+	# 	else:
+	# 		accel_held = false
+	# else:
+	if Input.is_action_pressed("pitch_down"):
+		if accel_input < 1:
+			accel_input += delta * accel_multiplier
 		else:
-			accel_held = false
+			accel_input = 1
+		accel_held = true
+
+	elif Input.is_action_pressed("pitch_up"):
+		accel_input = -0.4
+		accel_held = true
 	else:
-		if Input.is_action_pressed("pitch_down"):
-			if accel_input < 1:
-				accel_input += delta * accel_multiplier
-			else:
-				accel_input = 1
-			accel_held = true
-
-		elif Input.is_action_pressed("pitch_up"):
-			accel_input = -0.4
-			accel_held = true
-		else:
-			accel_held = false
+		accel_held = false
 	
 	if Input.is_action_pressed("drift") and is_grounded:
 		var flags:Dictionary = {
@@ -250,7 +250,7 @@ func get_input(delta:float):
 		}
 		finished.emit("drift", flags)
 
-	elif Input.is_action_pressed("boost"):
+	elif Input.is_action_pressed("boost") and ship_stats.boost_fuel_current > 0.001:
 		var flags:Dictionary = {
 		"forward_speed":forward_speed
 		}

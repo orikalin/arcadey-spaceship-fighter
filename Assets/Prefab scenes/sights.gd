@@ -27,10 +27,12 @@ var target_body:Node3D
 var locked_on_queue:bool = false
 var aim_input:Vector3 = Vector3.ZERO
 var los_timer:float = 0.0
+var cam_FoV:float = 1.0
 
 
 func _ready() -> void:
 	SignalHub.lock_on_break.connect(lock_on_break)
+	SignalHub.camera_FOV_control.connect(store_FoV)
 
 
 func _physics_process(delta: float) -> void:
@@ -86,8 +88,9 @@ func _physics_process(delta: float) -> void:
 
 func get_input() -> void:
 	aim_input = Vector3.ZERO
-	aim_input.x += (Input.get_action_strength("r_stick_right") + -Input.get_action_strength("r_stick_left"))*1.5
-	aim_input.y += Input.get_action_strength("r_stick_up") + -Input.get_action_strength("r_stick_down")
+	aim_input.x += (Input.get_action_strength("r_stick_right") + -Input.get_action_strength("r_stick_left"))*1.5*cam_FoV
+	aim_input.y += Input.get_action_strength("r_stick_up") + -Input.get_action_strength("r_stick_down")*cam_FoV
+	
 
 
 # eventually, add a bool to all valid target classes for is_targetable
@@ -127,3 +130,7 @@ func is_line_of_sight_blocked(body:Node3D) -> bool:
 			return false
 	else:
 		return false
+
+func store_FoV(_fov:float, _duration:float) -> void:
+	cam_FoV = _fov * 0.01 + 0.25
+	print_debug(cam_FoV)

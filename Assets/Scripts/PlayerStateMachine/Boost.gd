@@ -69,6 +69,7 @@ func enter(oldState:String, flags:Dictionary = {}):
 	# 	proxy_orb.transform = player.transform
 
 func update(delta:float):
+	ship_stats.boost_fuel_current -= delta * ship_stats.fuel_drain_rate
 	if ship_stats.state_max_speed > ship_stats.boost_max_speed:
 		var _sample = charge_boost_decay.sample(boost_duration*0.5)
 		ship_stats.state_max_speed = lerp(boosted_max_speed, ship_stats.boost_max_speed, _sample)
@@ -213,9 +214,18 @@ func get_input():
 
 	if not Input.is_action_pressed("boost") and boost_duration > ship_stats.boost_min_duration:
 		var flags:Dictionary = {
-		"forward_speed":forward_speed
+		"forward_speed":forward_speed,
+		"old_max_speed":ship_stats.state_max_speed
 		}
 		finished.emit("hover", flags)
+
+	elif ship_stats.boost_fuel_current < 0.001:
+		var flags:Dictionary = {
+		"forward_speed":forward_speed,
+		"old_max_speed":ship_stats.state_max_speed
+		}
+		finished.emit("hover", flags)
+
 	elif Input.is_action_pressed("drift") and is_grounded:
 		var flags:Dictionary = {
 		"forward_speed":forward_speed,

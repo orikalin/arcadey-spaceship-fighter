@@ -10,6 +10,11 @@ var correctingRoll:bool = false
 signal freeCam()
 signal phantom_camera_shift()
 	
+func _ready():
+	super()
+	SignalHub.health_changed.emit(ship_stats.health_current)	
+	SignalHub.shield_changed.emit(ship_stats.shield_current)
+	SignalHub.fuel_changed.emit(ship_stats.boost_fuel_current)	
 
 func _process(delta: float) -> void:
 	if currentState:

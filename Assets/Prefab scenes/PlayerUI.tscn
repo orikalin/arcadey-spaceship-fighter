@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dgr4w8k18ubg0"]
+[gd_scene load_steps=10 format=3 uid="uid://dgr4w8k18ubg0"]
 
 [ext_resource type="Script" uid="uid://dxlyrdodsnp1f" path="res://Assets/Scripts/Core/debug_speed_display.gd" id="1_038ug"]
 [ext_resource type="Script" uid="uid://c7h3h3aa18qgv" path="res://Assets/Prefab scenes/sights_ui.gd" id="2_hsioy"]
+[ext_resource type="Script" uid="uid://c4q753wjqtnnv" path="res://Assets/Prefab scenes/debug_stats_display.gd" id="2_kwpbd"]
 [ext_resource type="Texture2D" uid="uid://c6scog5jojwhu" path="res://Assets/Materials/textures/reticle_small.png" id="3_b57ac"]
 [ext_resource type="Texture2D" uid="uid://btscim6dctbtt" path="res://Assets/Materials/textures/reticle_medium.png" id="4_kwpbd"]
 
@@ -142,7 +143,7 @@ size_flags_horizontal = 4
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="Panel" type="Panel" parent="."]
+[node name="debug_panel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -151,20 +152,98 @@ offset_top = -94.0
 offset_right = 267.0
 grow_vertical = 0
 
-[node name="speed_display" type="RichTextLabel" parent="Panel"]
-clip_contents = false
+[node name="HBoxContainer" type="HBoxContainer" parent="debug_panel"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
+offset_left = 133.0
+grow_horizontal = 0
 grow_vertical = 2
+
+[node name="speed_display" type="RichTextLabel" parent="debug_panel/HBoxContainer"]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
 bbcode_enabled = true
 text = "0"
 scroll_active = false
 horizontal_alignment = 2
 vertical_alignment = 2
 script = ExtResource("1_038ug")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="debug_panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="speed_display" type="RichTextLabel" parent="debug_panel/HBoxContainer2"]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "state:
+boost charge:
+accel force:
+speed:"
+scroll_active = false
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="stats_debug_panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -267.0
+offset_top = -94.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="stats_debug_panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 133.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="speed_display" type="RichTextLabel" parent="stats_debug_panel/HBoxContainer"]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "0"
+scroll_active = false
+horizontal_alignment = 2
+vertical_alignment = 2
+script = ExtResource("2_kwpbd")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="stats_debug_panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="stats_names" type="RichTextLabel" parent="stats_debug_panel/HBoxContainer2"]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "health:
+shield:
+fuel:"
+scroll_active = false
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [node name="sights_ui" type="CanvasLayer" parent="." node_paths=PackedStringArray("sight_one_ui", "sight_two_ui", "anim")]
 layer = 10

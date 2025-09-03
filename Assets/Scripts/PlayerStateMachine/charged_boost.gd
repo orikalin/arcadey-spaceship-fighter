@@ -169,7 +169,7 @@ func physicsUpdate(delta:float):
 		
 		# apply airborne gravity and input forces
 		proxy_orb.gravity_scale = ship_stats.gravity_airborne
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.8)
+		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.95)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
 	# # clamps max speed
@@ -217,21 +217,22 @@ func get_input():
 	## consider applying the high acceleration bonus to hover mode in matching situations, whatever version is chosen.
 	accel_input = 1.0
 	if boost_duration > 1.0:
-		if Input.is_action_pressed("boost"):
-			var flags:Dictionary = {
-			"forward_speed":forward_speed,
-			"state_boosted_speed":state_boosted_speed
-			}
-			finished.emit("boost", flags)
-		elif Input.is_action_pressed("drift"):
+		if Input.is_action_pressed("drift"):
 			var flags:Dictionary = {
 			"forward_speed":forward_speed,
 			"accel_input":accel_input
 			}
 			finished.emit("drift", flags)
+		elif Input.is_action_pressed("boost") and ship_stats.boost_fuel_current > 0.001:
+			var flags:Dictionary = {
+			"forward_speed":forward_speed,
+			"state_boosted_speed":state_boosted_speed
+			}
+			finished.emit("boost", flags)
 		else:
 			var flags:Dictionary = {
-			"forward_speed":forward_speed
+			"forward_speed":forward_speed,
+			"old_max_speed":state_boosted_speed
 			}
 			finished.emit("hover", flags)
 

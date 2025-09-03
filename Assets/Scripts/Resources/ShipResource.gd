@@ -1,5 +1,46 @@
 class_name ShipResource extends Resource
 
+@export_category("resource variables")
+@export var boost_fuel_max:float = 100.0
+@export var fuel_drain_rate:float = 1.0
+var boost_fuel_current:float = 100.0:
+    set(value):
+        if value > boost_fuel_max:
+            boost_fuel_current = boost_fuel_max
+        elif value < 0.0:
+            boost_fuel_current = 0.0
+        else:
+            boost_fuel_current = value
+        SignalHub.fuel_changed.emit(boost_fuel_current)
+    get:
+        return boost_fuel_current
+
+@export var health_max:int = 100
+var health_current:int = 100:
+    set(value):
+        if value > health_max:
+            health_current = health_max
+        elif value < 0:
+            health_current = 0
+        else:
+            health_current = value
+        SignalHub.health_changed.emit(health_current)
+    get:
+        return health_current
+
+@export var shield_max:int = 100
+var shield_current:int = 100:
+    set(value):
+        if value > shield_max:
+            shield_current = shield_max
+        elif value < 0:
+            shield_current = 0
+        else:
+            shield_current = value
+        SignalHub.shield_changed.emit(shield_current)
+    get:
+        return shield_current
+
 @export_category("Hovering Stats")
 @export var rolling_max_speed:float = 100 ## Max speed
 @export var rolling_turn_force:float = 8 ## Turn speed
@@ -51,6 +92,7 @@ class_name ShipResource extends Resource
 @export var flying_acceleration:float = 18.0
 @export var flying_rollMultiplier:float = 0.8
 @export var rollCorrectionRate:float = 0.5
+
 
 @export_category("Camera Control Variables")
 @export var camera_Y_offset:float = 1.8
