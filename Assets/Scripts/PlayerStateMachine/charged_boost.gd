@@ -4,7 +4,6 @@ extends State
 @export var player:CharacterBody3D
 @export var proxy_xform:CharacterBody3D
 @export var proxy_orb:RigidBody3D
-@export var ShipContainer:MeshInstance3D
 @export var physics_material:PhysicsMaterial
 @export var level_duration:float = 3.0
 @export var charge_boost_max_multiplier:float = 2.0
@@ -30,6 +29,7 @@ var boosted_speed_tween:Tween
 signal camera_Y_offset
 
 @onready var ground_raycasts:Array = %ground_check_rays.get_children()
+@onready var ShipContainer:MeshInstance3D = %ShipContainer
 
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))

@@ -165,6 +165,14 @@ func ship_friction_cone_control(_toggle:bool) -> void:
 		friction_cone_opacity_tween = create_tween()
 		friction_cone_opacity_tween.tween_property(ship_friction_cone, "shader_parameter/max_alpha", 0.0, 2.0).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
 
+func get_charge_particles() -> GPUParticles3D:
+	var particles = %slide_charge_particles
+	return particles
+
+
+func get_charge_star() -> CPUParticles3D:
+	var particles = %slide_charge_star
+	return particles
 
 
 		

@@ -1,7 +1,6 @@
 extends State
 
 @export var Player:CharacterBody3D
-@export var ShipContainer:MeshInstance3D
 
 # Current speed
 var forward_speed:float = 0.0
@@ -15,6 +14,7 @@ var pitch_input:float = 0.0
 var noPitchInputTimer:float = 0.0
 var correctingRoll:bool = false
 @onready var shipResource:StateMachine = get_parent()
+@onready var ShipContainer:MeshInstance3D = %ShipContainer
 
 signal camera_Y_offset()
 

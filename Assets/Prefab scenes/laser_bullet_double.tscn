@@ -80,7 +80,7 @@ omni_attenuation = 0.866
 [node name="Meshes" type="Node3D" parent="."]
 
 [node name="simple_laser" parent="Meshes" instance=ExtResource("2_8x8s1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, 0)
 
 [node name="Laser" parent="Meshes/simple_laser" index="0"]
 cast_shadow = 0
@@ -88,7 +88,7 @@ gi_mode = 2
 surface_material_override/0 = ExtResource("3_762f3")
 
 [node name="simple_laser2" parent="Meshes" instance=ExtResource("2_8x8s1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.659536, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, 0)
 
 [node name="Laser" parent="Meshes/simple_laser2" index="0"]
 cast_shadow = 0

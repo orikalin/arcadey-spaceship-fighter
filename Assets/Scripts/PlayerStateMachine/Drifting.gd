@@ -3,7 +3,6 @@ extends State
 @export var player:CharacterBody3D
 @export var proxy_xform:CharacterBody3D
 @export var proxy_orb:RigidBody3D
-@export var ShipContainer:MeshInstance3D
 @export var physics_material:PhysicsMaterial
 @export var slide_boost_charge_speed:float = 4.0
 @export var slide_boost_power_max:float = 4.0
@@ -25,12 +24,15 @@ var ship_mesh_tween:Tween
 var state_max_speed_tween:Tween
 var end_drift:bool = false
 var slide_boost_power:float = 0.0
+var slide_boost_charge_particle:GPUParticles3D
+var slide_boost_star_particle:CPUParticles3D
+
+@onready var ShipContainer:MeshInstance3D = %ShipContainer
 
 signal camera_Y_offset
 
 @onready var ground_raycasts:Array = %ground_check_rays.get_children()
-@onready var slide_boost_charge_particle:GPUParticles3D = %slide_charge_particles
-@onready var slide_boost_star_particle:CPUParticles3D = %slide_charge_star
+# @onready var slide_boost_star_particle:CPUParticles3D = %slide_charge_star
 
 
 ## new drift state: while drifting, movement damping is reduced to (near) 0
@@ -51,6 +53,8 @@ signal camera_Y_offset
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
 	connect("body_exited", Callable(self, "_on_body_exited"))
+	slide_boost_charge_particle = ShipContainer.get_charge_particles()
+	slide_boost_star_particle = ShipContainer.get_charge_star()
 	ship_statemachine = get_parent()
 	ship_stats = ship_statemachine.ship_stats
 
@@ -219,18 +223,6 @@ func get_input(delta:float):
 		slide_boost_power -= delta
 	elif slide_boost_power < 0:
 		slide_boost_power = 0
-
-	# Brake/Accelerate input
-	# accel_input = 1.0
-	# if  gamepad:
-	# 	if Input.is_action_pressed("throttle_up"):
-	# 		accel_input += 1
-	# 	elif gamepad and Input.is_action_pressed("throttle_down"):
-	# 		accel_input -= 0.4
-	# else:
-	# 	accel_input += Input.get_action_strength("pitch_down")
-	# 	accel_input -= Input.get_action_strength("pitch_up") * 0.4
-
 
 	end_drift_state()
 	

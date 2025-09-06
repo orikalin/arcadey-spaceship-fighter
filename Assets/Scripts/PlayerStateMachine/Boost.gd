@@ -4,7 +4,6 @@ extends State
 @export var player:CharacterBody3D
 @export var proxy_xform:CharacterBody3D
 @export var proxy_orb:RigidBody3D
-@export var ShipContainer:MeshInstance3D
 @export var physics_material:PhysicsMaterial
 @export var level_duration:float = 3.0
 @export var charge_boost_decay:Curve
@@ -24,10 +23,12 @@ var gamepad:bool = false
 var boost_duration:float = 0.0
 var ship_mesh_tween:Tween
 var boosted_max_speed:float
+var pitch_input:float = 0.0
 
 signal camera_Y_offset
 
 @onready var ground_raycasts:Array = %ground_check_rays.get_children()
+@onready var ShipContainer:MeshInstance3D = %ShipContainer
 
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -154,13 +155,25 @@ func physicsUpdate(delta:float):
 			if is_grounded:
 				elapsed_time = 0
 			is_grounded = false
-			# rotate towards the orbs forward direction, without turning
-			var _proxy_linear_velocity = physics_state.linear_velocity.normalized()
-			var _right = Vector3.UP.cross(_proxy_linear_velocity)
-			var _proxy_direction_up = _proxy_linear_velocity.cross(_right)
+			#rotate towards the orbs forward direction, without turning, within limits
+			var _orb_linear_velocity = physics_state.linear_velocity.normalized()
+			var _right = Vector3.UP.cross(_orb_linear_velocity)
+			var _proxy_direction_up = _orb_linear_velocity.cross(_right)
 			var _orb_local_up  = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
-			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta * eased_t)
-			proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
+			# var y_rot = atan2(0.0, _orb_linear_velocity.z)
+			# var _forward_world_up:Basis = Basis()
+			# _forward_world_up = _forward_world_up.rotated(Vector3.UP, y_rot)
+			# _forward_world_up = _forward_world_up.orthonormalized()
+			# var _angle_to = -_forward_world_up.z.dot(-_orb_local_up.basis.z)
+			#check if greater than allowed angle, if so, set to max allowed angle, otherwise, interpolate towards forward_velocity... unless pitch/up/down is held - leads in to problem 2
+			# if _angle_to > 0.3:
+			# 	print("dot product: " + str(_angle_to))
+			if abs(pitch_input) < 0.001:
+				proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta)
+				proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
+			# use input of right stick to control pitch
+			else:
+				proxy_xform.transform.basis = proxy_xform.transform.basis.rotated(proxy_xform.transform.basis.x, pitch_input * ship_stats.flying_pitch_speed * delta)
 		
 		# apply airborne gravity and input forces
 		proxy_orb.gravity_scale = ship_stats.gravity_airborne
@@ -201,6 +214,10 @@ func get_input():
 	turn_input -= Input.get_action_strength("roll_right")
 	turn_input += Input.get_action_strength("roll_left")
 	turn_input *= deg_to_rad(ship_stats.boost_turn_force)
+	# pitch input
+	pitch_input = 0.0
+	pitch_input += Input.get_action_strength("r_stick_up")
+	pitch_input -= Input.get_action_strength("r_stick_down")
 
 	# Boosting inputs
 	## Add inputs for handling a hover slide boost: this occurs when you start drifting. I'm not sure how I want this to work yet, here are the two ideas:

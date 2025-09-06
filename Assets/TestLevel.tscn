@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=4 uid="uid://ookdxcwivpy7"]
+[gd_scene load_steps=65 format=4 uid="uid://ookdxcwivpy7"]
 
 [ext_resource type="Script" uid="uid://wb6qs4vv7kcw" path="res://Assets/LevelScene.gd" id="1_ilnvi"]
 [ext_resource type="PackedScene" uid="uid://be6nrf0b8j4l0" path="res://Assets/Terrain3DModels/RockA.tscn" id="7_qda7k"]
@@ -333,8 +333,18 @@ refraction_scale = -0.1
 [sub_resource type="BoxShape3D" id="BoxShape3D_goiy4"]
 size = Vector3(530.482, 38.6343, 235.603)
 
+[sub_resource type="Curve3D" id="Curve3D_rxeps"]
+_data = {
+"points": PackedVector3Array(-143.688, 0, -198.717, 143.688, 0, 198.717, 527.655, 0, 1276.21, -228.083, 0.00378036, -39.6553, 228.083, -0.00378036, 39.6553, 946.489, 58.2069, 1548.07, -186.609, 13.1806, 189.219, 186.609, -13.1806, -189.219, 1543.47, 27.9532, 1415.32, -15.9529, 1.21325, 132.372, 15.9529, -1.21325, -132.372, 1796.33, 5.31432, 999.165, 0, 0, 0, 0, 0, 0, 1728.09, 6.05293, 528.284),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_v0fjc"]
 friction = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ojc0g"]
+albedo_color = Color(0.493545, 0.493546, 0.493546, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_l0jcy"]
 size = Vector3(10, 30, 10)
@@ -357,13 +367,6 @@ _data = {
 "tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0)
 }
 point_count = 6
-
-[sub_resource type="Curve3D" id="Curve3D_rxeps"]
-_data = {
-"points": PackedVector3Array(-143.688, 0, -198.717, 143.688, 0, 198.717, 527.655, 0, 1276.21, -228.083, 0.00378036, -39.6553, 228.083, -0.00378036, 39.6553, 946.489, 58.2069, 1548.07, -186.609, 13.1806, 189.219, 186.609, -13.1806, -189.219, 1543.47, 27.9532, 1415.32, -15.9529, 1.21325, 132.372, 15.9529, -1.21325, -132.372, 1796.33, 5.31432, 999.165, 0, 0, 0, 0, 0, 0, 1728.09, 6.05293, 528.284),
-"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
-}
-point_count = 5
 
 [node name="World" type="Node3D" groups=["terrain"]]
 script = ExtResource("1_ilnvi")
@@ -685,7 +688,7 @@ depth = 52.63
 polygon = PackedVector2Array(-32, -385, -91, -318, -130, -258, -141, -200, -121, -147, -66, -93, 13.9877, -89.0576, 89.5401, -135.749, 135.258, -208.233, 143, -249, 116, -305, 52, -315, 6, -357)
 
 [node name="Tunnel2" type="Node3D" parent="TerrainParts" groups=["terrain"]]
-transform = Transform3D(2.41405, 0, 1.56333, 0, 2.87604, 0, -1.56333, 0, 2.41405, -877.251, -298.881, 761.351)
+transform = Transform3D(-2.79123, 0, -0.693291, 0, 2.87604, 0, 0.693291, 0, -2.79123, -672.972, -298.881, 346.447)
 top_level = true
 
 [node name="EntranceL" type="Node3D" parent="TerrainParts/Tunnel2" groups=["terrain"]]
@@ -863,6 +866,15 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 3.8606
 depth = 34.285
 polygon = PackedVector2Array(-43, 137, -148, 93, -231, 23, -256, -37, -259, -119, -213, -119, -196, -52, -149, 18, -37, 78, 81, 65, 166, 2, 222, -107, 276, -99, 210, 44, 101, 122)
 
+[node name="Tunnel_rings" type="Path3D" parent="TerrainParts/Tunnel2"]
+transform = Transform3D(0.291847, 0, -0.188999, 0, 0.3477, 0, 0.188999, 0, 0.291847, 399.917, 103.921, -56.3983)
+curve = SubResource("Curve3D_rxeps")
+
+[node name="PathScene3D" type="PathScene3D" parent="TerrainParts/Tunnel2/Tunnel_rings" node_paths=PackedStringArray("path_3d")]
+path_3d = NodePath("..")
+scene = ExtResource("19_q4feb")
+count = 20
+
 [node name="TubeTest" parent="TerrainParts" instance=ExtResource("21_e24ns")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -719, 172, -229)
 
@@ -880,8 +892,16 @@ transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -9, 0)
 surface_material_override/0 = ExtResource("16_fetrj")
 
 [node name="Track_1" parent="TerrainParts/TubeTest/HomePlanet" index="1"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -2887.24, -77.3381, 8267.5)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -3094.3, -8.53998, 8933.02)
 surface_material_override/0 = ExtResource("16_fetrj")
+
+[node name="InnerWall" parent="TerrainParts/TubeTest/HomePlanet" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2393.84, 93.9561, 3789.55)
+surface_material_override/0 = SubResource("StandardMaterial3D_ojc0g")
+
+[node name="OuterWall" parent="TerrainParts/TubeTest/HomePlanet" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2039.02, -48.3796, 6504.36)
+surface_material_override/0 = SubResource("StandardMaterial3D_ojc0g")
 
 [node name="TestWall" type="StaticBody3D" parent="TerrainParts" groups=["terrain"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -675.2, 15, -578.273)
@@ -974,14 +994,6 @@ script = ExtResource("20_ojc0g")
 [node name="Rings" type="Node3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -715.2, 15, -539.273)
-
-[node name="Tunnel_rings" type="Path3D" parent="."]
-curve = SubResource("Curve3D_rxeps")
-
-[node name="PathScene3D" type="PathScene3D" parent="Tunnel_rings" node_paths=PackedStringArray("path_3d")]
-path_3d = NodePath("..")
-scene = ExtResource("19_q4feb")
-count = 20
 
 [editable path="TerrainParts/Tunnel/EntranceL/RockA1"]
 [editable path="TerrainParts/Tunnel/TunnelMesh"]

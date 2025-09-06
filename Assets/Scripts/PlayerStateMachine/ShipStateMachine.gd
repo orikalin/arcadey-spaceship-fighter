@@ -61,7 +61,7 @@ func check_rotation():
 	var angle_to_down_degrees = rad_to_deg(angle_to_down_radians)
 	var upside_down_threshold = 89
 
-	if angle_to_down_degrees < upside_down_threshold and not Input.is_action_pressed("pitch_down") and not Input.is_action_pressed("pitch_up"):
+	if angle_to_down_degrees < upside_down_threshold and not Input.is_action_pressed("throttle_up") and not Input.is_action_pressed("throttle_down"):
 		correctingRoll = true
 
 func correct_roll(delta:float):
