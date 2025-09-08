@@ -33,7 +33,7 @@ var friction_cone_opacity_tween:Tween
 @onready var hoveringState := %Hovering
 @onready var flyingState := %Flying
 @onready var ship_statemachine := %ShipStateMachine
-@onready var ship_friction_cone:ShaderMaterial = load("res://Assets/Materials/Ships/ship_friction_cone.tres")
+@onready var ship_friction_cone:ShaderMaterial = load("res://Assets/Ships/common_materials/ship_friction_cone.tres")
 ## ==================================================================================================
 ##	Rewrite this script to listen for event calls from SignalHub, and rewrite input code in states to 
 ##	emit those events, passing relevant data
@@ -50,7 +50,7 @@ func _ready():
 	# Particles = $Particles.get_children()
 	Trails = $Trails.get_children()
 	EngineCones = $EngineCones.get_children()
-	var engine_cone_mesh:CylinderMesh = load("res://Assets/Materials/Ships/EngineConeMesh.tres").duplicate()
+	var engine_cone_mesh:CylinderMesh = load("res://Assets/Ships/common_materials/EngineConeMesh.tres").duplicate()
 	for particles:CPUParticles3D in EngineCones:
 		particles.mesh = engine_cone_mesh
 

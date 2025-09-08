@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b6s2sr3a1tpk0"]
 
-[ext_resource type="Script" uid="uid://ccp5wp1mao5of" path="res://multiplayer/player_list.gd" id="1_e1g5f"]
+[ext_resource type="Script" uid="uid://ccp5wp1mao5of" path="res://Multiplayer/player_list.gd" id="1_e1g5f"]
 
 [node name="PlayerList" type="Panel"]
 offset_right = 144.0

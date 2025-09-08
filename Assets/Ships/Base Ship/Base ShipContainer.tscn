@@ -1,0 +1,342 @@
+[gd_scene load_steps=39 format=3 uid="uid://bqq42wdhwxi81"]
+
+[ext_resource type="Script" uid="uid://dufmvqfvv8eiu" path="res://Assets/Scripts/Core/ShipEffectsController.gd" id="1_4pd57"]
+[ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="2_alhai"]
+[ext_resource type="Curve" uid="uid://cnnxrc2knraje" path="res://Assets/Curves/ParticleSizeCurve.tres" id="3_nwpua"]
+[ext_resource type="Curve" uid="uid://bqxjimb8xlki1" path="res://Assets/Curves/EngineLightCurve.tres" id="4_w5147"]
+[ext_resource type="Curve" uid="uid://eb184d2a41yc" path="res://Assets/Curves/EngineConeCurve.tres" id="5_3otgb"]
+[ext_resource type="ArrayMesh" uid="uid://b5t815pu5lmbs" path="res://Assets/Ships/Base_V2/Prototype_Ship_2_Combo.obj" id="6_q5p3j"]
+[ext_resource type="Material" uid="uid://c87av6q3wvvmy" path="res://Assets/Ships/common_materials/ico_sphere.tres" id="7_ofa2r"]
+[ext_resource type="Material" uid="uid://c8dtnmdyqw1as" path="res://Assets/Ships/common_materials/Body.tres" id="8_l54a2"]
+[ext_resource type="Material" uid="uid://dtu5xtqw54qjc" path="res://Assets/Ships/common_materials/Wings.tres" id="9_dbm30"]
+[ext_resource type="Material" uid="uid://xufxqc2vhosk" path="res://Assets/Ships/common_materials/Engines.tres" id="10_bgehq"]
+[ext_resource type="Material" uid="uid://cvy2wx33hf6xg" path="res://Assets/Ships/common_materials/Energy.tres" id="11_cb7d6"]
+[ext_resource type="Material" uid="uid://5h4bqyb01xbc" path="res://Assets/Ships/common_materials/ship_glass.tres" id="12_m88ab"]
+[ext_resource type="ArrayMesh" uid="uid://bqhhsuqbmrlru" path="res://Assets/Meshes/shine_star_mesh.obj" id="13_ur8u4"]
+[ext_resource type="CylinderMesh" uid="uid://cx3jhed4ffdac" path="res://Assets/Ships/common_materials/EngineConeMesh.tres" id="14_hl534"]
+[ext_resource type="Curve" uid="uid://bihtqihjfgawq" path="res://Assets/Curves/engine_cone_linear_accel.tres" id="15_gh2fc"]
+[ext_resource type="Gradient" uid="uid://o2xsa3xyq67l" path="res://Assets/Ships/common_materials/Engine_cone_gradient_.tres" id="16_vdyha"]
+[ext_resource type="Script" uid="uid://bqflf4vw8mem1" path="res://addons/lines_and_trails_3d/trail_3d.gd" id="17_l5bfm"]
+[ext_resource type="Curve" uid="uid://c1yv3tea7x6gj" path="res://Assets/Curves/trail_velocity_curve.tres" id="18_cbquc"]
+[ext_resource type="Gradient" uid="uid://1l32mnkaqmxb" path="res://Assets/Ships/common_materials/Engine_trail_gradient_customizable.tres" id="19_mfgc6"]
+
+[sub_resource type="Curve" id="Curve_uksnq"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lji6i"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+diffuse_mode = 1
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+vertex_color_use_as_albedo = true
+
+[sub_resource type="Curve" id="Curve_ajwy2"]
+_data = [Vector2(0, 0), 0.0, 0.00445084, 0, 0, Vector2(0.606061, 0.145008), 0.438628, 0.438628, 0, 0, Vector2(0.901515, 0), -0.00373552, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_2lat7"]
+curve = SubResource("Curve_ajwy2")
+
+[sub_resource type="Curve" id="Curve_xhmyi"]
+_limits = [-50.0, 50.0, 0.0, 1.0]
+_data = [Vector2(0, 38.6688), 0.0, -59.8288, 0, 0, Vector2(1, 1), 2.73411, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_1itww"]
+curve = SubResource("Curve_xhmyi")
+
+[sub_resource type="Curve" id="Curve_ob4vt"]
+_data = [Vector2(0, 1), 0.0, -0.0971245, 0, 0, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_y3osh"]
+curve = SubResource("Curve_ob4vt")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_kyim5"]
+particle_flag_align_y = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 0.5
+emission_ring_radius = 3.0
+emission_ring_inner_radius = 2.0
+emission_ring_cone_angle = 90.0
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.23517e-06
+linear_accel_max = -2.23517e-06
+linear_accel_curve = SubResource("CurveTexture_1itww")
+scale_curve = SubResource("CurveTexture_y3osh")
+color = Color(1.2, 1.5, 2, 1)
+alpha_curve = SubResource("CurveTexture_2lat7")
+
+[sub_resource type="SphereMesh" id="SphereMesh_lji6i"]
+radius = 0.05
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ajwy2"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+diffuse_mode = 3
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.312344, 0.803218, 1, 1)
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_2lat7"]
+_data = [Vector2(0, 1), 0.0, 73.6724, 0, 0, Vector2(0.101974, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.221039), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_xhmyi"]
+offsets = PackedFloat32Array(0, 0.723022)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.219608)
+
+[sub_resource type="TorusMesh" id="TorusMesh_2v72a"]
+inner_radius = 0.323
+outer_radius = 0.42
+rings = 12
+ring_segments = 4
+
+[sub_resource type="Curve" id="Curve_y725d"]
+_data = [Vector2(0, 0), 0.0, 9.45161, 0, 1, Vector2(0.105802, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_ktdep"]
+_data = [Vector2(0, 1), 0.0, -0.691922, 0, 1, Vector2(1, 0.308078), -0.691922, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_0hif8"]
+_data = [Vector2(0, 1), 0.0, -0.691922, 0, 1, Vector2(1, 0.308078), -0.691922, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_751v6"]
+_data = [Vector2(0, 0.658109), 0.0, 3.13044, 0, 1, Vector2(0.109215, 1), 3.13044, 0.0, 1, 0, Vector2(1, 0.312148), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_noymn"]
+_data = [Vector2(0, 1), 0.0, 84.4999, 0, 0, Vector2(0.0543933, 1), 0.0, 0.0, 0, 0, Vector2(0.677824, 1), 0.0, -3.1039, 0, 1, Vector2(1, 0), -3.1039, 0.0, 1, 0]
+point_count = 4
+
+[node name="ShipContainer" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 1.6204e-08, 0, 1, 0, -1.6204e-08, 0, 1, 0, 0, 0)
+layers = 2
+script = ExtResource("1_4pd57")
+ship_stats = ExtResource("2_alhai")
+ParticleSizeCurve = ExtResource("3_nwpua")
+EngineLightCurve = ExtResource("4_w5147")
+EngineConeCurve = ExtResource("5_3otgb")
+TrailCurve = SubResource("Curve_uksnq")
+EngineLightIntensity = 2.5
+EngineLightEnergy = 1.5
+trail_width_max = 0.45
+engine_cone_lerp_speed = 8.0
+cone_flare_speed = 4.0
+trail_speed_velocity = 1.5
+
+[node name="ShipMesh" type="MeshInstance3D" parent="."]
+mesh = ExtResource("6_q5p3j")
+surface_material_override/0 = ExtResource("7_ofa2r")
+surface_material_override/1 = ExtResource("8_l54a2")
+surface_material_override/2 = ExtResource("9_dbm30")
+surface_material_override/3 = ExtResource("10_bgehq")
+surface_material_override/4 = ExtResource("11_cb7d6")
+surface_material_override/5 = ExtResource("12_m88ab")
+
+[node name="Body" type="MeshInstance3D" parent="ShipMesh"]
+
+[node name="Engines" type="MeshInstance3D" parent="ShipMesh"]
+
+[node name="WeaponPrimary" type="MeshInstance3D" parent="ShipMesh"]
+skeleton = NodePath("../Engines")
+
+[node name="WeaponSecondary" type="MeshInstance3D" parent="ShipMesh"]
+skeleton = NodePath("../Engines")
+
+[node name="HeadLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.10352e-05, 0, -2.0842)
+visible = false
+light_energy = 5.0
+light_size = 0.575
+shadow_opacity = 0.9
+distance_fade_begin = 4.95
+distance_fade_length = 6.1
+spot_range = 211.941
+spot_attenuation = 0.25
+spot_angle = 60.0
+spot_angle_attenuation = 0.482969
+
+[node name="Particles" type="Node3D" parent="."]
+
+[node name="slide_charge_particles" type="GPUParticles3D" parent="Particles"]
+unique_name_in_owner = true
+transform = Transform3D(-1, -6.13897e-21, 1.50996e-07, 0, 1, 4.26326e-14, -1.50996e-07, 3.90799e-14, -1, 0.0241549, 0.00599061, 2.02772)
+material_override = SubResource("StandardMaterial3D_lji6i")
+emitting = false
+amount = 60
+lifetime = 0.5
+one_shot = true
+fixed_fps = 60
+local_coords = true
+trail_lifetime = 0.97
+process_material = SubResource("ParticleProcessMaterial_kyim5")
+draw_pass_1 = SubResource("SphereMesh_lji6i")
+
+[node name="GPUParticlesAttractorBox3D" type="GPUParticlesAttractorBox3D" parent="Particles/slide_charge_particles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.72529e-09, -0.166668, 1.25724)
+strength = 27.07
+attenuation = 0.5
+size = Vector3(10, 10, 10)
+
+[node name="slide_charge_star" type="CPUParticles3D" parent="Particles"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.44089e-16, -0.102338, 0.751336)
+material_override = SubResource("StandardMaterial3D_ajwy2")
+emitting = false
+amount = 20
+lifetime = 0.4
+fixed_fps = 30
+visibility_aabb = AABB(-4, -4, -4, 8, 8, 8)
+local_coords = true
+mesh = ExtResource("13_ur8u4")
+gravity = Vector3(0, 0, 0)
+scale_amount_min = 0.3
+scale_amount_max = 0.4
+scale_amount_curve = SubResource("Curve_2lat7")
+color_ramp = SubResource("Gradient_xhmyi")
+
+[node name="OmniLights" type="Node3D" parent="."]
+transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
+visible = false
+
+[node name="TailLight" type="OmniLight3D" parent="OmniLights"]
+transform = Transform3D(1, 0, 1.49012e-08, 0, 1, 0, -1.49012e-08, 0, 1, -6.10362e-05, -0.324421, 0.369416)
+light_specular = 0.25
+omni_range = 11.885
+omni_attenuation = 0.093
+omni_shadow_mode = 0
+
+[node name="EngineLights" type="Node3D" parent="."]
+transform = Transform3D(0.2299, 0, 0, 0, 0.2299, 0, 0, 0, 0.2299, 0, 0, 0)
+
+[node name="EngineLight_L" type="SpotLight3D" parent="EngineLights"]
+transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, -3.72844, 0, 3.53577)
+spot_range = 8.85
+spot_angle = 61.58
+
+[node name="EngineLight_R" type="SpotLight3D" parent="EngineLights"]
+transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, 3.728, 0, 3.536)
+spot_range = 8.85
+spot_angle = 61.58
+
+[node name="EngineLight_C" type="SpotLight3D" parent="EngineLights"]
+transform = Transform3D(-1, -1.50996e-07, -6.60024e-15, 0, -4.37114e-08, 1, -1.50996e-07, 1, 4.37114e-08, 0, 0, 3.536)
+spot_range = 8.85
+spot_angle = 92.04
+
+[node name="slide_charge_particles_old" type="GPUParticles3D" parent="EngineLights/EngineLight_C"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0241551, 3.04808, 0.00599074)
+material_override = SubResource("StandardMaterial3D_lji6i")
+emitting = false
+amount = 5
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.5
+fixed_fps = 60
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_kyim5")
+draw_pass_1 = SubResource("TorusMesh_2v72a")
+
+[node name="EngineCones" type="Node3D" parent="."]
+transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
+
+[node name="EngineCone_L" type="CPUParticles3D" parent="EngineCones"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.918339, -1.93777e-08, 1.23789)
+local_coords = true
+mesh = ExtResource("14_hl534")
+particle_flag_align_y = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.2
+initial_velocity_max = 0.2
+linear_accel_min = 0.01
+linear_accel_max = 0.01
+linear_accel_curve = ExtResource("15_gh2fc")
+scale_amount_curve = SubResource("Curve_y725d")
+split_scale = true
+scale_curve_x = SubResource("Curve_ktdep")
+scale_curve_y = SubResource("Curve_0hif8")
+scale_curve_z = SubResource("Curve_751v6")
+color = Color(0.894118, 0.415686, 0.0784314, 1)
+color_ramp = ExtResource("16_vdyha")
+
+[node name="EngineCone_R" type="CPUParticles3D" parent="EngineCones"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.918, 0, 1.238)
+local_coords = true
+mesh = ExtResource("14_hl534")
+particle_flag_align_y = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.2
+initial_velocity_max = 0.2
+linear_accel_min = 0.01
+linear_accel_max = 0.01
+linear_accel_curve = ExtResource("15_gh2fc")
+scale_amount_curve = SubResource("Curve_y725d")
+split_scale = true
+scale_curve_x = SubResource("Curve_ktdep")
+scale_curve_y = SubResource("Curve_0hif8")
+scale_curve_z = SubResource("Curve_751v6")
+color = Color(0.894118, 0.415686, 0.0784314, 1)
+color_ramp = ExtResource("16_vdyha")
+
+[node name="Trails" type="Node3D" parent="."]
+
+[node name="Engine_Trail_L" type="MeshInstance3D" parent="Trails"]
+process_priority = 9999
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.893201, 0, 1.6692)
+skeleton = NodePath("")
+script = ExtResource("17_l5bfm")
+initial_velocity_toggle = true
+max_section_length = 0.2
+time_limit = 3.5
+initial_velocity_curve = ExtResource("18_cbquc")
+velocity_strength = 1.0
+width = 0.553
+width_curve = SubResource("Curve_noymn")
+color = Color(0.892864, 0.414073, 0.0777766, 1)
+gradient = ExtResource("19_mfgc6")
+material_type = 3
+metadata/_custom_type_script = "uid://bqflf4vw8mem1"
+
+[node name="Engine_Trail_R" type="MeshInstance3D" parent="Trails"]
+process_priority = 9999
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.893, 0, 1.6695)
+skeleton = NodePath("")
+script = ExtResource("17_l5bfm")
+initial_velocity_toggle = true
+max_section_length = 0.2
+time_limit = 3.5
+initial_velocity_curve = ExtResource("18_cbquc")
+velocity_strength = 1.0
+width = 0.553
+width_curve = SubResource("Curve_noymn")
+color = Color(0.892864, 0.414073, 0.0777766, 1)
+gradient = ExtResource("19_mfgc6")
+material_type = 3
+metadata/_custom_type_script = "uid://bqflf4vw8mem1"

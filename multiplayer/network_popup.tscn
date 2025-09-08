@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://7iywtxxqygke"]
 
-[ext_resource type="Script" uid="uid://dhagpecr3oqjn" path="res://multiplayer/network_popup.gd" id="1_lkqci"]
+[ext_resource type="Script" uid="uid://dhagpecr3oqjn" path="res://Multiplayer/network_popup.gd" id="1_lkqci"]
 
 [node name="NetworkPopup" type="Panel"]
 anchors_preset = 5
