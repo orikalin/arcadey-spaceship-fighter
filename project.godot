@@ -96,6 +96,7 @@ enabled=PackedStringArray("res://addons/PathMesh3D/plugin.cfg", "res://addons/ar
 
 terrain=""
 targetable=""
+visible_target="target belongs to this group if it is visible on screen"
 
 [input]
 
@@ -195,12 +196,17 @@ r_stick_down={
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":3,"axis_value":1.0,"script":null)
 ]
 }
+target_swap={
+"deadzone": 0.2,
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":8,"pressure":0.0,"pressed":true,"script":null)
+]
+}
 
 [layer_names]
 
 3d_physics/layer_1="Terrain"
 3d_physics/layer_2="Player"
-3d_physics/layer_3="enemy"
+3d_physics/layer_3="enemy_hitbox"
 3d_physics/layer_4="sights"
 3d_physics/layer_5="bullets"
 3d_physics/layer_6="enemy_physics"

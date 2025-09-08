@@ -95,7 +95,7 @@ script = ExtResource("1_xvvtl")
 slerp_speed = 1.0
 
 [node name="Area3D" type="Area3D" parent="."]
-collision_layer = 258
+collision_layer = 256
 collision_mask = 2
 monitorable = false
 

@@ -103,5 +103,6 @@ visible = false
 
 [editable path="World3D/SubViewportContainer/SubViewport/PlayerManager"]
 [editable path="World3D/SubViewportContainer/SubViewport/WorldScenes/TitleBackground"]
+[editable path="World3D/SubViewportContainer/SubViewport/WorldScenes/TitleBackground/Rotating Arm/PlayerContainer/Player/ShipContainer2"]
 [editable path="NetworkPopup"]
 [editable path="PlayerList"]

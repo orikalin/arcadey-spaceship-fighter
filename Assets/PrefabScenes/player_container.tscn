@@ -1,8 +1,9 @@
-[gd_scene load_steps=38 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=39 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
 [ext_resource type="PackedScene" uid="uid://do4g3mulln0c8" path="res://Assets/Ships/Base_V2/ShipContainer.tscn" id="3_uksnq"]
+[ext_resource type="Script" uid="uid://b6jep4s74a1ki" path="res://Assets/Scripts/ShowOnReady.gd" id="4_8pmm5"]
 [ext_resource type="PackedScene" uid="uid://dhuu8qw6av10a" path="res://Assets/Ships/common_materials/ship_friction_cone.tscn" id="13_lji6i"]
 [ext_resource type="Script" uid="uid://w2iurlb7divh" path="res://Assets/Scripts/PlayerStateMachine/ShipStateMachine.gd" id="14_kj614"]
 [ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="15_0cqmc"]
@@ -146,6 +147,10 @@ transform = Transform3D(1, -1.38767e-05, 7.97361e-05, 3.42131e-05, 0.965314, -0.
 [node name="ShipContainer" parent="Player" instance=ExtResource("3_uksnq")]
 unique_name_in_owner = true
 
+[node name="slide_charge_star" parent="Player/ShipContainer/Particles" index="1"]
+visible = false
+script = ExtResource("4_8pmm5")
+
 [node name="weapons" type="Node3D" parent="Player"]
 unique_name_in_owner = true
 
@@ -207,6 +212,7 @@ collision_mask = 4
 
 [node name="small_cone_long" type="CollisionShape3D" parent="Player/weapons/sights/sight_raycast/sight_soft_locker"]
 transform = Transform3D(1, -7.27596e-12, -3.18042e-19, -9.09495e-13, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.81899e-09, 1.65436e-21, -250)
+visible = false
 shape = SubResource("ConcavePolygonShape3D_kj614")
 
 [node name="small_cone_long_" type="CollisionShape3D" parent="Player/weapons/sights/sight_raycast/sight_soft_locker"]
@@ -348,6 +354,7 @@ transform = Transform3D(0.999999, 0, -1.77636e-15, 0, 1, 0, 1.77636e-15, 0, 0.99
 [node name="Orb" type="RigidBody3D" parent="RollingProxy"]
 unique_name_in_owner = true
 collision_layer = 2
+collision_mask = 33
 mass = 2.0
 physics_material_override = ExtResource("27_cmkl5")
 gravity_scale = 0.1
