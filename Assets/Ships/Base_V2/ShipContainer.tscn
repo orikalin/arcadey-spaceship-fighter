@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://do4g3mulln0c8"]
+[gd_scene load_steps=39 format=3 uid="uid://do4g3mulln0c8"]
 
 [ext_resource type="Script" uid="uid://dufmvqfvv8eiu" path="res://Assets/Scripts/Core/ShipEffectsController.gd" id="1_sa5fp"]
 [ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="2_b6j05"]
@@ -6,6 +6,11 @@
 [ext_resource type="Curve" uid="uid://bqxjimb8xlki1" path="res://Assets/Curves/EngineLightCurve.tres" id="4_ym0ye"]
 [ext_resource type="Curve" uid="uid://eb184d2a41yc" path="res://Assets/Curves/EngineConeCurve.tres" id="5_qyxll"]
 [ext_resource type="ArrayMesh" uid="uid://dfpl8be6ykfw5" path="res://Assets/Ships/Base_V2/Prototype_Ship_2.obj" id="6_b6j05"]
+[ext_resource type="Material" uid="uid://c8dtnmdyqw1as" path="res://Assets/Ships/common_materials/Body.tres" id="7_k6elr"]
+[ext_resource type="Material" uid="uid://dtu5xtqw54qjc" path="res://Assets/Ships/common_materials/Wings.tres" id="8_aypg8"]
+[ext_resource type="Material" uid="uid://xufxqc2vhosk" path="res://Assets/Ships/common_materials/Engines.tres" id="9_61bja"]
+[ext_resource type="Material" uid="uid://cvy2wx33hf6xg" path="res://Assets/Ships/common_materials/Energy.tres" id="10_f7rr4"]
+[ext_resource type="Material" uid="uid://5h4bqyb01xbc" path="res://Assets/Ships/common_materials/ship_glass.tres" id="11_p5kdi"]
 [ext_resource type="ArrayMesh" uid="uid://dvqm0efbo2rkg" path="res://Assets/Ships/Base_V2/Prototype_Ship_2_Orb.obj" id="12_fgcox"]
 [ext_resource type="ArrayMesh" uid="uid://bqhhsuqbmrlru" path="res://Assets/Meshes/shine_star_mesh.obj" id="13_g3qk7"]
 [ext_resource type="CylinderMesh" uid="uid://cx3jhed4ffdac" path="res://Assets/Ships/common_materials/EngineConeMesh.tres" id="14_tviry"]
@@ -143,6 +148,11 @@ trail_speed_velocity = 1.5
 
 [node name="ShipMesh" type="MeshInstance3D" parent="."]
 mesh = ExtResource("6_b6j05")
+surface_material_override/0 = ExtResource("7_k6elr")
+surface_material_override/1 = ExtResource("8_aypg8")
+surface_material_override/2 = ExtResource("9_61bja")
+surface_material_override/3 = ExtResource("10_f7rr4")
+surface_material_override/4 = ExtResource("11_p5kdi")
 
 [node name="Body" type="MeshInstance3D" parent="ShipMesh"]
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=37 format=3 uid="uid://c7oosc8adu1fp"]
+[gd_scene load_steps=38 format=3 uid="uid://c7oosc8adu1fp"]
 
 [ext_resource type="ArrayMesh" uid="uid://c27o2arf8nixo" path="res://Assets/Ships/Base Ship/Prototype_Ship.obj" id="1_ljce4"]
+[ext_resource type="PackedScene" uid="uid://do4g3mulln0c8" path="res://Assets/Ships/Base_V2/ShipContainer.tscn" id="1_xwd1m"]
 [ext_resource type="Material" uid="uid://c8dtnmdyqw1as" path="res://Assets/Ships/common_materials/Body.tres" id="2_l7w4g"]
 [ext_resource type="Material" uid="uid://dtu5xtqw54qjc" path="res://Assets/Ships/common_materials/Wings.tres" id="3_xwd1m"]
 [ext_resource type="Material" uid="uid://xufxqc2vhosk" path="res://Assets/Ships/common_materials/Engines.tres" id="4_xcgwj"]
@@ -168,9 +169,139 @@ debug_color = Color(0, 0.595, 0.7, 0.858824)
 transform = Transform3D(0.62, 0, 0, 0, -2.71011e-08, -0.62, 0, 0.62, -2.71011e-08, 0, 0, 0)
 shape = SubResource("SeparationRayShape3D_cgw0f")
 
+[node name="ShipContainer2" parent="Rotating Arm/PlayerContainer/Player" instance=ExtResource("1_xwd1m")]
+transform = Transform3D(-0.491564, 0.590594, 0.639971, 0.840198, 0.514875, 0.17021, -0.22898, 0.621372, -0.74931, 0, 0.83, 3.905)
+
+[node name="EngineCones" type="Node3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2/ShipMesh" index="5"]
+transform = Transform3D(1, -8.04663e-07, -4.47035e-07, -5.96046e-08, 1, -3.57628e-07, 4.47035e-08, 0, 1, 2.38419e-07, -4.76837e-07, 9.53674e-07)
+
+[node name="EngineCone_L" type="CPUParticles3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2/ShipMesh/EngineCones"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.218, -1.93777e-08, 1.23789)
+local_coords = true
+mesh = ExtResource("6_imcdm")
+particle_flag_align_y = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 0.1
+linear_accel_min = 0.01
+linear_accel_max = 0.01
+linear_accel_curve = SubResource("Curve_ilw7v")
+scale_amount_curve = SubResource("Curve_y725d")
+split_scale = true
+scale_curve_x = SubResource("Curve_ktdep")
+scale_curve_y = SubResource("Curve_0hif8")
+scale_curve_z = SubResource("Curve_751v6")
+color = Color(1, 0.744018, 0.540161, 1)
+color_ramp = ExtResource("7_fvp13")
+
+[node name="EngineCone_R" type="CPUParticles3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2/ShipMesh/EngineCones"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.353, 0, 1.238)
+local_coords = true
+mesh = ExtResource("6_imcdm")
+particle_flag_align_y = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 0.1
+linear_accel_min = 0.01
+linear_accel_max = 0.01
+linear_accel_curve = SubResource("Curve_ilw7v")
+scale_amount_curve = SubResource("Curve_y725d")
+split_scale = true
+scale_curve_x = SubResource("Curve_ktdep")
+scale_curve_y = SubResource("Curve_0hif8")
+scale_curve_z = SubResource("Curve_751v6")
+color = Color(1, 0.745098, 0.541176, 1)
+color_ramp = ExtResource("7_fvp13")
+
+[node name="EngineCone_L2" type="CPUParticles3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2/ShipMesh/EngineCones"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.918339, -1.93777e-08, 1.23789)
+visible = false
+local_coords = true
+mesh = ExtResource("8_imcdm")
+particle_flag_align_y = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.2
+initial_velocity_max = 0.2
+linear_accel_min = 0.01
+linear_accel_max = 0.01
+linear_accel_curve = ExtResource("9_mnubx")
+scale_amount_curve = SubResource("Curve_km1sd")
+split_scale = true
+scale_curve_x = SubResource("Curve_bssow")
+scale_curve_y = SubResource("Curve_1le0s")
+scale_curve_z = SubResource("Curve_6kelh")
+color = Color(1, 0.413598, 0.0968891, 0.705882)
+color_ramp = ExtResource("10_we81v")
+
+[node name="EngineCone_R2" type="CPUParticles3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2/ShipMesh/EngineCones"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.918, 0, 1.238)
+visible = false
+local_coords = true
+mesh = ExtResource("8_imcdm")
+particle_flag_align_y = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.2
+initial_velocity_max = 0.2
+linear_accel_min = 0.01
+linear_accel_max = 0.01
+linear_accel_curve = ExtResource("9_mnubx")
+scale_amount_curve = SubResource("Curve_km1sd")
+split_scale = true
+scale_curve_x = SubResource("Curve_bssow")
+scale_curve_y = SubResource("Curve_1le0s")
+scale_curve_z = SubResource("Curve_6kelh")
+color = Color(1, 0.413598, 0.0968891, 0.705882)
+color_ramp = ExtResource("10_we81v")
+
+[node name="Trails" type="Node3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2/ShipMesh" index="6"]
+transform = Transform3D(1, -8.04663e-07, -4.32134e-07, -4.47035e-08, 1, -3.57628e-07, 2.98023e-08, 0, 1, 2.38419e-07, -4.76837e-07, 9.53674e-07)
+
+[node name="Engine_Trail_L" type="MeshInstance3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2/ShipMesh/Trails"]
+process_priority = 9999
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.218, 0, 1.61417)
+skeleton = NodePath("")
+script = ExtResource("7_mnubx")
+time_limit = 1.0
+initial_velocity_curve = ExtResource("8_yh0h1")
+velocity_strength = 20.0
+width = 0.553
+width_curve = SubResource("Curve_noymn")
+gradient = ExtResource("13_yh0h1")
+material_type = 3
+metadata/_custom_type_script = "uid://bqflf4vw8mem1"
+
+[node name="Engine_Trail_R" type="MeshInstance3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2/ShipMesh/Trails"]
+process_priority = 9999
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.353, 0, 1.61447)
+skeleton = NodePath("")
+script = ExtResource("7_mnubx")
+time_limit = 1.0
+initial_velocity_curve = ExtResource("8_yh0h1")
+velocity_strength = 20.0
+width = 0.553
+width_curve = SubResource("Curve_noymn")
+gradient = ExtResource("13_yh0h1")
+material_type = 3
+metadata/_custom_type_script = "uid://bqflf4vw8mem1"
+
+[node name="EngineCones" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2" index="5"]
+visible = false
+
+[node name="Trails" parent="Rotating Arm/PlayerContainer/Player/ShipContainer2" index="6"]
+visible = false
+
 [node name="ShipContainer" type="MeshInstance3D" parent="Rotating Arm/PlayerContainer/Player"]
 unique_name_in_owner = true
 transform = Transform3D(-0.491564, 0.590595, 0.639971, 0.840198, 0.514874, 0.170209, -0.22898, 0.621372, -0.74931, 0, 0.83, 3.905)
+visible = false
 mesh = ExtResource("1_ljce4")
 surface_material_override/0 = ExtResource("2_l7w4g")
 surface_material_override/1 = ExtResource("3_xwd1m")
@@ -227,125 +358,6 @@ light_color = Color(1, 0.636765, 0.30254, 1)
 spot_range = 8.85
 spot_angle = 61.58
 
-[node name="EngineCones" type="Node3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer"]
-transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 1.49012e-08, 0, 1, 0, 0, 0)
-
-[node name="EngineCone_L" type="CPUParticles3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer/EngineCones"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.918339, -1.93777e-08, 1.23789)
-local_coords = true
-mesh = ExtResource("6_imcdm")
-particle_flag_align_y = true
-direction = Vector3(0, -1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.1
-initial_velocity_max = 0.1
-linear_accel_min = 0.01
-linear_accel_max = 0.01
-linear_accel_curve = SubResource("Curve_ilw7v")
-scale_amount_curve = SubResource("Curve_y725d")
-split_scale = true
-scale_curve_x = SubResource("Curve_ktdep")
-scale_curve_y = SubResource("Curve_0hif8")
-scale_curve_z = SubResource("Curve_751v6")
-color = Color(1, 0.744018, 0.540161, 1)
-color_ramp = ExtResource("7_fvp13")
-
-[node name="EngineCone_R" type="CPUParticles3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer/EngineCones"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.918, 0, 1.238)
-local_coords = true
-mesh = ExtResource("6_imcdm")
-particle_flag_align_y = true
-direction = Vector3(0, -1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.1
-initial_velocity_max = 0.1
-linear_accel_min = 0.01
-linear_accel_max = 0.01
-linear_accel_curve = SubResource("Curve_ilw7v")
-scale_amount_curve = SubResource("Curve_y725d")
-split_scale = true
-scale_curve_x = SubResource("Curve_ktdep")
-scale_curve_y = SubResource("Curve_0hif8")
-scale_curve_z = SubResource("Curve_751v6")
-color = Color(1, 0.745098, 0.541176, 1)
-color_ramp = ExtResource("7_fvp13")
-
-[node name="EngineCone_L2" type="CPUParticles3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer/EngineCones"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.918339, -1.93777e-08, 1.23789)
-visible = false
-local_coords = true
-mesh = ExtResource("8_imcdm")
-particle_flag_align_y = true
-direction = Vector3(0, -1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.2
-initial_velocity_max = 0.2
-linear_accel_min = 0.01
-linear_accel_max = 0.01
-linear_accel_curve = ExtResource("9_mnubx")
-scale_amount_curve = SubResource("Curve_km1sd")
-split_scale = true
-scale_curve_x = SubResource("Curve_bssow")
-scale_curve_y = SubResource("Curve_1le0s")
-scale_curve_z = SubResource("Curve_6kelh")
-color = Color(1, 0.413598, 0.0968891, 0.705882)
-color_ramp = ExtResource("10_we81v")
-
-[node name="EngineCone_R2" type="CPUParticles3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer/EngineCones"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.918, 0, 1.238)
-visible = false
-local_coords = true
-mesh = ExtResource("8_imcdm")
-particle_flag_align_y = true
-direction = Vector3(0, -1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.2
-initial_velocity_max = 0.2
-linear_accel_min = 0.01
-linear_accel_max = 0.01
-linear_accel_curve = ExtResource("9_mnubx")
-scale_amount_curve = SubResource("Curve_km1sd")
-split_scale = true
-scale_curve_x = SubResource("Curve_bssow")
-scale_curve_y = SubResource("Curve_1le0s")
-scale_curve_z = SubResource("Curve_6kelh")
-color = Color(1, 0.413598, 0.0968891, 0.705882)
-color_ramp = ExtResource("10_we81v")
-
-[node name="Trails" type="Node3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer"]
-
-[node name="Engine_Trail_L" type="MeshInstance3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer/Trails"]
-process_priority = 9999
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.893201, 0, 1.61417)
-skeleton = NodePath("")
-script = ExtResource("7_mnubx")
-time_limit = 1.0
-initial_velocity_curve = ExtResource("8_yh0h1")
-velocity_strength = 20.0
-width = 0.553
-width_curve = SubResource("Curve_noymn")
-gradient = ExtResource("13_yh0h1")
-material_type = 3
-metadata/_custom_type_script = "uid://bqflf4vw8mem1"
-
-[node name="Engine_Trail_R" type="MeshInstance3D" parent="Rotating Arm/PlayerContainer/Player/ShipContainer/Trails"]
-process_priority = 9999
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.893, 0, 1.61447)
-skeleton = NodePath("")
-script = ExtResource("7_mnubx")
-time_limit = 1.0
-initial_velocity_curve = ExtResource("8_yh0h1")
-velocity_strength = 20.0
-width = 0.553
-width_curve = SubResource("Curve_noymn")
-gradient = ExtResource("13_yh0h1")
-material_type = 3
-metadata/_custom_type_script = "uid://bqflf4vw8mem1"
-
 [node name="stylized_smoke_trail" parent="Rotating Arm/PlayerContainer/Player/ShipContainer" instance=ExtResource("11_we81v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0268e-09, -0.417042, 1.04587)
 visible = false
@@ -379,3 +391,5 @@ libraries = {
 &"": SubResource("AnimationLibrary_xt377")
 }
 autoplay = "rotating arm"
+
+[editable path="Rotating Arm/PlayerContainer/Player/ShipContainer2"]

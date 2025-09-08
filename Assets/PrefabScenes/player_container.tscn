@@ -1,13 +1,8 @@
-[gd_scene load_steps=43 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=38 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
 [ext_resource type="PackedScene" uid="uid://do4g3mulln0c8" path="res://Assets/Ships/Base_V2/ShipContainer.tscn" id="3_uksnq"]
-[ext_resource type="Material" uid="uid://c8dtnmdyqw1as" path="res://Assets/Ships/common_materials/Body.tres" id="4_cmkl5"]
-[ext_resource type="Material" uid="uid://dtu5xtqw54qjc" path="res://Assets/Ships/common_materials/Wings.tres" id="5_m6m72"]
-[ext_resource type="Material" uid="uid://xufxqc2vhosk" path="res://Assets/Ships/common_materials/Engines.tres" id="6_vwhge"]
-[ext_resource type="Material" uid="uid://cvy2wx33hf6xg" path="res://Assets/Ships/common_materials/Energy.tres" id="7_txwvw"]
-[ext_resource type="Material" uid="uid://5h4bqyb01xbc" path="res://Assets/Ships/common_materials/ship_glass.tres" id="8_r5ri1"]
 [ext_resource type="PackedScene" uid="uid://dhuu8qw6av10a" path="res://Assets/Ships/common_materials/ship_friction_cone.tscn" id="13_lji6i"]
 [ext_resource type="Script" uid="uid://w2iurlb7divh" path="res://Assets/Scripts/PlayerStateMachine/ShipStateMachine.gd" id="14_kj614"]
 [ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="15_0cqmc"]
@@ -150,13 +145,6 @@ transform = Transform3D(1, -1.38767e-05, 7.97361e-05, 3.42131e-05, 0.965314, -0.
 
 [node name="ShipContainer" parent="Player" instance=ExtResource("3_uksnq")]
 unique_name_in_owner = true
-
-[node name="ShipMesh" parent="Player/ShipContainer" index="0"]
-surface_material_override/0 = ExtResource("4_cmkl5")
-surface_material_override/1 = ExtResource("5_m6m72")
-surface_material_override/2 = ExtResource("6_vwhge")
-surface_material_override/3 = ExtResource("7_txwvw")
-surface_material_override/4 = ExtResource("8_r5ri1")
 
 [node name="weapons" type="Node3D" parent="Player"]
 unique_name_in_owner = true
