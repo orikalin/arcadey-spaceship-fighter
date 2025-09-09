@@ -42,7 +42,6 @@ func enter(oldState:String, flags:Dictionary = {}):
 	boost_duration = 0.0
 	SignalHub.tune_engine_cone_minmax.emit(1.0, 1.5)
 	SignalHub.camera_FOV_control.emit(105.0, 5.0)
-	print_debug("boost state entered")
 	if %hover.state_max_speed_tween:
 		%hover.state_max_speed_tween.kill()
 	if oldState == "drift":

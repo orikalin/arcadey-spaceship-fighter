@@ -10,6 +10,10 @@ extends Node3D
 ## the small cone collides with only viable targets
 ## and the raycast colliders with terrain. Can save some work maybe by only allowing the lock on to happen if the ray collision (first collision)
 ## isn't terrain and is a viable target
+## 
+## the target swapping implementation involves having VisibleOnScreenNotifier3D on each enemy to add and remove them from the visible_target node group
+## then we get a list of visible targets, viability check, and lock on.
+## lock should always swap from current target to next furthest target. If no farther target exists, swap to the nearest target.
 
 
 @export var sight_one: MeshInstance3D
@@ -17,6 +21,7 @@ extends Node3D
 @export var sight_raycast: RayCast3D_Signal_Emitter
 @export var max_lock_range: float = 360
 @export var max_lock_angle: float = 80
+@export var max_swap_angle: float = 55
 @export var reticle_move_speed: float = 3.0
 @export var locked_reticle_move_speed: float = 60.0
 @export var los_block_timout: float = 2.0
@@ -29,17 +34,13 @@ var locked_on_queue: bool = false
 var aim_input: Vector3 = Vector3.ZERO
 var los_timer: float = 0.0
 var cam_FoV: float = 1.0
-var target_swap:bool = false
+var target_swap: bool = false
 
-@onready var player:CharacterBody3D = %Player
+@onready var player: CharacterBody3D = %Player
 
 func _ready() -> void:
 	SignalHub.lock_on_break.connect(lock_on_break)
 	SignalHub.camera_FOV_control.connect(store_FoV)
-
-
-## New idea: Use this code to replace the Concave shape collider detection method. More reliable, and able to maintain a list of visible targets
-## current implementation of auto lock on works well, this will primarily be used for switching lock on targets, or manual lock on nearest target
 
 
 func _physics_process(delta: float) -> void:
@@ -49,18 +50,18 @@ func _physics_process(delta: float) -> void:
 		## if target swap was pressed, sort visible targets in order of range from player and attempt to lock on the nearest one
 		if target_swap:
 			target_swap = false
-			var visible_targets:Array = get_tree().get_nodes_in_group("visible_target")
+			var visible_targets: Array = get_tree().get_nodes_in_group("visible_target")
 			if visible_targets:
 				visible_targets.sort_custom(_sort_by_distance)
 				for target in visible_targets:
-					if target.is_in_group("targetable"): 
-						var distance_from_player:float = target.global_position.distance_to(player.global_position)
+					if target.is_in_group("targetable"):
+						var distance_from_player: float = target.global_position.distance_to(player.global_position)
 						if distance_from_player < max_lock_range:
-							lock_on_target(target)
-							return
+							if is_within_max_angle(target, max_swap_angle):
+								lock_on_target(target)
+								return
 
 			
-
 		## move reticle tracker based on input values, or return to rest when there is no input
 		var target_rest_pos: Vector3 = Vector3.ZERO
 		if aim_input == Vector3.ZERO:
@@ -84,27 +85,27 @@ func _physics_process(delta: float) -> void:
 		## if target swap was pressed, sort visible targets in order of range from player and attempt to lock on the nearest one
 		if target_swap:
 			target_swap = false
-			var visible_targets:Array = get_tree().get_nodes_in_group("visible_target")
+			var visible_targets: Array = get_tree().get_nodes_in_group("visible_target")
 			if !visible_targets.is_empty():
 				visible_targets.sort_custom(_sort_by_distance)
-				var i:int = 0
+				var i: int = 0
 				for target in visible_targets:
-					if target.is_in_group("targetable"): 
-						var distance_from_player:float = target.global_position.distance_to(player.global_position)
+					if target.is_in_group("targetable"):
+						var distance_from_player: float = target.global_position.distance_to(player.global_position)
 						if distance_from_player > target_body.global_position.distance_to(player.global_position):
 							if distance_from_player < max_lock_range:
-								lock_on_target(target)
+								if is_within_max_angle(target, max_swap_angle):
+									lock_on_target(target)
+									if target_body:
+										return
+						elif i == visible_targets.size() - 1:
+							if is_within_max_angle(target, max_swap_angle):
+								lock_on_target(visible_targets[0])
 								return
-						elif i == visible_targets.size()-1:
-							lock_on_target(visible_targets[0])
-							return
 					i += 1
 
-		# get the difference in angle between the players forward and the target_body position.
-		var _local_forward = - global_basis.z
-		var _direction_to = (target_body.global_position - global_position).normalized()
-		var _angle_to = rad_to_deg(acos(_local_forward.dot(_direction_to)))
-		if target_body.global_position.distance_to(global_position) > max_lock_range or _angle_to > max_lock_angle:
+
+		if target_body.global_position.distance_to(global_position) > max_lock_range or !is_within_max_angle(target_body, max_lock_angle):
 			lock_on_break()
 			return
 		
@@ -177,9 +178,19 @@ func is_line_of_sight_blocked(body: Node3D) -> bool:
 		return false
 
 
+func is_within_max_angle(body: Node3D, max_angle: float) -> bool:
+	# get the difference in angle between the players forward and the target_body position.
+	var _local_forward = - global_basis.z
+	var _direction_to = (body.global_position - global_position).normalized()
+	var _angle_to = rad_to_deg(acos(_local_forward.dot(_direction_to)))
+	if _angle_to < max_angle:
+		return true
+	else:
+		return false
+
+
 func store_FoV(_fov: float, _duration: float) -> void:
 	cam_FoV = _fov * 0.01 + 0.25
-	print_debug(cam_FoV)
 
 
 func _sort_by_distance(a, b) -> bool:
