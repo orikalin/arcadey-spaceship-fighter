@@ -60,7 +60,8 @@ func _ready():
 
 func enter(oldState:String, flags:Dictionary):
 	end_drift = false
-	accel_input = flags.get("accel_input")
+	accel_input = abs(flags.get("accel_input"))
+	print(accel_input)
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.drift_linear_damp
 	SignalHub.set_starting_z.emit()

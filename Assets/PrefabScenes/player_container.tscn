@@ -274,6 +274,7 @@ player = NodePath("../..")
 proxy_xform = NodePath("../../../PlayerProxy")
 proxy_orb = NodePath("../../../RollingProxy/Orb")
 physics_material = ExtResource("25_m6m72")
+charge_boost_max_multiplier = 1.5
 
 [node name="ascend_charge" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
@@ -281,7 +282,8 @@ unique_name_in_owner = true
 [node name="ship_resource_values" type="Node" parent="Player"]
 unique_name_in_owner = true
 script = ExtResource("36_2lat7")
-fuel_regen_start_delay = 2.0
+fuel_regen_start_delay = 0.5
+fuel_regen_rate = 4.0
 
 [node name="PlayerProxy" type="CharacterBody3D" parent="."]
 unique_name_in_owner = true

@@ -169,7 +169,7 @@ func physicsUpdate(delta:float):
 		
 		# apply airborne gravity and input forces
 		proxy_orb.gravity_scale = ship_stats.gravity_airborne
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.95)
+		proxy_orb.apply_central_force(-player.basis.z * ship_stats.charge_boost_accel_force * accel_input * 0.85)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
 	# # clamps max speed

@@ -41,7 +41,7 @@ material = ExtResource("3_762f3")
 
 [node name="laser_bullet" type="CharacterBody3D"]
 collision_layer = 16
-collision_mask = 71
+collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_nflv7")
 speed = 500.0

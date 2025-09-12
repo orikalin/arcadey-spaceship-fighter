@@ -1,0 +1,61 @@
+[gd_resource type="BehaviorTree" load_steps=16 format=3 uid="uid://y2tfuou3ivd7"]
+
+[ext_resource type="Script" uid="uid://bbnhpqamghj6c" path="res://Assets/Entities/Enemies/SpikeBug/ai/tasks/MoveAlongPath.gd" id="1_3xau0"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_7jdvd"]
+
+[sub_resource type="BTSequence" id="BTSequence_70kei"]
+custom_name = "Detect"
+
+[sub_resource type="BBNode" id="BBNode_70kei"]
+saved_value = NodePath("Path3D/PathFollow3D/body/AnimationPlayer")
+resource_name = "Path3D/PathFollow3D/body/AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_nosqx"]
+animation_player = SubResource("BBNode_70kei")
+animation_name = &"spike_bug_attack"
+custom_name = "attack"
+
+[sub_resource type="BBNode" id="BBNode_nosqx"]
+saved_value = NodePath("Path3D/PathFollow3D/body/AnimationPlayer")
+resource_name = "Path3D/PathFollow3D/body/AnimationPlayer"
+
+[sub_resource type="BTAwaitAnimation" id="BTAwaitAnimation_pvdys"]
+animation_player = SubResource("BBNode_nosqx")
+animation_name = &"spike_bug_attack"
+max_time = 2.0
+
+[sub_resource type="BBNode" id="BBNode_3xau0"]
+saved_value = NodePath("Path3D/PathFollow3D/body/AnimationPlayer")
+resource_name = "Path3D/PathFollow3D/body/AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_70kei"]
+animation_player = SubResource("BBNode_3xau0")
+animation_name = &"attack_out"
+custom_name = "attack_out"
+
+[sub_resource type="BBNode" id="BBNode_pvdys"]
+saved_value = NodePath("Path3D/PathFollow3D/body/AnimationPlayer")
+resource_name = "Path3D/PathFollow3D/body/AnimationPlayer"
+
+[sub_resource type="BTAwaitAnimation" id="BTAwaitAnimation_wtw5h"]
+animation_player = SubResource("BBNode_pvdys")
+animation_name = &"attack_out"
+
+[sub_resource type="BTSequence" id="BTSequence_7jdvd"]
+custom_name = "Attack"
+children = [SubResource("BTPlayAnimation_nosqx"), SubResource("BTAwaitAnimation_pvdys"), SubResource("BTPlayAnimation_70kei"), SubResource("BTAwaitAnimation_wtw5h")]
+
+[sub_resource type="BTAction" id="BTAction_pvdys"]
+script = ExtResource("1_3xau0")
+
+[sub_resource type="BTSequence" id="BTSequence_xc7e4"]
+custom_name = "Move"
+children = [SubResource("BTAction_pvdys")]
+
+[sub_resource type="BTSelector" id="BTSelector_35wti"]
+children = [SubResource("BTSequence_70kei"), SubResource("BTSequence_7jdvd"), SubResource("BTSequence_xc7e4")]
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_7jdvd")
+root_task = SubResource("BTSelector_35wti")

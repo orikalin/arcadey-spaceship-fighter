@@ -51,6 +51,7 @@ func _ready():
 func enter(oldState:String, flags:Dictionary):
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.linear_damp
+	accel_input = abs(accel_input)
 	SignalHub.tune_engine_cone_minmax.emit(0.1, 0.9)
 
 	if oldState == "boost" or oldState == "charged_boost":

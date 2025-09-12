@@ -97,6 +97,7 @@ enabled=PackedStringArray("res://addons/PathMesh3D/plugin.cfg", "res://addons/ar
 terrain=""
 targetable=""
 visible_target="target belongs to this group if it is visible on screen"
+damage_dealer=""
 
 [input]
 
@@ -214,6 +215,10 @@ target_swap={
 3d_physics/layer_8="sights_limit"
 3d_physics/layer_9="area_triggers"
 
+[limbo_ai]
+
+behavior_tree/user_task_dirs=PackedStringArray("res://ai/tasks", "res://Assets/Entities/Enemies/SpikeBug/ai/tasks")
+
 [phantom_camera]
 
 tips/show_jitter_tips=false
@@ -221,15 +226,16 @@ tips/show_jitter_tips=false
 [physics]
 
 common/max_physics_steps_per_frame=12
+common/physics_jitter_fix=0.0
 3d/physics_engine="Jolt Physics"
 jolt_physics_3d/simulation/velocity_steps=12
 jolt_physics_3d/simulation/position_steps=12
 jolt_physics_3d/simulation/areas_detect_static_bodies=true
-jolt_physics_3d/simulation/penetration_slop=0.001
-jolt_physics_3d/simulation/speculative_contact_distance=0.1
+jolt_physics_3d/simulation/penetration_slop=0.01
+jolt_physics_3d/simulation/speculative_contact_distance=0.2
 jolt_physics_3d/motion_queries/recovery_iterations=6
 jolt_physics_3d/motion_queries/recovery_amount=0.3
-3d/solver/solver_iterations=24
+3d/solver/solver_iterations=32
 
 [rendering]
 

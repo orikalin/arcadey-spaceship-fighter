@@ -4,44 +4,60 @@ const CAMERA_MAX_PITCH: float = deg_to_rad(70)
 const CAMERA_MIN_PITCH: float = deg_to_rad(-89.9)
 const CAMERA_RATIO: float = .625
 
-@export var camera_ease_curve:Curve
-@export var z_offset_curve:Curve
+@export var camera_ease_curve: Curve
+@export var z_offset_curve: Curve
 @export var mouse_sensitivity: float = .002
 @export var mouse_y_inversion: float = -1.0
 @export var damping: float = 0.1
-@export var ease_speed:float = 1
-@export var z_offset_by_angle_max:float = 0.05 ## the target offset to move the camera to when at 180 degrees difference between the player and proxy_orb forward direction
+@export var ease_speed: float = 1
+@export var z_offset_by_angle_max: float = 0.05 ## the target offset to move the camera to when at 180 degrees difference between the player and proxy_orb forward direction
+@export var look_range: float = 10.0 ## defines how far the LookAtTarget can be moved by input
+@export var look_speed: float = 1.0 ## defines how quickly the LookAtTarget reaches its destination
+
+var phantom_base_cam: PhantomCamera3D
+var phantom_drift_cam: PhantomCamera3D
+var phantom_free_cam: PhantomCamera3D
+var pcam_host_cam: Camera3D
+var freeCam: bool = false
+var cameraDefaultYaw
+var cameraDefaultPitch
+var tween_FOV: Tween
+var return_Z_tween: Tween
+var starting_z: float = 6.0
+var look_at_reset_pos: Vector3
+
+signal get_phantom_freecam()
 
 @onready var _camera_yaw: Node3D = self
 @onready var _camera_pitch: Node3D = %Arm
 @onready var ship_statemachine = %ShipStateMachine
-@onready var ship_stats:ShipResource = ship_statemachine.ship_stats
+@onready var ship_stats: ShipResource = ship_statemachine.ship_stats
 @onready var mock_cam = %MockCamera
-@onready var cam_arm:SpringArm3D = %Arm
-var phantom_base_cam:PhantomCamera3D
-var phantom_drift_cam:PhantomCamera3D
-var phantom_free_cam:PhantomCamera3D
-var pcam_host_cam:Camera3D
-var freeCam:bool = false
-var cameraDefaultYaw
-var cameraDefaultPitch
-var tween_FOV:Tween
-signal get_phantom_freecam()
-var return_Z_tween:Tween
-var starting_z:float = 6.0
+@onready var cam_arm: SpringArm3D = %Arm
+@onready var look_at_target: Node3D = %LookAtTarget
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	ship_statemachine.freeCam.connect(toggleFreeCam)
 	ship_statemachine.phantom_camera_shift.connect(set_drift_cam_priority)
-	for _child:State in ship_statemachine.find_children("*", "State"):
+	for _child: State in ship_statemachine.find_children("*", "State"):
 		_child.camera_Y_offset.connect(camera_offset_control)
 	SignalHub.camera_FOV_control.connect(camera_FOV_control)
 	SignalHub.camera_Z_offset.connect(camera_Z_offset)
 	SignalHub.reset_Z_offset.connect(reset_Z_offset)
+	look_at_reset_pos = look_at_target.position
 	# SignalHub.set_starting_z.connect(set_starting_z)
 	# starting_z = mock_cam.position.z
 	
+func _process(delta):
+	## the goal here is to map right stick input strengths to movement of the LookAtTarget
+	var input_strength_x: float = 0.0
+	var input_strength_y: float = 0.0
+	input_strength_x += Input.get_action_strength("r_stick_right") - Input.get_action_strength("r_stick_left")
+	input_strength_y += (Input.get_action_strength("r_stick_up") - Input.get_action_strength("r_stick_down")) * 1.5
+	var input_strength := Vector3(input_strength_x, input_strength_y, 0)
+	var target_position = (input_strength * look_range) + look_at_reset_pos
+	look_at_target.position = look_at_target.position.lerp(target_position, look_speed * delta)
 
 
 func toggleFreeCam():
@@ -57,10 +73,10 @@ func toggleFreeCam():
 		phantom_free_cam.set_priority(9)
 
 
-func set_drift_cam_priority(priority:int):
+func set_drift_cam_priority(priority: int):
 	phantom_drift_cam.set_priority(priority)
 
-func _input(p_event:InputEvent) -> void:
+func _input(p_event: InputEvent) -> void:
 	if !freeCam:
 		return
 	if p_event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
@@ -69,19 +85,19 @@ func _input(p_event:InputEvent) -> void:
 		return
 
 
-func rotate_camera(p_relative:Vector2) -> void:
+func rotate_camera(p_relative: Vector2) -> void:
 	_camera_yaw.rotation.y -= p_relative.x * mouse_sensitivity
 	_camera_yaw.orthonormalize()
-	_camera_pitch.rotation.x += p_relative.y * mouse_sensitivity * CAMERA_RATIO * mouse_y_inversion 
+	_camera_pitch.rotation.x += p_relative.y * mouse_sensitivity * CAMERA_RATIO * mouse_y_inversion
 	_camera_pitch.rotation.x = clamp(_camera_pitch.rotation.x, CAMERA_MIN_PITCH, CAMERA_MAX_PITCH)
 
 
-func camera_offset_control(EnginePower:float, targetY:float, delta:float):
+func camera_offset_control(EnginePower: float, targetY: float, delta: float):
 	if !freeCam:
-		var _curve_sample:float = camera_ease_curve.sample(EnginePower)
-		phantom_base_cam.follow_offset.y = lerp (phantom_base_cam.follow_offset.y, targetY, _curve_sample * ease_speed * delta)
+		var _curve_sample: float = camera_ease_curve.sample(EnginePower)
+		phantom_base_cam.follow_offset.y = lerp(phantom_base_cam.follow_offset.y, targetY, _curve_sample * ease_speed * delta)
 
-func camera_FOV_control(_fov:float, _duration:float) -> void:
+func camera_FOV_control(_fov: float, _duration: float) -> void:
 	if tween_FOV:
 		tween_FOV.kill()
 	tween_FOV = create_tween()
@@ -89,9 +105,9 @@ func camera_FOV_control(_fov:float, _duration:float) -> void:
 	tween_FOV.set_ease(Tween.EASE_OUT)
 	tween_FOV.tween_property(pcam_host_cam, "fov", _fov, _duration)
 
-func camera_Z_offset(player:Basis, orb_forward:Vector3) -> void:
+func camera_Z_offset(player: Basis, orb_forward: Vector3) -> void:
 	var _angle_to = orb_forward.angle_to(-player.z)
-	_angle_to = rad_to_deg(_angle_to)/180
+	_angle_to = rad_to_deg(_angle_to) / 180
 	var _sample = z_offset_curve.sample(_angle_to)
 	var _offset_target = starting_z + z_offset_by_angle_max
 	var _new_pos = lerp(starting_z, _offset_target, _sample)
@@ -105,21 +121,15 @@ func camera_Z_offset(player:Basis, orb_forward:Vector3) -> void:
 # 	phantom_base_cam.set_follow_damping_value(Vector3(_damp, _damp, _damp))
 # 	print_debug(_damp)
 
-func reset_Z_offset(kill_only:bool = false):
+func reset_Z_offset(kill_only: bool = false):
 	if return_Z_tween:
 		return_Z_tween.kill()
 	if kill_only:
 		return
 	return_Z_tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
-	return_Z_tween.tween_property(cam_arm,"spring_length", starting_z, 2)
+	return_Z_tween.tween_property(cam_arm, "spring_length", starting_z, 2)
 	# print_debug("reset z")
 
 
 # func set_starting_z():
 # 	starting_z = mock_cam.position.z
-	
-	
-
-
-		
-	

@@ -69,7 +69,7 @@ func _physics_process(delta: float) -> void:
 			sight_raycast.rotation = sight_raycast_rest_pos
 		else:
 			target_rest_pos = sight_two_rest_pos + (aim_input * reticle_move_speed)
-			sight_raycast.look_at(to_global(target_rest_pos), %sight_raycast.global_basis.y)
+			sight_raycast.look_at(to_global(target_rest_pos), sight_raycast.global_basis.y)
 
 		sight_two.transform.origin = target_rest_pos
 

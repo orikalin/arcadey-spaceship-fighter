@@ -10,7 +10,7 @@ point_count = 2
 [resource]
 script = ExtResource("1_l5f2q")
 boost_fuel_max = 100.0
-fuel_drain_rate = 8.0
+fuel_drain_rate = 5.0
 health_max = 100
 shield_max = 100
 rolling_max_speed = 100.0

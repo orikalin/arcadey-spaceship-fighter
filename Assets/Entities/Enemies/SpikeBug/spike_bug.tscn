@@ -1,0 +1,258 @@
+[gd_scene load_steps=16 format=3 uid="uid://p25mk6he7enm"]
+
+[ext_resource type="Script" uid="uid://bl2f2hhqkn3w7" path="res://Assets/Entities/Enemies/SpikeBug/spike_bug_controller.gd" id="1_iniow"]
+[ext_resource type="PackedScene" uid="uid://dgpts6oubqq5g" path="res://Assets/Entities/Enemies/SpikeBug/spike_bug.glb" id="2_h5q7e"]
+[ext_resource type="Texture2D" uid="uid://bofd0be47ldg0" path="res://Assets/Entities/Enemies/SpikeBug/spike_bug_Image.png" id="3_arvmc"]
+[ext_resource type="Script" uid="uid://bkwypq6f50rej" path="res://Assets/Scripts/Core/Targetable_Hitbox.gd" id="4_k0i7e"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_stejx"]
+radius = 0.6
+
+[sub_resource type="Curve3D" id="Curve3D_h5q7e"]
+closed = true
+_data = {
+"points": PackedVector3Array(0.15053, 2.00276, 2.2536, -0.15053, -2.00276, -2.2536, 19.7296, 12.4589, 0.0372925, 13.2952, 0.154208, 0.264587, -13.2952, -0.154208, -0.264587, 1.78453, -1.14401, -0.0045166, 0.342873, -0.809397, 0, -0.342873, 0.809397, 0, -16.7759, 12.1036, 0.0285645, -0.688671, 0.15269, -7.13766e-06, 0.688671, -0.15269, 7.13766e-06, -16.5425, 12.2015, 0.457335, -14.4476, -0.106128, -3.62396e-05, 14.4476, 0.106128, 3.62396e-05, 1.80725, -1.10806, 0.415481, -0.404289, -1.13569, -0.0898266, 0.404289, 1.13569, 0.0898266, 18.4518, 12.7458, 0.751127),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0)
+}
+point_count = 6
+up_vector_enabled = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kxc4k"]
+albedo_texture = ExtResource("3_arvmc")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lmb53"]
+size = Vector3(10, 10, 10)
+
+[sub_resource type="Animation" id="Animation_arvmc"]
+resource_name = "spike_bug_attack"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("spike_bug_import/spike_bug:blend_shapes/spikes_out")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333, 2, 2.21),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("spike_bug_hurtbox:monitorable")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0666667, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("detection_range:monitoring")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="Animation" id="Animation_k0i7e"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("spike_bug_import/spike_bug:blend_shapes/spikes_out")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("spike_bug_hurtbox:monitorable")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("detection_range:monitoring")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_h5q7e"]
+resource_name = "attack_out"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("spike_bug_import/spike_bug:blend_shapes/spikes_out")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.26),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("spike_bug_hurtbox:monitorable")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.06),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("detection_range:monitoring")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_stejx"]
+resource_name = "idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("detection_range:monitoring")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("spike_bug_hurtbox:monitorable")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_stejx"]
+_data = {
+&"RESET": SubResource("Animation_k0i7e"),
+&"attack_out": SubResource("Animation_h5q7e"),
+&"idle": SubResource("Animation_stejx"),
+&"spike_bug_attack": SubResource("Animation_arvmc")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kxc4k"]
+size = Vector3(3.58838, 1.49229, 2.01294)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_h5q7e"]
+radius = 10.0
+
+[node name="spike_bug" type="Node3D" node_paths=PackedStringArray("path", "shape_keyed_mesh", "anim", "hitbox", "hurtbox")]
+script = ExtResource("1_iniow")
+path = NodePath("Path3D/PathFollow3D")
+shape_keyed_mesh = NodePath("Path3D/PathFollow3D/body/spike_bug_import/spike_bug")
+anim = NodePath("Path3D/PathFollow3D/body/AnimationPlayer")
+hitbox = NodePath("Path3D/PathFollow3D/body/hitbox")
+hurtbox = NodePath("Path3D/PathFollow3D/body/spike_bug_hurtbox")
+move_speed = 0.1
+
+[node name="ragdoll" type="RigidBody3D" parent="."]
+top_level = true
+collision_layer = 32
+collision_mask = 35
+gravity_scale = 2.0
+
+[node name="physics_collider" type="CollisionShape3D" parent="ragdoll"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.279, 0.0558859)
+shape = SubResource("SphereShape3D_stejx")
+
+[node name="Path3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_h5q7e")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
+unique_name_in_owner = true
+transform = Transform3D(0.997769, -0.0442157, 0.0498645, -1.86263e-09, 0.748191, 0.663433, -0.0666462, -0.661958, 0.746527, 19.7296, 12.4589, 0.0372925)
+
+[node name="body" type="Node3D" parent="Path3D/PathFollow3D"]
+
+[node name="spike_bug_import" parent="Path3D/PathFollow3D/body" instance=ExtResource("2_h5q7e")]
+
+[node name="spike_bug" parent="Path3D/PathFollow3D/body/spike_bug_import" index="0"]
+material_override = SubResource("StandardMaterial3D_kxc4k")
+
+[node name="hitbox" type="Area3D" parent="Path3D/PathFollow3D/body" groups=["targetable"]]
+collision_layer = 4
+collision_mask = 24
+script = ExtResource("4_k0i7e")
+
+[node name="trigger_collider" type="CollisionShape3D" parent="Path3D/PathFollow3D/body/hitbox"]
+shape = SubResource("BoxShape3D_lmb53")
+
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="Path3D/PathFollow3D/body/hitbox"]
+aabb = AABB(-5, -5, -5, 10, 10, 10)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Path3D/PathFollow3D/body"]
+libraries = {
+&"": SubResource("AnimationLibrary_stejx")
+}
+autoplay = "idle"
+
+[node name="spike_bug_hurtbox" type="Area3D" parent="Path3D/PathFollow3D/body" groups=["damage_dealer"]]
+collision_layer = 64
+collision_mask = 2
+monitoring = false
+monitorable = false
+
+[node name="hurtbox" type="CollisionShape3D" parent="Path3D/PathFollow3D/body/spike_bug_hurtbox"]
+transform = Transform3D(1, 1.42109e-14, -2.94875e-12, 0, 1, 1.49012e-07, 0, -1.49012e-07, 1, -0.00756838, 0.897289, 0.717423)
+shape = SubResource("BoxShape3D_kxc4k")
+
+[node name="detection_range" type="Area3D" parent="Path3D/PathFollow3D/body"]
+transform = Transform3D(1, 0, 0, 0, 1, 2.98023e-08, 0, -2.98023e-08, 1, 0, 0, 0)
+collision_layer = 256
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/body/detection_range"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.19209e-07, 4.96014)
+shape = SubResource("SphereShape3D_h5q7e")
+
+[connection signal="body_entered" from="Path3D/PathFollow3D/body/detection_range" to="." method="_on_detection_range_body_entered"]
+
+[editable path="Path3D/PathFollow3D/body/spike_bug_import"]
