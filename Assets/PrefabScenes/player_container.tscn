@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=35 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
@@ -16,9 +16,7 @@
 [ext_resource type="Script" uid="uid://dl7b0pk1wtb5i" path="res://Assets/Scripts/PlayerStateMachine/Air_Boost.gd" id="19_xhmyi"]
 [ext_resource type="Script" uid="uid://breiaj8f72g46" path="res://Assets/Scripts/PlayerStateMachine/Rolling.gd" id="21_de37j"]
 [ext_resource type="Script" uid="uid://dqukyyon7bkf2" path="res://Assets/Scripts/PlayerStateMachine/Boost.gd" id="23_s3mlt"]
-[ext_resource type="PhysicsMaterial" uid="uid://d1yao8st2j28o" path="res://Assets/Ships/common_materials/base_drift_phys_mat.tres" id="24_jv85r"]
 [ext_resource type="Script" uid="uid://bmg667btdct2f" path="res://Assets/Scripts/PlayerStateMachine/Drifting.gd" id="25_jv85r"]
-[ext_resource type="PhysicsMaterial" uid="uid://b3s0kwlc5cs8w" path="res://Assets/Ships/common_materials/base_boost_phys_mat.tres" id="25_m6m72"]
 [ext_resource type="PhysicsMaterial" uid="uid://bpq48nm5t2r01" path="res://Assets/Ships/common_materials/base_rolling_phys_mat.tres" id="27_cmkl5"]
 [ext_resource type="Script" uid="uid://1g2dt21ngcec" path="res://Assets/Scripts/PlayerStateMachine/charged_boost.gd" id="34_0cqmc"]
 [ext_resource type="Script" uid="uid://cgfe2o6jnkgnd" path="res://Assets/Scripts/Core/ship_resource_values.gd" id="36_2lat7"]
@@ -243,37 +241,21 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 script = ExtResource("19_xhmyi")
 
-[node name="hover" type="Node" parent="Player/ShipStateMachine" node_paths=PackedStringArray("player", "proxy_xform", "proxy_orb")]
+[node name="hover" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
 script = ExtResource("21_de37j")
-player = NodePath("../..")
-proxy_xform = NodePath("../../../PlayerProxy")
-proxy_orb = NodePath("../../../RollingProxy/Orb")
-physics_material = ExtResource("27_cmkl5")
 
-[node name="drift" type="Node" parent="Player/ShipStateMachine" node_paths=PackedStringArray("player", "proxy_xform", "proxy_orb")]
+[node name="drift" type="Node" parent="Player/ShipStateMachine"]
 script = ExtResource("25_jv85r")
-player = NodePath("../..")
-proxy_xform = NodePath("../../../PlayerProxy")
-proxy_orb = NodePath("../../../RollingProxy/Orb")
-physics_material = ExtResource("24_jv85r")
 slide_boost_power_max = 8.0
 
-[node name="boost" type="Node" parent="Player/ShipStateMachine" node_paths=PackedStringArray("player", "proxy_xform", "proxy_orb")]
+[node name="boost" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
 script = ExtResource("23_s3mlt")
-player = NodePath("../..")
-proxy_xform = NodePath("../../../PlayerProxy")
-proxy_orb = NodePath("../../../RollingProxy/Orb")
-physics_material = ExtResource("25_m6m72")
 charge_boost_decay = SubResource("Curve_0cqmc")
 
-[node name="charged_boost" type="Node" parent="Player/ShipStateMachine" node_paths=PackedStringArray("player", "proxy_xform", "proxy_orb")]
+[node name="charged_boost" type="Node" parent="Player/ShipStateMachine"]
 script = ExtResource("34_0cqmc")
-player = NodePath("../..")
-proxy_xform = NodePath("../../../PlayerProxy")
-proxy_orb = NodePath("../../../RollingProxy/Orb")
-physics_material = ExtResource("25_m6m72")
 charge_boost_max_multiplier = 1.5
 
 [node name="ascend_charge" type="Node" parent="Player/ShipStateMachine"]

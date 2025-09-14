@@ -1,42 +1,34 @@
-extends State
+extends PlayerMovementState
 
+@export var level_duration: float = 3.0
+@export var charge_boost_decay: Curve
 
-@export var player:CharacterBody3D
-@export var proxy_xform:CharacterBody3D
-@export var proxy_orb:RigidBody3D
-@export var physics_material:PhysicsMaterial
-@export var level_duration:float = 3.0
-@export var charge_boost_decay:Curve
-
-var elapsed_time:float = 0.0
-var duration:float = 1.0
-var eased_t:float = 0.0
-var ungrounded_time:float = 0.0
-var forward_speed:float = 0.0
-var accel_input:float = 0.0
-var turn_input:float = 0.0
-var ship_statemachine:StateMachine
-var ship_stats:ShipResource
-var is_grounded:bool = false
-var average_terrain_normal:Vector3
-var gamepad:bool = false
-var boost_duration:float = 0.0
-var ship_mesh_tween:Tween
-var boosted_max_speed:float
-var pitch_input:float = 0.0
+var elapsed_time: float = 0.0
+var duration: float = 1.0
+var eased_t: float = 0.0
+var ungrounded_time: float = 0.0
+var forward_speed: float = 0.0
+var accel_input: float = 0.0
+var turn_input: float = 0.0
+var ship_statemachine: StateMachine
+var is_grounded: bool = false
+var gamepad: bool = false
+var boost_duration: float = 0.0
+var ship_mesh_tween: Tween
+var boosted_max_speed: float
+var pitch_input: float = 0.0
 
 signal camera_Y_offset
 
-@onready var ground_raycasts:Array = %ground_check_rays.get_children()
-@onready var ShipContainer:MeshInstance3D = %ShipContainer
+@onready var ShipContainer: MeshInstance3D = %ShipContainer
 
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
 	connect("body_exited", Callable(self, "_on_body_exited"))
-	ship_statemachine = get_parent()
-	ship_stats = ship_statemachine.ship_stats
 
-func enter(oldState:String, flags:Dictionary = {}):
+
+func enter(oldState: String, flags: Dictionary = {}):
+	physics_material.friction = 0.7
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.linear_damp
 	boost_duration = 0.0
@@ -68,10 +60,10 @@ func enter(oldState:String, flags:Dictionary = {}):
 	# 	proxy_xform.transform = player.transform
 	# 	proxy_orb.transform = player.transform
 
-func update(delta:float):
+func update(delta: float):
 	ship_stats.boost_fuel_current -= delta * ship_stats.fuel_drain_rate
 	if ship_stats.state_max_speed > ship_stats.boost_max_speed:
-		var _sample = charge_boost_decay.sample(boost_duration*0.5)
+		var _sample = charge_boost_decay.sample(boost_duration * 0.5)
 		ship_stats.state_max_speed = lerp(boosted_max_speed, ship_stats.boost_max_speed, _sample)
 	boost_duration += delta
 	if ungrounded_time > 0.0:
@@ -80,19 +72,17 @@ func update(delta:float):
 	if elapsed_time < level_duration:
 		elapsed_time += delta
 		var t = elapsed_time / level_duration
-		eased_t = ship_stats.easeInOut.sample(t)		
+		eased_t = ship_stats.easeInOut.sample(t)
 
-func physicsUpdate(delta:float):
-
+func physicsUpdate(delta: float):
 	# Boost: instantly increase max speed, higher values for accel force and stick force #
 	# by picking up fuel dropped by enemies and breakable objects
 	# boost has a minimum duration #
 	# when returning to rolling state, max speed will be reduced sharply at first, then ease out from boost_max to rolling_max
-
 	get_input()
 
 	# turn ship
-	if proxy_orb.linear_velocity.length() > ship_stats.turn_stop_limit:		
+	if proxy_orb.linear_velocity.length() > ship_stats.turn_stop_limit:
 		var new_basis = proxy_xform.global_transform.basis.rotated(proxy_xform.global_basis.y, turn_input)
 		proxy_xform.global_basis = proxy_xform.global_basis.slerp(new_basis, ship_stats.rolling_turn_force * delta)
 		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
@@ -101,7 +91,7 @@ func physicsUpdate(delta:float):
 	# var contact_count = physics_state.get_contact_count()
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
 	forward_speed = physics_state.linear_velocity.length()
-	var _normalized_forward_speed := forward_speed / ship_stats.state_max_speed
+	var _normalized_forward_speed: float = forward_speed / ship_stats.state_max_speed
 
 	# This defines _stick_force based on forward speed. Higher speed = higher downward force applied, to helps cling to surfaces against gravity
 	var _stick_force = _normalized_forward_speed * ship_stats.ground_stick_force
@@ -111,12 +101,12 @@ func physicsUpdate(delta:float):
 
 	## Use 5 downward raycasts on the proxy xform to get the average of the normals below the player
 	## if anyone of the 5 are contacting terrain, the player is considered grounded
-	var _terrain_normals:Array
+	var _terrain_normals: Array
 	var _sum_terrain_normals := Vector3.ZERO
-	var _new_average_terrain_normal:Vector3
+	var _new_average_terrain_normal: Vector3
 
 	# check the 5 raycasts, get the average normal of all terrain hit, mark as grounded if any hit terrain
-	for raycast:RayCast3D in ground_raycasts:
+	for raycast: RayCast3D in ground_raycasts:
 		var _raycast_hit := raycast.get_collider()
 		if _raycast_hit != null:
 			if _raycast_hit.get_collision_mask_value(1):
@@ -148,9 +138,9 @@ func physicsUpdate(delta:float):
 	## while airborne, align to the direction of the orbs forward direction, without turning the player
 	else:
 		if ungrounded_time > 0.0:
-			ungrounded_time -= delta	
+			ungrounded_time -= delta
 			proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
-		else:	
+		else:
 			if is_grounded:
 				elapsed_time = 0
 			is_grounded = false
@@ -158,7 +148,7 @@ func physicsUpdate(delta:float):
 			var _orb_linear_velocity = physics_state.linear_velocity.normalized()
 			var _right = Vector3.UP.cross(_orb_linear_velocity)
 			var _proxy_direction_up = _orb_linear_velocity.cross(_right)
-			var _orb_local_up  = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
+			var _orb_local_up = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
 			# var y_rot = atan2(0.0, _orb_linear_velocity.z)
 			# var _forward_world_up:Basis = Basis()
 			# _forward_world_up = _forward_world_up.rotated(Vector3.UP, y_rot)
@@ -199,10 +189,9 @@ func physicsUpdate(delta:float):
 	offset_camera_Y(delta)
 
 
-
 func align_with_y(xform, new_y):
 	xform.basis.y = new_y
-	xform.basis.x = -xform.basis.z.cross(new_y)
+	xform.basis.x = - xform.basis.z.cross(new_y)
 	xform.basis = xform.basis.orthonormalized()
 	return xform
 
@@ -229,32 +218,32 @@ func get_input():
 	accel_input = 1.0
 
 	if not Input.is_action_pressed("boost") and boost_duration > ship_stats.boost_min_duration:
-		var flags:Dictionary = {
-		"forward_speed":forward_speed,
-		"old_max_speed":ship_stats.state_max_speed
+		var flags: Dictionary = {
+		"forward_speed": forward_speed,
+		"old_max_speed": ship_stats.state_max_speed
 		}
 		finished.emit("hover", flags)
 
 	elif ship_stats.boost_fuel_current < 0.001:
-		var flags:Dictionary = {
-		"forward_speed":forward_speed,
-		"old_max_speed":ship_stats.state_max_speed
+		var flags: Dictionary = {
+		"forward_speed": forward_speed,
+		"old_max_speed": ship_stats.state_max_speed
 		}
 		finished.emit("hover", flags)
 
 	elif Input.is_action_pressed("drift") and is_grounded:
-		var flags:Dictionary = {
-		"forward_speed":forward_speed,
-		"accel_input":accel_input
+		var flags: Dictionary = {
+		"forward_speed": forward_speed,
+		"accel_input": accel_input
 		}
 		finished.emit("drift", flags)
 
 
 func toggle_collision_shapes():
-	var player_collision_shapes:Array = Array()
+	var player_collision_shapes: Array = Array()
 	player_collision_shapes.append(%Player/ShipCollider)
 	player_collision_shapes.append(%Player/GroundedRayCollider)
-	var proxy_collision_shapes:Array = Array()
+	var proxy_collision_shapes: Array = Array()
 	proxy_collision_shapes.append(%RollingProxy/Orb)
 	proxy_collision_shapes.append(%RollingProxy/Orb/WeBallNow)
 
@@ -264,7 +253,7 @@ func toggle_collision_shapes():
 		shapes.disabled = not shapes.disabled
 	
 
-func offset_camera_Y(delta:float):
+func offset_camera_Y(delta: float):
 	var _normalized_forward_speed = forward_speed / ship_stats.state_max_speed
 	var targetY = _normalized_forward_speed * ship_stats.boost_cam_Y_offset
 	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)
@@ -280,4 +269,4 @@ func _integrate_forces(state):
 	var _speed = _current_velocity.length()
 
 	if _speed > ship_stats.state_max_speed:
-		state.linear_velocity = (_current_velocity.normalized() * ship_stats.state_max_speed)
+		state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed

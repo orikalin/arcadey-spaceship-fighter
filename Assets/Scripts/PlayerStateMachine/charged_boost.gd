@@ -1,10 +1,7 @@
-extends State
+extends PlayerMovementState
 
 
-@export var player:CharacterBody3D
-@export var proxy_xform:CharacterBody3D
-@export var proxy_orb:RigidBody3D
-@export var physics_material:PhysicsMaterial
+
 @export var level_duration:float = 3.0
 @export var charge_boost_max_multiplier:float = 2.0
 var state_boosted_speed:float
@@ -18,9 +15,7 @@ var forward_speed:float = 0.0
 var accel_input:float = 0.0
 var turn_input:float = 0.0
 var ship_statemachine:StateMachine
-var ship_stats:ShipResource
 var is_grounded:bool = false
-var average_terrain_normal:Vector3
 var gamepad:bool = false
 var boost_duration:float = 0.0
 var ship_mesh_tween:Tween
@@ -28,16 +23,15 @@ var boosted_speed_tween:Tween
 
 signal camera_Y_offset
 
-@onready var ground_raycasts:Array = %ground_check_rays.get_children()
 @onready var ShipContainer:MeshInstance3D = %ShipContainer
 
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
 	connect("body_exited", Callable(self, "_on_body_exited"))
-	ship_statemachine = get_parent()
-	ship_stats = ship_statemachine.ship_stats
+
 
 func enter(oldState:String, flags:Dictionary = {}):
+	physics_material.friction = 0.7
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.linear_damp
 	boost_duration = 0.0
@@ -57,27 +51,12 @@ func enter(oldState:String, flags:Dictionary = {}):
 		ship_mesh_tween.set_ease(Tween.EASE_OUT)
 		ship_mesh_tween.tween_property(ShipContainer, "position", Vector3.ZERO, 1.0)
 		SignalHub.ship_friction_cone_control.emit(true)
-	
-	# if oldState == "hover":
-	# 	forward_speed = flags.get("forward_speed")
-	# elif oldState == "Flying":
-	# 	pass
-	# else:
-	# 	proxy_xform.transform = player.transform
-	# 	proxy_orb.transform = player.transform
 
 func exit(newState:String):
 	SignalHub.ship_friction_cone_control.emit(false)
-# 	if boosted_speed_tween:
-# 		boosted_speed_tween.kill()
 
 func update(delta:float):
 	boost_duration += delta
-	# if boosted_speed_tween:
-	# 	pass
-	# elif state_boosted_speed > ship_stats.boost_max_speed:
-	# 	boosted_speed_tween = create_tween()
-	# 	boosted_speed_tween.tween_property(self, "state_boosted_speed", ship_stats.boost_max_speed, 2.0).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 
 	if ungrounded_time > 0.0:
 		return
@@ -87,31 +66,27 @@ func update(delta:float):
 		var t = elapsed_time / level_duration
 		eased_t = ship_stats.easeInOut.sample(t)
 
+
 func physicsUpdate(delta:float):
-
-	# Boost: instantly increase max speed, higher values for accel force and stick force #
-	# by picking up fuel dropped by enemies and breakable objects
-	# boost has a minimum duration #
-	# when returning to rolling state, max speed will be reduced sharply at first, then ease out from boost_max to rolling_max
-
 	get_input()
 
-	# turn ship
+	## turn ship
 	if proxy_orb.linear_velocity.length() > ship_stats.turn_stop_limit:		
 		var new_basis = proxy_xform.global_transform.basis.rotated(proxy_xform.global_basis.y, turn_input)
 		proxy_xform.global_basis = proxy_xform.global_basis.slerp(new_basis, ship_stats.rolling_turn_force * delta)
 		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 
-	# access the physics server directly for detailed rigidbody information, and prepare some variables
-	# var contact_count = physics_state.get_contact_count()
+	## access the physics server directly for detailed rigidbody information, and prepare some variables
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
 	forward_speed = physics_state.linear_velocity.length()
 	var _normalized_forward_speed := forward_speed / state_boosted_speed
 
-	# This defines _stick_force based on forward speed. Higher speed = higher downward force applied, to helps cling to surfaces against gravity
+	## This defines _stick_force based on forward speed. Higher speed = higher downward force applied, to help cling to surfaces against gravity
+	## may no longer need this after physics rework
 	var _stick_force = _normalized_forward_speed * ship_stats.ground_stick_force
 	var _stick_curve_sample = ship_stats.stick_curve.sample(_normalized_forward_speed)
 
+	## before any physics are done, update the proxy position to match the orb position from last physicsUpdate
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 
 	## Use 5 downward raycasts on the proxy xform to get the average of the normals below the player
@@ -120,7 +95,7 @@ func physicsUpdate(delta:float):
 	var _sum_terrain_normals := Vector3.ZERO
 	var _new_average_terrain_normal:Vector3
 
-	# check the 5 raycasts, get the average normal of all terrain hit, mark as grounded if any hit terrain
+	## check the 5 raycasts, get the average normal of all terrain hit, mark as grounded if any hit terrain
 	for raycast:RayCast3D in ground_raycasts:
 		var _raycast_hit := raycast.get_collider()
 		if _raycast_hit != null:
@@ -136,12 +111,12 @@ func physicsUpdate(delta:float):
 
 	## while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
-		# align with the ground
+		## align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
 		proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, ship_stats.boost_ground_alignment_speed * delta)
 		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 		
-		# apply gravity and force
+		## apply gravity and force
 		proxy_orb.gravity_scale = ship_stats.gravity_grounded
 		proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
 		proxy_orb.apply_central_force(-player.basis.z * ship_stats.charge_boost_accel_force * accel_input)
