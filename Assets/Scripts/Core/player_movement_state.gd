@@ -9,9 +9,11 @@ class_name PlayerMovementState extends State
 @onready var ground_raycasts: Array = %ground_check_rays.get_children()
 
 var average_terrain_normal
+var gamepad:bool = false
 
 ## This function imposes a hard limit on the Rigidybody3D's physics state's max speed
 ## considering removing this, and increasing the linear damping to get a similar effect
+## that lets gravity better work movement forces
 ## will require its own branch and lots of testing
 func _integrate_forces(state):
 	var _current_velocity = state.linear_velocity
@@ -21,7 +23,7 @@ func _integrate_forces(state):
 		state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed
 
 ## check the 5 raycasts, get the average normal of all terrain hit, return true if any rays hit terrain
-func check_ground() -> bool:
+func check_ground_normals() -> bool:
 	var _terrain_normals: Array
 	var _sum_terrain_normals := Vector3.ZERO
 
@@ -43,6 +45,14 @@ func check_ground() -> bool:
 	else:
 		return false
 		
+
+## simple check for gamepad use
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey or event is InputEventMouse:
+		gamepad = false
+	elif event is InputEventJoypadMotion or event is InputEventJoypadButton:
+		gamepad = true
+
 
 # func get_input(delta:float) -> void:
 #     	# turning input

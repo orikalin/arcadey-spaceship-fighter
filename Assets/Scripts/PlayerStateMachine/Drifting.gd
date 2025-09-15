@@ -13,7 +13,6 @@ var turn_input: float = 0.0
 var ungrounded_time: float = 0.0
 var ship_statemachine: StateMachine
 var is_grounded: bool = false
-var gamepad: bool = false
 var ship_mesh_tween: Tween
 var state_max_speed_tween: Tween
 var end_drift: bool = false
@@ -24,8 +23,6 @@ var slide_boost_star_particle: CPUParticles3D
 @onready var ShipContainer: MeshInstance3D = %ShipContainer
 
 signal camera_Y_offset
-
-# @onready var slide_boost_star_particle:CPUParticles3D = %slide_charge_star
 
 
 ## new drift state: while drifting, movement damping is reduced to (near) 0
@@ -112,25 +109,7 @@ func physicsUpdate(delta: float):
 
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 
-	## Use 5 downward raycasts on the proxy xform to get the average of the normals below the player
-	## if anyone of the 5 are contacting terrain, the player is considered grounded
-	var _terrain_normals: Array
-	var _sum_terrain_normals := Vector3.ZERO
-
-	# check the 5 raycasts, get the average normal of all terrain hit, mark as grounded if any hit terrain
-	for raycast: RayCast3D in ground_raycasts:
-		var _raycast_hit := raycast.get_collider()
-		if _raycast_hit != null:
-			if _raycast_hit.get_collision_mask_value(1):
-				_terrain_normals.append(raycast.get_collision_normal())
-	
-	if _terrain_normals.size() > 0:
-		for _normal in _terrain_normals:
-			_sum_terrain_normals += _normal
-		average_terrain_normal = _sum_terrain_normals / _terrain_normals.size()
-		is_grounded = true
-	else:
-		is_grounded = false
+	is_grounded = check_ground_normals()
 
 	## while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
@@ -238,11 +217,7 @@ func offset_camera_Y(delta: float):
 	var targetY = _normalized_forward_speed * ship_stats.camera_Y_offset
 	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventKey or event is InputEventMouse:
-		gamepad = false
-	elif event is InputEventJoypadMotion or event is InputEventJoypadButton:
-		gamepad = true
+
 
 
 func do_max_speed_tween():

@@ -24,8 +24,6 @@ var turn_input: float = 0.0
 
 var ship_statemachine: StateMachine
 var is_grounded: bool = false
-
-var gamepad: bool = false
 var state_max_speed_tween: Tween
 var ship_mesh_tween: Tween
 var accel_held: bool = false
@@ -102,13 +100,7 @@ func physicsUpdate(delta: float):
 
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 
-	## Use 5 downward raycasts on the proxy xform to get the average of the normals below the player
-	## if anyone of the 5 are contacting terrain, the player is considered grounded
-	var _terrain_normals: Array
-	var _sum_terrain_normals := Vector3.ZERO
-
-	
-	is_grounded = check_ground()
+	is_grounded = check_ground_normals() 
 
 	## while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
@@ -231,20 +223,6 @@ func get_input(delta: float):
 	pitch_input = 0.0
 	pitch_input += Input.get_action_strength("r_stick_up")
 	pitch_input -= Input.get_action_strength("r_stick_down")
-
-
-func toggle_collision_shapes():
-	var player_collision_shapes: Array = Array()
-	player_collision_shapes.append(%Player/ShipCollider)
-	player_collision_shapes.append(%Player/GroundedRayCollider)
-	var proxy_collision_shapes: Array = Array()
-	proxy_collision_shapes.append(%RollingProxy/Orb)
-	proxy_collision_shapes.append(%RollingProxy/Orb/WeBallNow)
-
-	for shapes in player_collision_shapes:
-		shapes.disabled = not shapes.disabled
-	for shapes in proxy_collision_shapes:
-		shapes.disabled = not shapes.disabled
 	
 
 func offset_camera_Y(delta: float):
