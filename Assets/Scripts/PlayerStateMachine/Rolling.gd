@@ -133,6 +133,14 @@ func physicsUpdate(delta: float):
 		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.25)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
+	# decay accel_input while braking
+	if grounded_braking:
+		if accel_input > 0:
+			accel_input = lerp(accel_input, 0.0, delta * ship_stats.max_speed_decay_multiplier)
+		else:
+			accel_input = 0
+
+	# This block can be used to decay automatically, if "Keep Acceleration Strength" option is off		
 	# if accel_input > 0 and not accel_held:
 	# 	accel_input = lerp(accel_input, 0.0, delta * ship_stats.max_speed_decay_multiplier)
 	# elif not accel_held:
