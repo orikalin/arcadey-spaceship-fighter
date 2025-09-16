@@ -1,20 +1,20 @@
 extends StateMachine
 
-@onready var Player:CharacterBody3D = %Player
-@onready var ship_container:MeshInstance3D = %ShipContainer
-var correctingRoll:bool = false
-@export var rollCorrectionRate:float = 4.0
-@export var easeOut:Curve
-@export var ship_stats:ShipResource
+@onready var Player: CharacterBody3D = %Player
+@onready var ship_container: MeshInstance3D = %ShipContainer
+var correctingRoll: bool = false
+@export var rollCorrectionRate: float = 4.0
+@export var easeOut: Curve
+@export var ship_stats: ShipResource
 
 signal freeCam()
 signal phantom_camera_shift()
 	
 func _ready():
-	super()
-	SignalHub.health_changed.emit(ship_stats.health_current)	
+	super ()
+	SignalHub.health_changed.emit(ship_stats.health_current)
 	SignalHub.shield_changed.emit(ship_stats.shield_current)
-	SignalHub.fuel_changed.emit(ship_stats.boost_fuel_current)	
+	SignalHub.fuel_changed.emit(ship_stats.boost_fuel_current)
 
 func _process(delta: float) -> void:
 	if currentState:
@@ -22,10 +22,9 @@ func _process(delta: float) -> void:
 			SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed, currentState.accel_input, currentState.slide_boost_power, currentState.name)
 		else:
 			SignalHub.update_speed_ui.emit(currentState.forward_speed, ship_stats.state_max_speed, currentState.accel_input, 0.0, currentState.name)
-	super(delta)
+	super (delta)
 
-func _physics_process(delta: float) -> void:	
-		
+func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		# If we're not in control of this pawn, we should just copy values
 		# that have been replicated from the authority
@@ -48,7 +47,7 @@ func _physics_process(delta: float) -> void:
 	elif correctingRoll and not currentState.name == "hover":
 		correct_roll(delta)
 
-	super(delta)	
+	super (delta)
 	
 	# After running the state machine, we store some values from it so that
 	# information about this pawn that we own can be replicated to other players
@@ -64,19 +63,18 @@ func check_rotation():
 	if angle_to_down_degrees < upside_down_threshold and not Input.is_action_pressed("throttle_up") and not Input.is_action_pressed("throttle_down"):
 		correctingRoll = true
 
-func correct_roll(delta:float):
-	var targetY:Vector3 = (Vector3.UP - Vector3.UP.dot(-Player.basis.z)*-Player.basis.z).normalized()
-	var targetX:Vector3 = (targetY.cross(Player.basis.z)).normalized()
-	var targetBasis:Basis = Basis(targetX, targetY, Player.basis.z)
-	var targetRotation:Quaternion = Quaternion(targetBasis.orthonormalized())
-	var currentRotation:Quaternion = Quaternion(Player.basis.orthonormalized())
-	var angleToTarget:float = currentRotation.angle_to(targetRotation)
-	var stepAngle:float = rollCorrectionRate * delta
-	var stepValue:float = stepAngle/angleToTarget
+func correct_roll(delta: float):
+	var targetY: Vector3 = (Vector3.UP - Vector3.UP.dot(-Player.basis.z) * -Player.basis.z).normalized()
+	var targetX: Vector3 = (targetY.cross(Player.basis.z)).normalized()
+	var targetBasis: Basis = Basis(targetX, targetY, Player.basis.z)
+	var targetRotation: Quaternion = Quaternion(targetBasis.orthonormalized())
+	var currentRotation: Quaternion = Quaternion(Player.basis.orthonormalized())
+	var angleToTarget: float = currentRotation.angle_to(targetRotation)
+	var stepAngle: float = rollCorrectionRate * delta
+	var stepValue: float = stepAngle / angleToTarget
 	var curveSample = easeOut.sample(angleToTarget)
-	if stepAngle*curveSample < angleToTarget:
-		Player.basis = currentRotation.slerp(targetRotation, stepValue*curveSample)
+	if stepAngle * curveSample < angleToTarget:
+		Player.basis = currentRotation.slerp(targetRotation, stepValue * curveSample)
 	else:
 		Player.basis = targetBasis
 		correctingRoll = false
-

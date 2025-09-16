@@ -3,16 +3,12 @@ extends PlayerMovementState
 @export var slide_boost_charge_speed: float = 4.0
 @export var slide_boost_power_max: float = 4.0
 @export var level_duration: float = 1.0
-
+@export_range(0.0, 1.0, 0.01) var minimum_required_charge: float = 0.62
 var elapsed_time: float = 0.0
 var duration: float = 1.0
 var eased_t: float = 0.0
 var forward_speed: float = 0.0
-var accel_input: float = 0.0
-var turn_input: float = 0.0
 var ungrounded_time: float = 0.0
-var ship_statemachine: StateMachine
-var is_grounded: bool = false
 var ship_mesh_tween: Tween
 var state_max_speed_tween: Tween
 var end_drift: bool = false
@@ -25,11 +21,11 @@ var slide_boost_star_particle: CPUParticles3D
 signal camera_Y_offset
 
 
-## new drift state: while drifting, movement damping is reduced to (near) 0
-## orb aligns to player much slower
-## player turn speed increased, but coupled with the slower orb alignment, this should result in the player being able to rotate,
-## while having minimal effect on their forward direction
-## on releasing drift, exit to boost if boost is held, otherwise exit to hover
+# new drift state: while drifting, movement damping is reduced to (near) 0
+# orb aligns to player much slower
+# player turn speed increased, but coupled with the slower orb alignment, this should result in the player being able to rotate,
+# while having minimal effect on their forward direction
+# on releasing drift, exit to boost if boost is held, otherwise exit to hover
 
 # currently: xform gets slerped to a target based on turn input, multiplied by turn_force
 # xform is positioned to orb -> xform is aligned to ground -> proxy_orb gets force based on player -z 
@@ -48,9 +44,9 @@ func _ready():
 
 
 func enter(oldState: String, flags: Dictionary):
+	accel_input = abs(flags.get("accel_input"))
 	physics_material.friction = 0.0
 	end_drift = false
-	accel_input = abs(flags.get("accel_input"))
 	print(accel_input)
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.drift_linear_damp
@@ -111,7 +107,7 @@ func physicsUpdate(delta: float):
 
 	is_grounded = check_ground_normals()
 
-	## while on the ground, align the ship to the averaged ground normals		
+	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
 		# align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
@@ -131,7 +127,7 @@ func physicsUpdate(delta: float):
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
 
-	## while airborne, align to the direction of the orbs forward direction, without turning the player
+	# while airborne, align to the direction of the orbs forward direction, without turning the player
 	else:
 		if ungrounded_time > 0.0:
 			ungrounded_time -= delta
@@ -143,7 +139,7 @@ func physicsUpdate(delta: float):
 		# apply airborne gravity and input forces
 		proxy_orb.apply_central_force(-proxy_xform.basis.z * ship_stats.accel_force * accel_input)
 
-	# # clamps max speed
+	# clamps max speed
 	_integrate_forces(physics_state)
 
 	# update player to orb position
@@ -171,11 +167,8 @@ func align_with_y(xform, new_y):
 	return xform
 
 
-func get_input(delta: float):
-	# turning input
-	turn_input = 0.0
-	turn_input -= Input.get_action_strength("roll_right")
-	turn_input += Input.get_action_strength("roll_left")
+func get_input(delta: float) -> void:
+	(super.get_input(delta))
 	turn_input *= deg_to_rad(ship_stats.drift_turn_force)
 
 	# slide boost charge
@@ -186,7 +179,7 @@ func get_input(delta: float):
 		else:
 			slide_boost_power = slide_boost_power_max
 		
-		if slide_boost_power > slide_boost_power_max * 0.74:
+		if slide_boost_power > slide_boost_power_max * minimum_required_charge:
 			slide_boost_star_particle.emitting = true
 		else:
 			slide_boost_star_particle.emitting = false
@@ -212,12 +205,11 @@ func end_drift_state():
 		else:
 			finished.emit("hover", flags)
 
+
 func offset_camera_Y(delta: float):
 	var _normalized_forward_speed = forward_speed / ship_stats.state_max_speed
 	var targetY = _normalized_forward_speed * ship_stats.camera_Y_offset
 	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)
-
-
 
 
 func do_max_speed_tween():

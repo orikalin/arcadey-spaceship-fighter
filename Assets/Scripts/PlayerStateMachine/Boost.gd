@@ -8,18 +8,15 @@ var duration: float = 1.0
 var eased_t: float = 0.0
 var ungrounded_time: float = 0.0
 var forward_speed: float = 0.0
-var accel_input: float = 0.0
-var turn_input: float = 0.0
 var ship_statemachine: StateMachine
-var is_grounded: bool = false
 var boost_duration: float = 0.0
 var ship_mesh_tween: Tween
 var boosted_max_speed: float
-var pitch_input: float = 0.0
 
 signal camera_Y_offset
 
 @onready var ShipContainer: MeshInstance3D = %ShipContainer
+
 
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -27,6 +24,7 @@ func _ready():
 
 
 func enter(oldState: String, flags: Dictionary = {}):
+	accel_input = 1.0
 	physics_material.friction = 0.7
 	proxy_orb.physics_material_override = physics_material
 	proxy_orb.linear_damp = ship_stats.linear_damp
@@ -78,7 +76,7 @@ func physicsUpdate(delta: float):
 	# by picking up fuel dropped by enemies and breakable objects
 	# boost has a minimum duration #
 	# when returning to rolling state, max speed will be reduced sharply at first, then ease out from boost_max to rolling_max
-	get_input()
+	get_input(delta)
 
 	# turn ship
 	if proxy_orb.linear_velocity.length() > ship_stats.turn_stop_limit:
@@ -100,7 +98,7 @@ func physicsUpdate(delta: float):
 
 	is_grounded = check_ground_normals()
 
-	## while on the ground, align the ship to the averaged ground normals		
+	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
 		# align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
@@ -116,7 +114,7 @@ func physicsUpdate(delta: float):
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input, ship_stats.cone_flare_mult)
 
 
-	## while airborne, align to the direction of the orbs forward direction, without turning the player
+	# while airborne, align to the direction of the orbs forward direction, without turning the player
 	else:
 		if ungrounded_time > 0.0:
 			ungrounded_time -= delta
@@ -125,24 +123,17 @@ func physicsUpdate(delta: float):
 			if is_grounded:
 				elapsed_time = 0
 			is_grounded = false
-			#rotate towards the orbs forward direction, without turning, within limits
+			# rotate towards the orbs forward direction, without turning, within limits
 			var _orb_linear_velocity = physics_state.linear_velocity.normalized()
 			var _right = Vector3.UP.cross(_orb_linear_velocity)
 			var _proxy_direction_up = _orb_linear_velocity.cross(_right)
 			var _orb_local_up = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
-			# var y_rot = atan2(0.0, _orb_linear_velocity.z)
-			# var _forward_world_up:Basis = Basis()
-			# _forward_world_up = _forward_world_up.rotated(Vector3.UP, y_rot)
-			# _forward_world_up = _forward_world_up.orthonormalized()
-			# var _angle_to = -_forward_world_up.z.dot(-_orb_local_up.basis.z)
-			#check if greater than allowed angle, if so, set to max allowed angle, otherwise, interpolate towards forward_velocity... unless pitch/up/down is held - leads in to problem 2
-			# if _angle_to > 0.3:
-			# 	print("dot product: " + str(_angle_to))
+
 			if abs(pitch_input) < 0.001:
 				proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta)
 				proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
-			# use input of right stick to control pitch
-			else:
+
+			else: # use input of right stick to control pitch
 				proxy_xform.transform.basis = proxy_xform.transform.basis.rotated(proxy_xform.transform.basis.x, pitch_input * ship_stats.flying_pitch_speed * delta)
 		
 		# apply airborne gravity and input forces
@@ -150,9 +141,7 @@ func physicsUpdate(delta: float):
 		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.65)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
-	# # clamps max speed
-	# if proxy_orb.linear_velocity.length() > ship_stats.state_max_speed: 
-	# 	physics_state.linear_velocity = physics_state.linear_velocity.normalized() * ship_stats.state_max_speed
+	# clamps max speed
 	_integrate_forces(physics_state)
 
 	# update player to orb position
@@ -177,27 +166,19 @@ func align_with_y(xform, new_y):
 	return xform
 
 
-func get_input():
-	# turning input
-	turn_input = 0.0
-	turn_input -= Input.get_action_strength("roll_right")
-	turn_input += Input.get_action_strength("roll_left")
-	turn_input *= deg_to_rad(ship_stats.boost_turn_force)
-	# pitch input
-	pitch_input = 0.0
-	pitch_input += Input.get_action_strength("r_stick_up")
-	pitch_input -= Input.get_action_strength("r_stick_down")
-
 	# Boosting inputs
-	## Add inputs for handling a hover slide boost: this occurs when you start drifting. I'm not sure how I want this to work yet, here are the two ideas:
-	## 1. Entering a drift starts charging up the slide boost, upon releasing the drift, IF the player is holding boost, switch to the boost state and do a boost with very high acceleration
-	## 2. Entering a drift starts charging up the slide boost. Upon pressing the boost button, drift state will be exited, and a high accel boost will be performed.
-	## 3. The guage will only charge up if the player is holding boost while drifting. If drift is released, the boost gauge will diminish over time. The high accel boost will only happen if the player is holding boost upon drift release.
-	## in all of these cases, the acceleration increase will be a multiplier based on the boost gauge, starting at 1.0 and going up to 4.0? at max
-	## this the additional resulting acceleration will temporarily raise the max speed of the boost state, which will return to its base max over a short time.
-	## consider applying the high acceleration bonus to hover mode in matching situations, whatever version is chosen.
-	accel_input = 1.0
-
+	# Add inputs for handling a hover slide boost: this occurs when you start drifting. I'm not sure how I want this to work yet, here are the two ideas:
+	# 1. Entering a drift starts charging up the slide boost, upon releasing the drift, IF the player is holding boost, switch to the boost state and do a boost with very high acceleration
+	# 2. Entering a drift starts charging up the slide boost. Upon pressing the boost button, drift state will be exited, and a high accel boost will be performed.
+	# 3. The guage will only charge up if the player is holding boost while drifting. If drift is released, the boost gauge will diminish over time. The high accel boost will only happen if the player is holding boost upon drift release.
+	# in all of these cases, the acceleration increase will be a multiplier based on the boost gauge, starting at 1.0 and going up to 4.0? at max
+	# this the additional resulting acceleration will temporarily raise the max speed of the boost state, which will return to its base max over a short time.
+	# consider applying the high acceleration bonus to hover mode in matching situations, whatever version is chosen.
+func get_input(delta):
+	(super.get_input(delta))
+	
+	# State specific input logic
+	turn_input *= deg_to_rad(ship_stats.boost_turn_force)
 	if not Input.is_action_pressed("boost") and boost_duration > ship_stats.boost_min_duration:
 		var flags: Dictionary = {
 		"forward_speed": forward_speed,

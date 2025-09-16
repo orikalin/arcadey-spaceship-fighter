@@ -248,15 +248,18 @@ script = ExtResource("21_de37j")
 [node name="drift" type="Node" parent="Player/ShipStateMachine"]
 script = ExtResource("25_jv85r")
 slide_boost_power_max = 8.0
+lock_accel_input = true
 
 [node name="boost" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
 script = ExtResource("23_s3mlt")
 charge_boost_decay = SubResource("Curve_0cqmc")
+lock_accel_input = true
 
 [node name="charged_boost" type="Node" parent="Player/ShipStateMachine"]
 script = ExtResource("34_0cqmc")
 charge_boost_max_multiplier = 1.5
+lock_accel_input = true
 
 [node name="ascend_charge" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
@@ -305,6 +308,14 @@ target_position = Vector3(0, -2.5, 0)
 
 [node name="center" type="RayCast3D" parent="PlayerProxy/ground_check_rays"]
 target_position = Vector3(0, -2.5, 0)
+
+[node name="down_slope_check" type="RayCast3D" parent="PlayerProxy"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+target_position = Vector3(0, -6, 0)
+hit_back_faces = false
+debug_shape_custom_color = Color(1, 1, 1, 1)
+debug_shape_thickness = 5
 
 [node name="ShipFrictionCone" parent="PlayerProxy" instance=ExtResource("13_lji6i")]
 transform = Transform3D(4.24, 0, 6.87049e-08, 0, 4.24, 0, -6.87049e-08, 0, 4.24, -0.00613866, 0.0290804, 9.36442)

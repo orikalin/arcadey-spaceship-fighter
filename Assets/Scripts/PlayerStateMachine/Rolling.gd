@@ -1,33 +1,14 @@
 extends PlayerMovementState
 
-@export var accel_multiplier: float = 1.0
+@export var level_duration: float = 1.0 # duration of a mid air leveling manuver, eased by a curve
 var ungrounded_time: float = 0.0
-
-# duration of a mid air leveling manuver, eased by a curve
-@export var level_duration: float = 1.0
 var elapsed_time: float = 0.0
 var duration: float = 1.0
 var eased_t: float = 0.0
-
-# Current speed
 var forward_speed: float = 0.0
-
-# Throttle input speed
-var accel_input: float = 0.0
-
-# deprecated
-var target_speed: float = 0.0
-
-# turn strength in radians
-var turn_input: float = 0.0
-
-
-var ship_statemachine: StateMachine
-var is_grounded: bool = false
+var grounded_braking: bool = false
 var state_max_speed_tween: Tween
 var ship_mesh_tween: Tween
-var accel_held: bool = false
-var pitch_input: float = 0.0
 
 @onready var ShipContainer: MeshInstance3D = %ShipContainer
 
@@ -82,7 +63,6 @@ func update(delta: float):
 
 func physicsUpdate(delta: float):
 	get_input(delta)
-
 	# turn ship
 	if proxy_orb.linear_velocity.length() > ship_stats.turn_stop_limit:
 		var new_basis = proxy_xform.global_transform.basis.rotated(proxy_xform.global_basis.y, turn_input)
@@ -100,9 +80,9 @@ func physicsUpdate(delta: float):
 
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 
-	is_grounded = check_ground_normals() 
+	is_grounded = check_ground_normals()
 
-	## while on the ground, align the ship to the averaged ground normals		
+	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
 		## align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
@@ -110,6 +90,11 @@ func physicsUpdate(delta: float):
 		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 		
 		## apply gravity and force
+		if grounded_braking:
+			proxy_orb.linear_damp = ship_stats.brake_damping
+		else:
+			proxy_orb.linear_damp = ship_stats.linear_damp
+			
 		proxy_orb.gravity_scale = ship_stats.gravity_grounded
 		proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.ground_stick_force * _stick_curve_sample)
 		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input)
@@ -117,28 +102,30 @@ func physicsUpdate(delta: float):
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
 
-	## while airborne, align to the direction of the orbs forward direction, without turning the player
+	# while airborne, align to the direction of the orbs forward direction, without turning the player
 	else:
-		if ungrounded_time > 0.0:
-			ungrounded_time -= delta
-			proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.ground_stick_force * _stick_curve_sample)
-		else:
-			if is_grounded:
-				elapsed_time = 0
-			is_grounded = false
+		# if ungrounded_time > 0.0:
+		# 	ungrounded_time -= delta
+		# 	proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.ground_stick_force * _stick_curve_sample)
+		# else:
+		# 	if is_grounded:
+		# 		elapsed_time = 0
+		# 	is_grounded = false
 
-			## rotate towards the orbs forward direction, without turning, within limits
-			var _orb_linear_velocity = physics_state.linear_velocity.normalized()
-			var _right = Vector3.UP.cross(_orb_linear_velocity)
-			var _proxy_direction_up = _orb_linear_velocity.cross(_right)
-			var _orb_local_up = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
+		# rotate towards the orbs forward direction, without turning, within limits
+		var _orb_linear_velocity = physics_state.linear_velocity.normalized()
+		var _right = Vector3.UP.cross(_orb_linear_velocity)
+		var _proxy_direction_up = _orb_linear_velocity.cross(_right)
+		var _orb_local_up = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
 
-			if abs(pitch_input) < 0.001:
-				proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta)
-				proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
-			
-			else: ## use input of right stick to control pitch
-				proxy_xform.transform.basis = proxy_xform.transform.basis.rotated(proxy_xform.transform.basis.x, pitch_input * ship_stats.flying_pitch_speed * delta)
+		# adjust pitch angle towards orbs forward direction if there is no right stick input
+		if abs(pitch_input) < 0.001:
+			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta)
+			proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
+
+		# use input of right stick to control pitch
+		else: 
+			proxy_xform.transform.basis = proxy_xform.transform.basis.rotated(proxy_xform.transform.basis.x, pitch_input * ship_stats.flying_pitch_speed * delta)
 
 		
 		# apply airborne gravity and input forces
@@ -146,10 +133,10 @@ func physicsUpdate(delta: float):
 		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.25)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
-	if accel_input > 0 and not accel_held:
-		accel_input = lerp(accel_input, 0.0, delta * ship_stats.max_speed_decay_multiplier)
-	elif not accel_held:
-		accel_input = 0
+	# if accel_input > 0 and not accel_held:
+	# 	accel_input = lerp(accel_input, 0.0, delta * ship_stats.max_speed_decay_multiplier)
+	# elif not accel_held:
+	# 	accel_input = 0
 
 	# clamps max speed
 	_integrate_forces(physics_state)
@@ -187,26 +174,16 @@ func align_with_y(xform, new_y):
 	return xform
 
 
+# State specific input logic
 func get_input(delta: float):
-	# turning input
-	turn_input = 0.0
-	turn_input -= Input.get_action_strength("roll_right")
-	turn_input += Input.get_action_strength("roll_left")
+	(super.get_input(delta))
 	turn_input *= deg_to_rad(ship_stats.rolling_turn_force)
-
-	if Input.is_action_pressed("throttle_up"):
-		if accel_input < 1:
-			accel_input += delta * accel_multiplier
-		else:
-			accel_input = 1
-		accel_held = true
-
-	elif Input.is_action_pressed("throttle_down"):
-		accel_input = -0.4
-		accel_held = true
-	else:
-		accel_held = false
 	
+	if Input.is_action_pressed("brake"):
+		grounded_braking = true
+	else:
+		grounded_braking = false
+
 	if Input.is_action_pressed("drift") and is_grounded:
 		var flags: Dictionary = {
 		"forward_speed": forward_speed,
@@ -220,15 +197,12 @@ func get_input(delta: float):
 		}
 		finished.emit("boost", flags)
 	
-	pitch_input = 0.0
-	pitch_input += Input.get_action_strength("r_stick_up")
-	pitch_input -= Input.get_action_strength("r_stick_down")
-	
 
 func offset_camera_Y(delta: float):
 	var _normalized_forward_speed = forward_speed / ship_stats.state_max_speed
 	var targetY = _normalized_forward_speed * ship_stats.camera_Y_offset
 	camera_Y_offset.emit(_normalized_forward_speed, targetY, delta)
+
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey or event is InputEventMouse:

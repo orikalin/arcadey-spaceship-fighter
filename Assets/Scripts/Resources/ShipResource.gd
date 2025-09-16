@@ -41,6 +41,7 @@ var shield_current: int = 100:
     get:
         return shield_current
 
+
 @export_category("Hovering Stats")
 @export var rolling_max_speed: float = 100 ## Max speed
 @export var rolling_turn_force: float = 8 ## Turn speed
@@ -57,9 +58,11 @@ var shield_current: int = 100:
 @export var falling_level_speed: float = 2
 @export var ungrounded_grace: float = 0.1
 @export var level_duration: float = 1.0
+@export var linear_damp: float = 0.24
+@export var accel_multiplier: float = 1.0
+@export var brake_damping:float = 0.9
 @export var stick_curve: Curve ## used to define a relationship between normalized forward speed and stick force
 @export var easeInOut: Curve
-@export var linear_damp: float = 0.24
 
 @export_category("Boosting Stats")
 @export var boost_max_speed: float = 160
@@ -102,23 +105,3 @@ var shield_current: int = 100:
 @export var max_speed_decay_duration: float = 3.0
 @export var max_speed_decay_multiplier: float = 1.0
 var state_max_speed: float = 0.0
-
-
-# old
-@export_category("Hover Stats : Old hover type")
-@export var hovering_min_speed: float = 5.0
-@export var hovering_max_speed: float = 50.0
-@export var fallingPitchMax: float = -0.5
-@export var fallingPitchSpeedMax: float = 0.75
-@export var fallingPitchBuildup: float = 0.2
-@export var fallingPitchBase: float = 0.1
-@export var slerp_speed: float = 10.0
-@export var hovering_turn_speed: float = 0.9
-@export var hovering_pitch_speed: float = 0.75
-@export var hovering_throttle_delta: float = 50.0
-@export var hovering_level_speed: float = 3.0
-@export var hovering_acceleration: float = 18.0
-@export var hovering_roll_multiplier: float = 0.2
-@export var drift_turn_speed: float = 1.0
-@export var drift_proxy_turn_speed: float = 0.25
-@export var drift_engine_power: float = 0.25
