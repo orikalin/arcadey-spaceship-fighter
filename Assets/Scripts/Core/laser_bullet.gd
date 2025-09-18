@@ -21,7 +21,7 @@ func _process(delta):
 		else:
 			tween = create_tween()
 			tween.tween_method(func(progress):
-				var curve_val = light_diss_curve.sample(progress) # Sample your custom curve
+				var curve_val = light_diss_curve.sample(progress)
 				light.light_energy = lerp(1.0, 0.0, curve_val), 0.0, 1.0, 1.0)
 	elif light.light_energy < max_energy:
 		light.light_energy += delta * energy_multiplier
@@ -29,13 +29,14 @@ func _process(delta):
 	queue_free()
 
 func _physics_process(delta: float) -> void:
-	if raycast.is_colliding():
-		for mesh in meshes:
-			mesh.visible = false
-		particles.emitting = true
-		
-		await get_tree().create_timer(1.0).timeout
-		tween.kill()
-		queue_free()
-	else:
-		position += transform.basis * Vector3.FORWARD * speed * delta
+	if raycast.enabled:
+		if raycast.is_colliding():
+			for mesh in meshes:
+				mesh.visible = false
+			particles.emitting = true
+			raycast.enabled = false
+			await get_tree().create_timer(1.0).timeout
+			tween.kill()
+			queue_free()
+		else:
+			position += transform.basis * Vector3.FORWARD * speed * delta

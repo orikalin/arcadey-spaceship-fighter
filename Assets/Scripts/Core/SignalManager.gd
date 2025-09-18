@@ -30,5 +30,4 @@ signal camera_Z_offset(player:Basis, orb_forward:Vector3) ## offsets the camera 
 signal reset_Z_offset
 signal set_starting_z
 signal camera_FOV_control(fov:float, duration:float)
-
 signal gain_fuel(value:float)

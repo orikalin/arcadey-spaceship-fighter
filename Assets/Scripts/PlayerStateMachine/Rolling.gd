@@ -29,6 +29,7 @@ func enter(oldState: String, flags: Dictionary):
 	if oldState == "boost" or oldState == "charged_boost":
 		do_max_speed_tween()
 		SignalHub.camera_FOV_control.emit(75.0, 1.5)
+		accel_input = 1.0
 	elif oldState == "drift":
 		do_max_speed_tween()
 		is_grounded = flags.get("is_grounded")
@@ -145,7 +146,7 @@ func physicsUpdate(delta: float):
 	# 	accel_input = lerp(accel_input, 0.0, delta * ship_stats.max_speed_decay_multiplier)
 	# elif not accel_held:
 	# 	accel_input = 0
-
+ 
 	# clamps max speed
 	_integrate_forces(physics_state)
 
@@ -199,7 +200,7 @@ func get_input(delta: float):
 		}
 		finished.emit("drift", flags)
 
-	elif Input.is_action_pressed("boost") and ship_stats.boost_fuel_current > 0.001:
+	elif Input.is_action_just_pressed("boost") and ship_stats.boost_fuel_current > 0.001:
 		var flags: Dictionary = {
 		"forward_speed": forward_speed
 		}

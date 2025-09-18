@@ -21,7 +21,7 @@ up_vector_enabled = false
 albedo_texture = ExtResource("3_arvmc")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lmb53"]
-size = Vector3(10, 10, 10)
+size = Vector3(1.315, 1.315, 1.315)
 
 [sub_resource type="Animation" id="Animation_k0i7e"]
 length = 0.001
@@ -181,7 +181,7 @@ _data = {
 size = Vector3(3.58838, 1.49229, 2.01294)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_h5q7e"]
-radius = 10.0
+radius = 5.02166
 
 [node name="spike_bug" type="Node3D" node_paths=PackedStringArray("path", "shape_keyed_mesh", "anim", "hitbox", "hurtbox")]
 script = ExtResource("1_iniow")
@@ -217,11 +217,13 @@ transform = Transform3D(0.997769, -0.0442157, 0.0498645, -1.86263e-09, 0.74819, 
 material_override = SubResource("StandardMaterial3D_kxc4k")
 
 [node name="hitbox" type="Area3D" parent="Path3D/PathFollow3D/body" groups=["targetable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35832, 1.49012e-08)
 collision_layer = 4
 collision_mask = 24
 script = ExtResource("4_k0i7e")
 
 [node name="trigger_collider" type="CollisionShape3D" parent="Path3D/PathFollow3D/body/hitbox"]
+transform = Transform3D(1, 3.94881e-07, -1.41561e-07, -2.86847e-07, 1, 2.98023e-08, -4.24683e-07, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_lmb53")
 
 [node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="Path3D/PathFollow3D/body/hitbox"]
@@ -250,7 +252,7 @@ collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/body/detection_range"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.19209e-07, 4.96014)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.72529e-09, 8.94067e-08, 3.97977)
 shape = SubResource("SphereShape3D_h5q7e")
 
 [connection signal="body_entered" from="Path3D/PathFollow3D/body/detection_range" to="." method="_on_detection_range_body_entered"]

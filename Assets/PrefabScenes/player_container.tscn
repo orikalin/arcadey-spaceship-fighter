@@ -68,6 +68,7 @@ point_count = 2
 length = 2.709
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_svb41"]
+margin = 0.1
 radius = 2.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_noymn"]
@@ -147,6 +148,7 @@ script = ExtResource("4_8pmm5")
 
 [node name="weapons" type="Node3D" parent="Player"]
 unique_name_in_owner = true
+editor_description = "weapon systems go here"
 
 [node name="burst_laser" type="Node3D" parent="Player/weapons" node_paths=PackedStringArray("spawn_point")]
 unique_name_in_owner = true
@@ -170,9 +172,10 @@ sight_two = NodePath("sight_far")
 sight_raycast = NodePath("sight_raycast")
 max_lock_range = 600.0
 max_lock_angle = 62.0
-reticle_move_speed = 100.0
-locked_reticle_move_speed = 20.0
+reticle_move_range = 120.0
+locked_reticle_move_range = 20.0
 los_block_timout = 0.8
+reticle_rest_speed = 5.0
 
 [node name="sight_far" type="MeshInstance3D" parent="Player/weapons/sights"]
 unique_name_in_owner = true

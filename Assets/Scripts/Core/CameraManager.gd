@@ -53,8 +53,8 @@ func _process(delta):
 	## the goal here is to map right stick input strengths to movement of the LookAtTarget
 	var input_strength_x: float = 0.0
 	var input_strength_y: float = 0.0
-	input_strength_x += Input.get_action_strength("r_stick_right") - Input.get_action_strength("r_stick_left")
-	input_strength_y += (Input.get_action_strength("r_stick_up") - Input.get_action_strength("r_stick_down")) * 1.5
+	input_strength_x += (Input.get_action_strength("r_stick_right") - Input.get_action_strength("r_stick_left")) * 1.5
+	input_strength_y += Input.get_action_strength("r_stick_up") - Input.get_action_strength("r_stick_down")
 	var input_strength := Vector3(input_strength_x, input_strength_y, 0)
 	var target_position = (input_strength * look_range) + look_at_reset_pos
 	look_at_target.position = look_at_target.position.lerp(target_position, look_speed * delta)
