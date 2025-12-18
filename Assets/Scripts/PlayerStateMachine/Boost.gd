@@ -230,5 +230,5 @@ func _integrate_forces(state):
 	var _current_velocity = state.linear_velocity
 	var _speed = _current_velocity.length()
 
-	if _speed > ship_stats.state_max_speed:
-		state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed
+	# if _speed > ship_stats.state_max_speed:
+	# 	state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed

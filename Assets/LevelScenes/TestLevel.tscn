@@ -18,7 +18,7 @@
 [ext_resource type="Script" uid="uid://c444j1ucmv5ti" path="res://Assets/Scripts/CaveEntrance.gd" id="16_psark"]
 [ext_resource type="PackedScene" uid="uid://cn6as12ppx156" path="res://Assets/PrefabScenes/track_ring.tscn" id="17_dggq3"]
 [ext_resource type="PackedScene" uid="uid://b63llvy5rhjkb" path="res://Assets/BlendFiles/TubeTest.blend" id="18_34ykc"]
-[ext_resource type="PackedScene" uid="uid://tvch4d3rcydo" path="res://Assets/BlendFiles/HomePlanet.blend" id="19_nuk5y"]
+[ext_resource type="PackedScene" uid="uid://tvch4d3rcydo" path="res://Assets/BlendFiles/Prototype_terrain.blend" id="19_nuk5y"]
 [ext_resource type="PackedScene" uid="uid://d1fo8mp5xf0am" path="res://Assets/Entities/Enemies/generic_enemy.tscn" id="20_j48rj"]
 [ext_resource type="Script" uid="uid://clc56sewk8p4d" path="res://Assets/Scripts/Core/PathSceneBakeOnPlay.gd" id="20_vyf4w"]
 [ext_resource type="Script" uid="uid://bkwypq6f50rej" path="res://Assets/Scripts/Core/Targetable_Hitbox.gd" id="22_vfsxx"]
@@ -1070,7 +1070,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.00047, 5, -1514.6)
 transform = Transform3D(3.34322, 0, 0, 0, 3.34322, 0, 0, 0, 3.34322, -13.5721, 4.59731, -1761.05)
 
 [node name="PathFollow3D" parent="spike_bug/Path3D" index="0"]
-transform = Transform3D(0.997773, -0.0442159, 0.0498645, -1.86264e-09, 0.748193, 0.663435, -0.0666466, -0.661961, 0.746528, 19.7296, 12.4589, 0.0372925)
+transform = Transform3D(0.997773, -0.0442159, 0.0498646, -1.86264e-09, 0.748193, 0.663435, -0.0666465, -0.661961, 0.746528, 19.7296, 12.4589, 0.0372925)
 
 [node name="body" parent="spike_bug/Path3D/PathFollow3D" index="0"]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)

@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://tvch4d3rcydo"
-path="res://.godot/imported/HomePlanet.blend-d16f3c191a4b34a6452443815f61e2da.scn"
+path="res://.godot/imported/Prototype_terrain.blend-1097acd110908568fea376af66b1baf1.scn"
 
 [deps]
 
-source_file="res://Assets/BlendFiles/HomePlanet.blend"
-dest_files=["res://.godot/imported/HomePlanet.blend-d16f3c191a4b34a6452443815f61e2da.scn"]
+source_file="res://Assets/BlendFiles/Prototype_terrain.blend"
+dest_files=["res://.godot/imported/Prototype_terrain.blend-1097acd110908568fea376af66b1baf1.scn"]
 
 [params]
 

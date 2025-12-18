@@ -35,6 +35,9 @@ func _integrate_forces(state):
 # check the 5 raycasts, get the average normal of all terrain hit, return true if any rays hit terrain
 # additionally, checks a farther forward down raycast for early detection of slopes ahead of player,
 # though this ray is not considered for is_grounded
+
+# add a way to delay a false return by checking if there is ground within a reasonable distance below the ship
+# if not, return false
 func check_ground_normals() -> bool:
 	var _terrain_normals: Array
 	var _sum_terrain_normals := Vector3.ZERO
@@ -42,12 +45,13 @@ func check_ground_normals() -> bool:
 	
 
 	for raycast: RayCast3D in ground_raycasts:
-		var _raycast_hit := raycast.get_collider()
+		var _raycast_hit := raycast.get_collider() ## the object returned by the ground check raycast
 		if _raycast_hit != null:
 			if _raycast_hit.get_collision_mask_value(1):
 				_terrain_normals.append(raycast.get_collision_normal())
 
 	down_slope_normal = down_slope_ray.get_collision_normal() # This is not included when considering if the player is grounded
+	
 	var _terrain_normals_size: int = _terrain_normals.size()
 
 	if _terrain_normals_size > 0:
