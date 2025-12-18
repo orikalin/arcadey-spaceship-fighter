@@ -51,6 +51,7 @@ tween_on_load = false
 follow_damping = true
 follow_damping_value = Vector3(0.05, 0.05, 0.05)
 look_at_damping = true
+look_at_damping_value = 0.12
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [node name="DriftCam" type="Node3D" parent="PhantomCameras"]

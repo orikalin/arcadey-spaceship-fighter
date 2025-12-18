@@ -221,9 +221,9 @@ func do_max_speed_tween():
 	state_max_speed_tween.tween_property(ship_stats, "state_max_speed", ship_stats.rolling_max_speed, ship_stats.drift_speed_decay_duration)
 
 
-func _integrate_forces(state):
-	var _current_velocity = state.linear_velocity
-	var _speed = _current_velocity.length()
+# func _integrate_forces(state):
+# 	var _current_velocity = state.linear_velocity
+# 	var _speed = _current_velocity.length()
 
-	if _speed > ship_stats.state_max_speed:
-		state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed
+# 	if _speed > ship_stats.state_max_speed:
+# 		state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed

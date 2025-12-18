@@ -88,7 +88,7 @@ func physicsUpdate(delta: float):
 	# var contact_count = physics_state.get_contact_count()
 	var physics_state = PhysicsServer3D.body_get_direct_state(proxy_orb.get_rid())
 	forward_speed = physics_state.linear_velocity.length()
-	var _normalized_forward_speed: float = forward_speed / ship_stats.state_max_speed
+	var _normalized_forward_speed: float = forward_speed / ship_stats.rolling_max_speed
 
 	# This defines _stick_force based on forward speed. Higher speed = higher downward force applied, to helps cling to surfaces against gravity
 	var _stick_force = _normalized_forward_speed * ship_stats.ground_stick_force
@@ -100,15 +100,21 @@ func physicsUpdate(delta: float):
 
 	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
+		proxy_orb.linear_damp = ship_stats.linear_damp
 		# align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
 		proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, ship_stats.boost_ground_alignment_speed * delta)
 		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 		
 		# apply gravity and force
-		proxy_orb.gravity_scale = ship_stats.gravity_grounded
-		proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.boost_accel_force * accel_input)
+		proxy_orb.gravity_scale = 0.2
+		var _forward_vector = -player.basis.z * ship_stats.boost_accel_force * accel_input
+		var _downward_vector = -average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample
+		var _average_vector = (_forward_vector + _downward_vector)
+
+		proxy_orb.apply_central_force(_average_vector)
+		# proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
+		# proxy_orb.apply_central_force(-player.basis.z * ship_stats.boost_accel_force * accel_input)
 		ungrounded_time = ship_stats.ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input, ship_stats.cone_flare_mult)
@@ -117,8 +123,10 @@ func physicsUpdate(delta: float):
 	# while airborne, align to the direction of the orbs forward direction, without turning the player
 	else:
 		if ungrounded_time > 0.0:
+			proxy_orb.linear_damp = ship_stats.linear_damp
 			ungrounded_time -= delta
 			proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
+			proxy_orb.apply_central_force(-player.basis.z * ship_stats.boost_accel_force * accel_input)
 		else:
 			if is_grounded:
 				elapsed_time = 0
@@ -129,6 +137,8 @@ func physicsUpdate(delta: float):
 			var _proxy_direction_up = _orb_linear_velocity.cross(_right)
 			var _orb_local_up = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
 
+			proxy_orb.linear_damp = 0.04
+
 			if abs(pitch_input) < 0.001:
 				proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta)
 				proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
@@ -136,10 +146,10 @@ func physicsUpdate(delta: float):
 			else: # use input of right stick to control pitch
 				proxy_xform.transform.basis = proxy_xform.transform.basis.rotated(proxy_xform.transform.basis.x, pitch_input * ship_stats.flying_pitch_speed * delta)
 		
-		# apply airborne gravity and input forces
-		proxy_orb.gravity_scale = ship_stats.gravity_airborne
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.65)
-		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
+			# apply airborne gravity and input forces
+			proxy_orb.gravity_scale = ship_stats.gravity_airborne
+			proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.15)
+			SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
 	# clamps max speed
 	_integrate_forces(physics_state)
@@ -226,9 +236,9 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventJoypadMotion or event is InputEventJoypadButton:
 		gamepad = true
 
-func _integrate_forces(state):
-	var _current_velocity = state.linear_velocity
-	var _speed = _current_velocity.length()
+# func _integrate_forces(state):
+# 	var _current_velocity = state.linear_velocity
+# 	var _speed = _current_velocity.length()
 
-	# if _speed > ship_stats.state_max_speed:
-	# 	state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed
+# 	# if _speed > ship_stats.state_max_speed:
+# 	# 	state.linear_velocity = _current_velocity.normalized() * ship_stats.state_max_speed

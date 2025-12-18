@@ -232,6 +232,7 @@ jolt_physics_3d/simulation/position_steps=12
 jolt_physics_3d/simulation/areas_detect_static_bodies=true
 jolt_physics_3d/simulation/penetration_slop=0.01
 jolt_physics_3d/simulation/speculative_contact_distance=0.2
+jolt_physics_3d/simulation/continuous_cd_movement_threshold=1.0
 jolt_physics_3d/motion_queries/recovery_iterations=6
 jolt_physics_3d/motion_queries/recovery_amount=0.3
 3d/solver/solver_iterations=32

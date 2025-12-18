@@ -119,6 +119,8 @@ func physicsUpdate(delta: float):
 		var _proxy_direction_up = _orb_linear_velocity.cross(_right)
 		var _orb_local_up = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
 
+		proxy_orb.linear_damp = 0.04
+
 		# adjust pitch angle towards orbs forward direction if there is no right stick input
 		if abs(pitch_input) < 0.001:
 			proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta)
@@ -131,7 +133,7 @@ func physicsUpdate(delta: float):
 		
 		# apply airborne gravity and input forces
 		proxy_orb.gravity_scale = ship_stats.gravity_airborne
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.25)
+		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.15)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
 	# decay accel_input while braking

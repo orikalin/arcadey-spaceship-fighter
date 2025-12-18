@@ -203,9 +203,9 @@ func _input(event: InputEvent) -> void:
 		gamepad = true
 
 
-func _integrate_forces(state):
-	var _current_velocity = state.linear_velocity
-	var _speed = _current_velocity.length()
+# func _integrate_forces(state):
+# 	var _current_velocity = state.linear_velocity
+# 	var _speed = _current_velocity.length()
 
-	if _speed > state_boosted_speed:
-		state.linear_velocity = _current_velocity.normalized() * state_boosted_speed
+# 	if _speed > state_boosted_speed:
+# 		state.linear_velocity = _current_velocity.normalized() * state_boosted_speed
