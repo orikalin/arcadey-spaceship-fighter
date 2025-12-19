@@ -54,6 +54,7 @@ func exit(newState: String):
 			ship_mesh_tween.kill()
 
 func update(delta: float):
+	super(delta)
 	if ungrounded_time > 0.0:
 		return
 
@@ -61,6 +62,7 @@ func update(delta: float):
 		elapsed_time += delta
 		var t = elapsed_time / level_duration
 		eased_t = ship_stats.easeInOut.sample(t)
+
 
 func physicsUpdate(delta: float):
 	get_input(delta)
@@ -85,6 +87,8 @@ func physicsUpdate(delta: float):
 
 	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
+		if proxy_orb.continuous_cd:
+			proxy_orb.continuous_cd = false
 		## align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
 		proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, ship_stats.ground_alignment_speed * delta)
@@ -97,8 +101,13 @@ func physicsUpdate(delta: float):
 			proxy_orb.linear_damp = ship_stats.linear_damp
 			
 		proxy_orb.gravity_scale = ship_stats.gravity_grounded
-		proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.ground_stick_force * _stick_curve_sample)
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input)
+		# proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.ground_stick_force * _stick_curve_sample)
+		# proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input)
+		var _forward_vector = -player.basis.z * ship_stats.accel_force * accel_input
+		var _downward_vector = -average_terrain_normal * ship_stats.ground_stick_force * _stick_curve_sample
+		var _average_vector = (_forward_vector + _downward_vector)
+
+		proxy_orb.apply_central_force(_average_vector)
 		ungrounded_time = ship_stats.ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input)
@@ -119,7 +128,11 @@ func physicsUpdate(delta: float):
 		var _proxy_direction_up = _orb_linear_velocity.cross(_right)
 		var _orb_local_up = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
 
+		# linear damp adjustments, move this to ship_stats
 		proxy_orb.linear_damp = 0.04
+
+		if forward_speed > 120:
+			proxy_orb.continuous_cd = true
 
 		# adjust pitch angle towards orbs forward direction if there is no right stick input
 		if abs(pitch_input) < 0.001:

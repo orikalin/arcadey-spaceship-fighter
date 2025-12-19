@@ -9,6 +9,8 @@ var average_terrain_normal: Vector3
 var turn_input: float = 0.0
 var pitch_input: float = 0.0
 var accel_input: float = 0.0
+var gravity_tween: Tween
+var current_air_gravity:float
 
 @onready var player: CharacterBody3D = %Player
 @onready var proxy_xform: CharacterBody3D = %PlayerProxy
@@ -19,6 +21,10 @@ var accel_input: float = 0.0
 @onready var ground_raycasts: Array = %ground_check_rays.get_children()
 @onready var down_slope_ray: RayCast3D = %down_slope_check
 
+
+func update(delta: float):
+	if not is_grounded:
+		pass
 
 # This function imposes a hard limit on the Rigidybody3D's physics state's max speed
 # considering removing this, and increasing the linear damping to get a similar effect

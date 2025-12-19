@@ -25,9 +25,9 @@ func _ready():
 
 func enter(oldState: String, flags: Dictionary = {}):
 	accel_input = 1.0
-	physics_material.friction = 0.7
+	physics_material.friction = 0.5
 	proxy_orb.physics_material_override = physics_material
-	proxy_orb.linear_damp = ship_stats.linear_damp
+	proxy_orb.linear_damp = ship_stats.boost_linear_damp
 	boost_duration = 0.0
 	SignalHub.tune_engine_cone_minmax.emit(1.0, 1.5)
 	SignalHub.camera_FOV_control.emit(105.0, 5.0)
@@ -58,11 +58,13 @@ func enter(oldState: String, flags: Dictionary = {}):
 	# 	proxy_orb.transform = player.transform
 
 func update(delta: float):
+	super(delta)
 	ship_stats.boost_fuel_current -= delta * ship_stats.fuel_drain_rate
 	if ship_stats.state_max_speed > ship_stats.boost_max_speed:
 		var _sample = charge_boost_decay.sample(boost_duration * 0.5)
 		ship_stats.state_max_speed = lerp(boosted_max_speed, ship_stats.boost_max_speed, _sample)
 	boost_duration += delta
+
 	if ungrounded_time > 0.0:
 		return
 
@@ -70,6 +72,8 @@ func update(delta: float):
 		elapsed_time += delta
 		var t = elapsed_time / level_duration
 		eased_t = ship_stats.easeInOut.sample(t)
+
+
 
 func physicsUpdate(delta: float):
 	# Boost: instantly increase max speed, higher values for accel force and stick force #
@@ -92,7 +96,7 @@ func physicsUpdate(delta: float):
 
 	# This defines _stick_force based on forward speed. Higher speed = higher downward force applied, to helps cling to surfaces against gravity
 	var _stick_force = _normalized_forward_speed * ship_stats.ground_stick_force
-	var _stick_curve_sample = ship_stats.stick_curve.sample(_normalized_forward_speed)
+	var _stick_curve_sample = ship_stats.boost_stick_curve.sample(_normalized_forward_speed)
 
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 
@@ -100,21 +104,23 @@ func physicsUpdate(delta: float):
 
 	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
-		proxy_orb.linear_damp = ship_stats.linear_damp
+		if proxy_orb.continuous_cd:
+			proxy_orb.continuous_cd = false
+		proxy_orb.linear_damp = ship_stats.boost_linear_damp
+
 		# align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
 		proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, ship_stats.boost_ground_alignment_speed * delta)
 		proxy_xform.global_transform = proxy_xform.global_transform.orthonormalized()
 		
 		# apply gravity and force
-		proxy_orb.gravity_scale = 0.2
+		proxy_orb.gravity_scale = 0.1
 		var _forward_vector = -player.basis.z * ship_stats.boost_accel_force * accel_input
 		var _downward_vector = -average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample
 		var _average_vector = (_forward_vector + _downward_vector)
 
 		proxy_orb.apply_central_force(_average_vector)
-		# proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
-		# proxy_orb.apply_central_force(-player.basis.z * ship_stats.boost_accel_force * accel_input)
+
 		ungrounded_time = ship_stats.ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input, ship_stats.cone_flare_mult)
@@ -123,10 +129,15 @@ func physicsUpdate(delta: float):
 	# while airborne, align to the direction of the orbs forward direction, without turning the player
 	else:
 		if ungrounded_time > 0.0:
-			proxy_orb.linear_damp = ship_stats.linear_damp
+			proxy_orb.linear_damp = ship_stats.boost_linear_damp
 			ungrounded_time -= delta
-			proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
-			proxy_orb.apply_central_force(-player.basis.z * ship_stats.boost_accel_force * accel_input)
+
+			var _forward_vector = -player.basis.z * ship_stats.boost_accel_force * accel_input
+			var _downward_vector = -average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample
+			var _average_vector = (_forward_vector + _downward_vector)
+			
+			proxy_orb.apply_central_force(_average_vector)
+
 		else:
 			if is_grounded:
 				elapsed_time = 0
@@ -137,7 +148,10 @@ func physicsUpdate(delta: float):
 			var _proxy_direction_up = _orb_linear_velocity.cross(_right)
 			var _orb_local_up = align_with_y(proxy_xform.global_transform, _proxy_direction_up)
 
-			proxy_orb.linear_damp = 0.04
+			proxy_orb.linear_damp = 0.02
+
+			if forward_speed > 120:
+				proxy_orb.continuous_cd = true
 
 			if abs(pitch_input) < 0.001:
 				proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_orb_local_up, ship_stats.falling_level_speed * delta)

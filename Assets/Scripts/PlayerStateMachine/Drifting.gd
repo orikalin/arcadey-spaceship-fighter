@@ -44,6 +44,8 @@ func _ready():
 
 
 func enter(oldState: String, flags: Dictionary):
+	if proxy_orb.continuous_cd:
+			proxy_orb.continuous_cd = false
 	accel_input = abs(flags.get("accel_input"))
 	physics_material.friction = 0.0
 	end_drift = false
@@ -77,6 +79,7 @@ func exit(newState: String):
 	slide_boost_star_particle.emitting = false
 
 func update(delta: float):
+	super(delta)
 	if ungrounded_time > 0.0:
 		return
 
@@ -84,6 +87,7 @@ func update(delta: float):
 		elapsed_time += delta
 		var t = elapsed_time / level_duration
 		eased_t = ship_stats.easeInOut.sample(t)
+		
 
 func physicsUpdate(delta: float):
 	get_input(delta)
@@ -109,6 +113,7 @@ func physicsUpdate(delta: float):
 
 	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
+		proxy_orb.gravity_scale = ship_stats.drift_gravity
 		# align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
 		proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, ship_stats.ground_alignment_speed * delta)
@@ -132,12 +137,15 @@ func physicsUpdate(delta: float):
 		if ungrounded_time > 0.0:
 			ungrounded_time -= delta
 			proxy_orb.apply_central_force(-proxy_xform.basis.z * ship_stats.accel_force * accel_input * 0.5)
-		else: # end drift if ungrounded too long
-			end_drift = true
-			end_drift_state()
-		
-		# apply airborne gravity and input forces
-		proxy_orb.apply_central_force(-proxy_xform.basis.z * ship_stats.accel_force * accel_input)
+		# else: # end drift if ungrounded too long
+		# 	end_drift = true
+		# 	end_drift_state()
+		else:
+			# apply airborne gravity and input forces
+			proxy_orb.gravity_scale = ship_stats.gravity_airborne
+			proxy_orb.apply_central_force(-proxy_xform.basis.z * ship_stats.accel_force * accel_input * 0.15)
+			proxy_orb.linear_damp = 0.04
+			
 
 	# clamps max speed
 	_integrate_forces(physics_state)

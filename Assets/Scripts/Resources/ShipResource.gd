@@ -67,6 +67,7 @@ var shield_current: int = 100:
 @export_category("Boosting Stats")
 @export var boost_max_speed: float = 160
 @export var boost_accel_force: float = 300
+@export var boost_linear_damp: float = 0.1
 @export var boost_min_duration: float = 1.0
 @export var boost_turn_force: float = 7.0
 @export var boost_ground_stick_force: float = 350
@@ -74,6 +75,7 @@ var shield_current: int = 100:
 @export var boost_player_alignment_speed: float = 2.0
 @export var cone_flare_mult: float = 2.0
 @export var charge_boost_accel_force: float = 600
+@export var boost_stick_curve: Curve ## used to define a relationship between normalized forward speed and stick force
 
 @export_category("Drifting Stats")
 @export var drift_turn_force: float = 12.0

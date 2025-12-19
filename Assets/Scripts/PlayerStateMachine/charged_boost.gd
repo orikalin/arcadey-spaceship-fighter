@@ -52,6 +52,7 @@ func exit(newState: String):
 	SignalHub.ship_friction_cone_control.emit(false)
 
 func update(delta: float):
+	super(delta)
 	boost_duration += delta
 
 	if ungrounded_time > 0.0:
@@ -61,6 +62,7 @@ func update(delta: float):
 		elapsed_time += delta
 		var t = elapsed_time / level_duration
 		eased_t = ship_stats.easeInOut.sample(t)
+	
 
 
 func physicsUpdate(delta: float):
@@ -89,6 +91,8 @@ func physicsUpdate(delta: float):
 
 	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
+		if proxy_orb.continuous_cd:
+			proxy_orb.continuous_cd = false
 		# align with the ground
 		var _xform = align_with_y(proxy_xform.global_transform, average_terrain_normal.normalized())
 		proxy_xform.global_transform = proxy_xform.global_transform.interpolate_with(_xform, ship_stats.boost_ground_alignment_speed * delta)
@@ -109,6 +113,8 @@ func physicsUpdate(delta: float):
 			ungrounded_time -= delta
 			proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
 		else:
+			if forward_speed > 120:
+				proxy_orb.continuous_cd = true
 			if is_grounded:
 				elapsed_time = 0
 			is_grounded = false
@@ -122,7 +128,7 @@ func physicsUpdate(delta: float):
 		
 		# apply airborne gravity and input forces
 		proxy_orb.gravity_scale = ship_stats.gravity_airborne
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.charge_boost_accel_force * accel_input * 0.85)
+		proxy_orb.apply_central_force(-player.basis.z * ship_stats.charge_boost_accel_force * accel_input * 0.3)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
 	# clamps max speed
@@ -156,7 +162,7 @@ func get_input(delta):
 	# State specific input logic
 	turn_input *= deg_to_rad(ship_stats.boost_turn_force)
 	if boost_duration > 1.0:
-		if Input.is_action_pressed("drift"):
+		if Input.is_action_pressed("drift") and is_grounded:
 			var flags: Dictionary = {
 			"forward_speed": forward_speed,
 			"accel_input": accel_input

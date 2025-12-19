@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://c444j1ucmv5ti" path="res://Assets/Scripts/CaveEntrance.gd" id="16_psark"]
 [ext_resource type="PackedScene" uid="uid://cn6as12ppx156" path="res://Assets/PrefabScenes/track_ring.tscn" id="17_dggq3"]
 [ext_resource type="PackedScene" uid="uid://b63llvy5rhjkb" path="res://Assets/BlendFiles/TubeTest.blend" id="18_34ykc"]
+[ext_resource type="PhysicsMaterial" uid="uid://bbnrvdj25jeb1" path="res://Assets/Environments/Asphalt_Physics_Mat.tres" id="19_foawi"]
 [ext_resource type="PackedScene" uid="uid://tvch4d3rcydo" path="res://Assets/BlendFiles/Prototype_terrain.blend" id="19_nuk5y"]
 [ext_resource type="PackedScene" uid="uid://d1fo8mp5xf0am" path="res://Assets/Entities/Enemies/generic_enemy.tscn" id="20_j48rj"]
 [ext_resource type="Script" uid="uid://clc56sewk8p4d" path="res://Assets/Scripts/Core/PathSceneBakeOnPlay.gd" id="20_vyf4w"]
@@ -342,9 +343,6 @@ _data = {
 "tilts": PackedFloat32Array(0, 0, 0, 0, 0)
 }
 point_count = 5
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_v0fjc"]
-friction = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ojc0g"]
 albedo_color = Color(0.493545, 0.493546, 0.493546, 1)
@@ -904,7 +902,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -719, 172, -229)
 surface_material_override/0 = ExtResource("8_s6ve6")
 
 [node name="StaticBody3D" parent="TerrainParts/TubeTest/BézierCurve" index="0"]
-physics_material_override = SubResource("PhysicsMaterial_v0fjc")
+physics_material_override = ExtResource("19_foawi")
 
 [node name="HomePlanet" parent="TerrainParts/TubeTest" instance=ExtResource("19_nuk5y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -709, -164, 518)
@@ -913,16 +911,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -709, -164, 518)
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -9, 0)
 surface_material_override/0 = ExtResource("8_s6ve6")
 
+[node name="StaticBody3D" parent="TerrainParts/TubeTest/HomePlanet/space_ramp" index="0"]
+physics_material_override = ExtResource("19_foawi")
+
 [node name="FloorPlane" parent="TerrainParts/TubeTest/HomePlanet" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, 0)
 visible = false
 
 [node name="StaticBody3D" parent="TerrainParts/TubeTest/HomePlanet/FloorPlane" index="0"]
 collision_mask = 3
+physics_material_override = ExtResource("19_foawi")
 
 [node name="Track_1" parent="TerrainParts/TubeTest/HomePlanet" index="2"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -3094.3, -8.53998, 8933.02)
 surface_material_override/0 = ExtResource("8_s6ve6")
+
+[node name="StaticBody3D" parent="TerrainParts/TubeTest/HomePlanet/Track_1" index="0"]
+physics_material_override = ExtResource("19_foawi")
 
 [node name="InnerWall" parent="TerrainParts/TubeTest/HomePlanet" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2393.84, 93.9561, 3789.55)
@@ -935,6 +940,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ojc0g")
 [node name="Track_1_001" parent="TerrainParts/TubeTest/HomePlanet" index="5"]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -5133.32, -9.41162, 2428.67)
 surface_material_override/0 = ExtResource("8_s6ve6")
+
+[node name="StaticBody3D" parent="TerrainParts/TubeTest/HomePlanet/Track_1_001" index="0"]
+physics_material_override = ExtResource("19_foawi")
+
+[node name="StaticBody3D" parent="TerrainParts/TubeTest/HomePlanet/Track_1_002" index="0"]
+physics_material_override = ExtResource("19_foawi")
 
 [node name="TestWall" type="StaticBody3D" parent="TerrainParts" groups=["terrain"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -675.2, 15, -578.273)
