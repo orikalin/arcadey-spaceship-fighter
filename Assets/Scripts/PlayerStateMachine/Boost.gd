@@ -13,6 +13,7 @@ var boost_duration: float = 0.0
 var ship_mesh_tween: Tween
 var boosted_max_speed: float
 
+
 signal camera_Y_offset
 
 @onready var ShipContainer: MeshInstance3D = %ShipContainer
@@ -72,7 +73,6 @@ func update(delta: float):
 		elapsed_time += delta
 		var t = elapsed_time / level_duration
 		eased_t = ship_stats.easeInOut.sample(t)
-
 
 
 func physicsUpdate(delta: float):
@@ -161,7 +161,9 @@ func physicsUpdate(delta: float):
 				proxy_xform.transform.basis = proxy_xform.transform.basis.rotated(proxy_xform.transform.basis.x, pitch_input * ship_stats.flying_pitch_speed * delta)
 		
 			# apply airborne gravity and input forces
-			proxy_orb.gravity_scale = ship_stats.gravity_airborne
+			proxy_orb.gravity_scale = ship_stats.gravity_airborne + gravity_increase
+			print(gravity_increase)
+			# print("Gravity: ", proxy_orb.gravity_scale)
 			proxy_orb.apply_central_force(-player.basis.z * ship_stats.accel_force * accel_input * 0.15)
 			SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 

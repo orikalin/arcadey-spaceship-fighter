@@ -10,6 +10,7 @@ as_normal_map = true
 noise = SubResource("FastNoiseLite_wis17")
 
 [resource]
+cull_mode = 2
 albedo_color = Color(0.325441, 0.325441, 0.325441, 1)
 metallic_specular = 0.0
 emission = Color(0.273873, 0.273873, 0.273873, 1)

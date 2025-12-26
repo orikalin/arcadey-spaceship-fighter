@@ -26,7 +26,7 @@ height = 1.31981
 radius = 1.91406
 
 [sub_resource type="Curve" id="Curve_6g8w3"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.247126, 0.484711), 0.0, 0.0, 0, 0, Vector2(0.744253, 0.492073), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.478736), 0.0, 0.0, 0, 0, Vector2(0.247126, 0.484711), 0.0, 0.0, 0, 0, Vector2(0.744253, 0.492073), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 4
 
 [sub_resource type="Curve" id="Curve_vwhge"]

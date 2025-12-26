@@ -11,6 +11,7 @@ var pitch_input: float = 0.0
 var accel_input: float = 0.0
 var gravity_tween: Tween
 var current_air_gravity:float
+var gravity_increase: float
 
 @onready var player: CharacterBody3D = %Player
 @onready var proxy_xform: CharacterBody3D = %PlayerProxy
@@ -23,8 +24,11 @@ var current_air_gravity:float
 
 
 func update(delta: float):
-	if not is_grounded:
-		pass
+	if not is_grounded and gravity_increase < 8.0:
+		gravity_increase += delta * ship_stats.gravity_increase_rate
+	else:
+		gravity_increase = 0.0
+
 
 # This function imposes a hard limit on the Rigidybody3D's physics state's max speed
 # considering removing this, and increasing the linear damping to get a similar effect
