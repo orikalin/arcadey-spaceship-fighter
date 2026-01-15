@@ -431,6 +431,7 @@ shape = SubResource("BoxShape3D_s0c8u")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Borders"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1044.48, 600, -2504.38)
 shape = SubResource("BoxShape3D_s0c8u")
+disabled = true
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="Borders"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2490.02, 600, 882.062)
@@ -439,6 +440,7 @@ shape = SubResource("BoxShape3D_pyqb2")
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="Borders"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4574.55, 600, 1234.89)
 shape = SubResource("BoxShape3D_pyqb2")
+disabled = true
 
 [node name="Terrain3D" type="Terrain3D" parent="." groups=["terrain"]]
 data_directory = "res://TestScene/TestSceneTerrain"
@@ -707,7 +709,7 @@ depth = 52.63
 polygon = PackedVector2Array(-32, -385, -91, -318, -130, -258, -141, -200, -121, -147, -66, -93, 13.9877, -89.0576, 89.5401, -135.749, 135.258, -208.233, 143, -249, 116, -305, 52, -315, 6, -357)
 
 [node name="Tunnel2" type="Node3D" parent="TerrainParts" groups=["terrain"]]
-transform = Transform3D(-2.79123, 0, -0.693291, 0, 2.87604, 0, 0.693291, 0, -2.79123, -672.972, -298.881, 346.447)
+transform = Transform3D(-2.79123, 0, -0.693291, 0, 2.87604, 0, 0.693291, 0, -2.79123, -2576.08, -298.881, 550.63)
 top_level = true
 
 [node name="EntranceL" type="Node3D" parent="TerrainParts/Tunnel2" groups=["terrain"]]
@@ -958,7 +960,8 @@ physics_material_override = ExtResource("19_foawi")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 129.441, 0, 0)
 
 [node name="mountain" parent="TerrainParts/TubeTest/HomePlanet" index="9"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1488.61, -7.11963, -1171.26)
+transform = Transform3D(-0.434304, 0, -0.900766, 0, 1, 0, 0.900766, 0, -0.434304, -3123.88, -7.12012, -2970.97)
+surface_material_override/0 = ExtResource("8_s6ve6")
 
 [node name="TestWall" type="StaticBody3D" parent="TerrainParts" groups=["terrain"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -675.2, 15, -578.273)
