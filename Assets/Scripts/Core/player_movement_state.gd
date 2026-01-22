@@ -18,7 +18,7 @@ var gravity_increase: float
 @onready var proxy_orb: RigidBody3D = %Orb
 @onready var ship_state_machine:StateMachine = self.get_parent()
 @onready var ship_stats:Resource = ship_state_machine.ship_stats
-@onready var physics_material := PhysicsMaterial.new()
+@onready var physics_material := PhysicsMaterial.new() ## Generated @onready for use in this state machine
 @onready var ground_raycasts: Array = %ground_check_rays.get_children()
 @onready var down_slope_ray: RayCast3D = %down_slope_check
 
