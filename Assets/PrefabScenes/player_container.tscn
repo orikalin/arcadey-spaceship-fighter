@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://b3yxvmw1fmgb4"]
+[gd_scene load_steps=37 format=3 uid="uid://b3yxvmw1fmgb4"]
 
 [ext_resource type="Script" uid="uid://bri0ar82vcsyc" path="res://Assets/Scripts/Core/player.gd" id="1_bttla"]
 [ext_resource type="Script" uid="uid://b62ppvc03a6b1" path="res://Assets/Scripts/Core/CameraManager.gd" id="2_de37j"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://w2iurlb7divh" path="res://Assets/Scripts/PlayerStateMachine/ShipStateMachine.gd" id="14_kj614"]
 [ext_resource type="Resource" uid="uid://y2vkkuwjl833" path="res://Assets/Scripts/Resources/BaseShipResource.tres" id="15_0cqmc"]
 [ext_resource type="Script" uid="uid://e07chentfdx1" path="res://Assets/Scripts/PlayerStateMachine/Flying.gd" id="16_lji6i"]
+[ext_resource type="Script" uid="uid://cyrjn0aa6uh4h" path="res://Assets/PrefabScenes/perfect_boost.gd" id="18_4ps00"]
 [ext_resource type="Script" uid="uid://chxyx21jufpo0" path="res://Assets/PrefabScenes/tumble.gd" id="18_6y8n4"]
 [ext_resource type="Material" uid="uid://vobewhs4sexp" path="res://Assets/Materials/targetting_sights/sight_base.tres" id="18_cmkl5"]
 [ext_resource type="Script" uid="uid://ck8lrflos88qw" path="res://Assets/PrefabScenes/burst_laser.gd" id="18_guf3m"]
@@ -263,7 +264,15 @@ lock_accel_input = true
 [node name="charged_boost" type="Node" parent="Player/ShipStateMachine"]
 script = ExtResource("34_0cqmc")
 charge_boost_max_multiplier = 1.5
+boost_impulse_force = 150.0
 lock_accel_input = true
+
+[node name="perfect_boost" type="Node" parent="Player/ShipStateMachine"]
+script = ExtResource("18_4ps00")
+air_boost_mult = 0.4
+old_speed_damp = 0.2
+perfect_boost_accel_force = 300.0
+perfect_boost_impulse_force = 280.0
 
 [node name="ascend_charge" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true

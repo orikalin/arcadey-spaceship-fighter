@@ -206,7 +206,9 @@ func end_drift_state():
 		"is_grounded": is_grounded,
 		"slide_boost_power": slide_boost_power
 		}
-		if slide_boost_power > slide_boost_power_max * 0.75 and Input.is_action_pressed("boost"):
+		if slide_boost_power > slide_boost_power_max * 0.70 and slide_boost_power < slide_boost_power_max * 0.9 and Input.is_action_pressed("boost"):
+			finished.emit("perfect_boost", flags)
+		elif slide_boost_power > slide_boost_power_max * 0.67 and Input.is_action_pressed("boost"):
 			finished.emit("charged_boost", flags)
 		elif Input.is_action_pressed("boost") and ship_stats.boost_fuel_current > 0.001:
 			finished.emit("boost", flags)

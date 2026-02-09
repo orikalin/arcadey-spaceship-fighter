@@ -2,7 +2,10 @@ extends PlayerMovementState
 
 @export var level_duration: float = 3.0
 @export var charge_boost_max_multiplier: float = 2.0
-@export var boost_impulse_force:float = 100.0
+@export var air_boost_mult: float = 1.0
+@export var old_speed_damp: float = 0.25
+@export var perfect_boost_accel_force: float = 250.0
+@export var perfect_boost_impulse_force: float = 250.0
 
 var state_boosted_speed: float
 var slide_boost_power: float
@@ -90,11 +93,12 @@ func physicsUpdate(delta: float):
 	# before any physics are done, update the proxy position to match the orb position from last physicsUpdate
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 
+	is_grounded = check_ground_normals()
+
 	# damps current momentum before boosting
 	if not speed_gated:
-		proxy_orb.apply_central_impulse(-player.basis.z * boost_impulse_force)
+		proxy_orb.apply_central_impulse(-player.basis.z * perfect_boost_impulse_force)
 		speed_gated = true
-	is_grounded = check_ground_normals()
 
 	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:
@@ -108,7 +112,7 @@ func physicsUpdate(delta: float):
 		# apply gravity and force
 		proxy_orb.gravity_scale = ship_stats.gravity_grounded
 		proxy_orb.apply_central_force(-average_terrain_normal * ship_stats.boost_ground_stick_force * _stick_curve_sample)
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.charge_boost_accel_force * accel_input)
+		proxy_orb.apply_central_force(-player.basis.z * perfect_boost_accel_force * accel_input)
 		ungrounded_time = ship_stats.ungrounded_grace
 
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input, ship_stats.cone_flare_mult)
@@ -135,11 +139,9 @@ func physicsUpdate(delta: float):
 		
 		# apply airborne gravity and input forces
 		proxy_orb.gravity_scale = ship_stats.gravity_airborne
-		proxy_orb.apply_central_force(-player.basis.z * ship_stats.charge_boost_accel_force * accel_input * 0.3)
+		proxy_orb.apply_central_force(-player.basis.z * ship_stats.charge_boost_accel_force * accel_input * air_boost_mult)
 		SignalHub.tune_engine_effects.emit(_normalized_forward_speed, accel_input * 0.25, 2)
 
-	# clamps max speed
-	_integrate_forces(physics_state)
 
 	# update player to orb position
 	player.transform.origin = proxy_xform.transform.origin.slerp(proxy_orb.transform.origin, 0.5)
@@ -216,9 +218,3 @@ func _input(event: InputEvent) -> void:
 		gamepad = true
 
 
-# func _integrate_forces(state):
-# 	var _current_velocity = state.linear_velocity
-# 	var _speed = _current_velocity.length()
-
-# 	if _speed > state_boosted_speed:
-# 		state.linear_velocity = _current_velocity.normalized() * state_boosted_speed
