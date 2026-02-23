@@ -2,6 +2,8 @@ extends PlayerMovementState
 
 @export var level_duration: float = 3.0
 @export var charge_boost_decay: Curve
+@export var impulse_count: int = 1
+@export var impulse_strength: float = 50.0
 
 var elapsed_time: float = 0.0
 var duration: float = 1.0
@@ -12,6 +14,7 @@ var ship_statemachine: StateMachine
 var boost_duration: float = 0.0
 var ship_mesh_tween: Tween
 var boosted_max_speed: float
+
 
 
 signal camera_Y_offset
@@ -35,6 +38,7 @@ func enter(oldState: String, flags: Dictionary = {}):
 	if %hover.state_max_speed_tween:
 		%hover.state_max_speed_tween.kill()
 	if oldState == "drift":
+		current_impulse = roundi(impulse_count*0.5)
 		ship_stats.state_max_speed = ship_stats.boost_max_speed
 		is_grounded = flags.get("is_grounded")
 		if ship_mesh_tween:
@@ -43,12 +47,14 @@ func enter(oldState: String, flags: Dictionary = {}):
 		ship_mesh_tween.set_trans(Tween.TRANS_QUAD)
 		ship_mesh_tween.set_ease(Tween.EASE_OUT)
 		ship_mesh_tween.tween_property(ShipContainer, "position", Vector3.ZERO, 1.0)
-	elif oldState == "charged_boost":
+	elif oldState == "charged_boost" or oldState == "perfect_boost":
+		current_impulse = 0
 		if flags.has("state_boosted_speed"):
 			ship_stats.state_max_speed = flags.get("state_boosted_speed")
 		boosted_max_speed = ship_stats.state_max_speed
 		print_debug(ship_stats.state_max_speed)
 	else:
+		current_impulse = impulse_count
 		ship_stats.state_max_speed = ship_stats.boost_max_speed
 	# if oldState == "hover":
 	# 	forward_speed = flags.get("forward_speed")
@@ -101,6 +107,11 @@ func physicsUpdate(delta: float):
 	proxy_xform.transform.origin = proxy_orb.transform.origin
 
 	is_grounded = check_ground_normals()
+
+	# impulse
+	if current_impulse > 0:
+		proxy_orb.apply_impulse(-player.basis.z * impulse_strength * current_impulse * 0.1)
+		current_impulse -= 1
 
 	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:

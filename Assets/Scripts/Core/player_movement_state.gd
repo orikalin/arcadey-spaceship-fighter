@@ -12,6 +12,7 @@ var accel_input: float = 0.0
 var gravity_tween: Tween
 var current_air_gravity:float
 var gravity_increase: float
+var current_impulse: int = 0
 
 @onready var player: CharacterBody3D = %Player
 @onready var proxy_xform: CharacterBody3D = %PlayerProxy

@@ -6,6 +6,7 @@ extends PlayerMovementState
 @export var old_speed_damp: float = 0.25
 @export var perfect_boost_accel_force: float = 250.0
 @export var perfect_boost_impulse_force: float = 250.0
+@export var impulse_count: int = 10
 
 var state_boosted_speed: float
 var slide_boost_power: float
@@ -42,6 +43,7 @@ func enter(oldState: String, flags: Dictionary = {}):
 	if %hover.state_max_speed_tween:
 		%hover.state_max_speed_tween.kill()
 	if oldState == "drift":
+		current_impulse = impulse_count
 		slide_boost_power = flags.get("slide_boost_power")
 		is_grounded = flags.get("is_grounded")
 		state_boosted_speed = ship_stats.boost_max_speed * remap(slide_boost_power, 0.0, 8.0, 1.0, charge_boost_max_multiplier)
@@ -95,10 +97,15 @@ func physicsUpdate(delta: float):
 
 	is_grounded = check_ground_normals()
 
-	# damps current momentum before boosting
-	if not speed_gated:
-		proxy_orb.apply_central_impulse(-player.basis.z * perfect_boost_impulse_force)
-		speed_gated = true
+	# # damps current momentum before boosting
+	# if not speed_gated:
+	# 	proxy_orb.apply_central_impulse(-player.basis.z * perfect_boost_impulse_force)
+	# 	speed_gated = true
+
+	# impulse
+	if current_impulse > 0:
+		proxy_orb.apply_impulse(-player.basis.z * perfect_boost_impulse_force * current_impulse * 0.1)
+		current_impulse -= 1
 
 	# while on the ground, align the ship to the averaged ground normals		
 	if is_grounded:

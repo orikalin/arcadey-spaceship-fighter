@@ -2,10 +2,11 @@ extends StateMachine
 
 @onready var Player: CharacterBody3D = %Player
 @onready var ship_container: MeshInstance3D = %ShipContainer
-var correctingRoll: bool = false
 @export var rollCorrectionRate: float = 4.0
 @export var easeOut: Curve
 @export var ship_stats: ShipResource
+
+var correctingRoll: bool = false
 
 signal freeCam()
 signal phantom_camera_shift()

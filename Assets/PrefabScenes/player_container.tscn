@@ -259,6 +259,8 @@ lock_accel_input = true
 unique_name_in_owner = true
 script = ExtResource("23_s3mlt")
 charge_boost_decay = SubResource("Curve_0cqmc")
+impulse_count = 20
+impulse_strength = 15.0
 lock_accel_input = true
 
 [node name="charged_boost" type="Node" parent="Player/ShipStateMachine"]
@@ -272,7 +274,7 @@ script = ExtResource("18_4ps00")
 air_boost_mult = 0.4
 old_speed_damp = 0.2
 perfect_boost_accel_force = 300.0
-perfect_boost_impulse_force = 280.0
+perfect_boost_impulse_force = 80.0
 
 [node name="ascend_charge" type="Node" parent="Player/ShipStateMachine"]
 unique_name_in_owner = true
