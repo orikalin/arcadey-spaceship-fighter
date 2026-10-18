@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://daxkq6ky3o4kq"]
+
+[ext_resource type="Script" uid="uid://bqflf4vw8mem1" path="res://addons/lines_and_trails_3d/trail_3d.gd" id="1_pa1n8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4obpg"]
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_jj8s7"]
+radius = 0.05
+height = 0.1
+radial_segments = 8
+rings = 4
+
+[sub_resource type="Curve" id="Curve_jjr5r"]
+_data = [Vector2(0, 1), 0.0, -1.18033, 0, 0, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[node name="ball2" type="MeshInstance3D"]
+material_override = SubResource("StandardMaterial3D_4obpg")
+mesh = SubResource("SphereMesh_jj8s7")
+skeleton = NodePath("../../example_3")
+
+[node name="trail" type="MeshInstance3D" parent="."]
+process_priority = 9999
+script = ExtResource("1_pa1n8")
+time_limit = 0.5
+width_curve = SubResource("Curve_jjr5r")

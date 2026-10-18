@@ -1,7 +1,6 @@
 extends State
 
 @export var Player:CharacterBody3D
-@export var ShipContainer:MeshInstance3D
 
 # Current speed
 var forward_speed:float = 0.0
@@ -15,6 +14,9 @@ var pitch_input:float = 0.0
 var noPitchInputTimer:float = 0.0
 var correctingRoll:bool = false
 @onready var shipResource:StateMachine = get_parent()
+@onready var ShipContainer:MeshInstance3D = %ShipContainer
+
+signal camera_Y_offset()
 
 func enter(oldState:String, flags:Dictionary):
 	if flags.has("target_speed"):
@@ -41,6 +43,7 @@ func physicsUpdate(delta:float):
 	# Movement is always forward
 	Player.velocity = -Player.transform.basis.z * forward_speed
 	Player.move_and_slide()
+	camera_Y_offset.emit(0,0,delta)
 
 
 

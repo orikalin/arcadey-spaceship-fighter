@@ -6,7 +6,7 @@ signal finished(nextState:String, flags:Dictionary)
 func enter(oldState:String, flags:Dictionary):
     pass
 
-func exit(newState:String, flags:Dictionary):
+func exit(newState:String):
     pass
 
 func update(delta:float):

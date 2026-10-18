@@ -109,5 +109,5 @@ void light (){
 			DIFFUSE_LIGHT += mix(vec3(1.0), dotNL * LIGHT_COLOR * lightIntensity, lineMask);
 	}
 	else
-		DIFFUSE_LIGHT = vec3(1.0);
+		DIFFUSE_LIGHT = vec3(0.5);
 }

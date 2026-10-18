@@ -34,12 +34,11 @@ func transitionState(nextState:String, flags:Dictionary) -> void:
 	var oldState:String  = ""
 	if currentState != null:
 		oldState = currentState.name
-		currentState.exit(nextState, flags)
+		currentState.exit(nextState)
 		currentState = null
 	if flags.has("firstTime"):
 		await owner.ready
 	currentState = get_node(nextState)
 	currentState.enter(oldState, flags)
-	print_debug("transitions from: " + oldState + " to: " + currentState.name)
 
 	

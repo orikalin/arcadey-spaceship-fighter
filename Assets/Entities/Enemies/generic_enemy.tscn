@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3 uid="uid://d1fo8mp5xf0am"]
+
+[ext_resource type="Script" uid="uid://bkwypq6f50rej" path="res://Assets/Scripts/Core/Targetable_Hitbox.gd" id="1_lmb53"]
+[ext_resource type="Script" uid="uid://cp17detnj1qjb" path="res://Assets/Scripts/Core/damageable_entity.gd" id="1_wxqmy"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lmb53"]
+size = Vector3(10, 10, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxqmy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3q2sj"]
+size = Vector3(10, 10, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lmb53"]
+size = Vector3(10, 10, 10)
+
+[node name="generic_enemy" type="Node3D"]
+script = ExtResource("1_wxqmy")
+
+[node name="CharacterBody3D" type="RigidBody3D" parent="."]
+collision_layer = 32
+collision_mask = 35
+gravity_scale = 2.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("BoxMesh_lmb53")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_wxqmy")
+
+[node name="physics_collider" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("BoxShape3D_3q2sj")
+
+[node name="hitbox" type="Area3D" parent="CharacterBody3D" groups=["targetable"]]
+collision_layer = 4
+collision_mask = 24
+script = ExtResource("1_lmb53")
+
+[node name="trigger_collider" type="CollisionShape3D" parent="CharacterBody3D/hitbox"]
+shape = SubResource("BoxShape3D_lmb53")
+
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="CharacterBody3D/hitbox"]
+aabb = AABB(-5, -5, -5, 10, 10, 10)

@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b5ge6nvsc86ki"]
+
+[ext_resource type="Shader" uid="uid://dwc1iivse8ser" path="res://Assets/Materials/shaders/ship_friction_cone_shader.tres" id="1_3r8ba"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_3r8ba")
+shader_parameter/cone_color = Color(1.5, 0.829, 0, 1)
+shader_parameter/max_alpha = 0.0

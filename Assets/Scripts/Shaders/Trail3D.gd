@@ -1,4 +1,4 @@
-class_name Trail3D extends MeshInstance3D
+class_name Trail3D_DEPRECATED extends MeshInstance3D
 
 var _points = [] #stores all 3D positions that will make up the trail
 var _widths = [] #stores all calculated widths using the positions of the points
